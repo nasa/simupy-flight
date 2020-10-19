@@ -1,5 +1,5 @@
 from simupy.block_diagram import BlockDiagram, DEFAULT_INTEGRATOR_OPTIONS
-import aerospace_sim_classes
+import simupy_flight
 import pandas as pd, matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -45,19 +45,19 @@ int_opts = DEFAULT_INTEGRATOR_OPTIONS.copy()
 int_opts['max_step'] = 2**-4
 
 
-kin_block = aerospace_sim_classes.KinematicsBlock(
-    gravity=aerospace_sim_classes.earth_J2_gravity,
-    winds=aerospace_sim_classes.get_constant_winds(),
-    density=aerospace_sim_classes.density_1976_atmosphere,
-    speed_of_sound=aerospace_sim_classes.get_constant_speed_of_sound(),
-    viscosity=aerospace_sim_classes.get_constant_viscosity(),
-    a = aerospace_sim_classes.earth_equitorial_radius,
-    omega_p=aerospace_sim_classes.earth_rotation_rate,
-    f=aerospace_sim_classes.earth_f
+kin_block = simupy_flight.KinematicsBlock(
+    gravity=simupy_flight.earth_J2_gravity,
+    winds=simupy_flight.get_constant_winds(),
+    density=simupy_flight.density_1976_atmosphere,
+    speed_of_sound=simupy_flight.get_constant_speed_of_sound(),
+    viscosity=simupy_flight.get_constant_viscosity(),
+    a = simupy_flight.earth_equitorial_radius,
+    omega_p=simupy_flight.earth_rotation_rate,
+    f=simupy_flight.earth_f
 )
 
 
-dyn_block =  aerospace_sim_classes.DynamicsBlock(aerospace_sim_classes.get_constant_aero(CD_b=0.1), m, Ixx, Iyy, Izz, Ixy, Iyz, Izx, x,y,z, x,y,z, S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=1.,)
+dyn_block =  simupy_flight.DynamicsBlock(simupy_flight.get_constant_aero(CD_b=0.1), m, Ixx, Iyy, Izz, Ixy, Iyz, Izx, x,y,z, x,y,z, S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=1.,)
 
 BD = BlockDiagram(kin_block, dyn_block)
 BD.connect(kin_block, dyn_block, inputs=np.arange(kin_block.dim_output))

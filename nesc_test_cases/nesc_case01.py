@@ -1,5 +1,5 @@
 from simupy.block_diagram import BlockDiagram, DEFAULT_INTEGRATOR_OPTIONS
-import aerospace_sim_classes
+import simupy_flight
 import pandas as pd, matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -7,15 +7,15 @@ import os
 int_opts = DEFAULT_INTEGRATOR_OPTIONS.copy()
 int_opts['max_step'] = 0.25
 
-kin_block = aerospace_sim_classes.KinematicsBlock(
-    gravity=aerospace_sim_classes.earth_J2_gravity,
-    winds=aerospace_sim_classes.get_constant_winds(),
-    density=aerospace_sim_classes.get_constant_density(0.),
-    speed_of_sound=aerospace_sim_classes.get_constant_speed_of_sound(),
-    viscosity=aerospace_sim_classes.get_constant_viscosity(),
-    a = aerospace_sim_classes.earth_equitorial_radius,
-    omega_p=aerospace_sim_classes.earth_rotation_rate,
-    f=aerospace_sim_classes.earth_f
+kin_block = simupy_flight.KinematicsBlock(
+    gravity=simupy_flight.earth_J2_gravity,
+    winds=simupy_flight.get_constant_winds(),
+    density=simupy_flight.get_constant_density(0.),
+    speed_of_sound=simupy_flight.get_constant_speed_of_sound(),
+    viscosity=simupy_flight.get_constant_viscosity(),
+    a = simupy_flight.earth_equitorial_radius,
+    omega_p=simupy_flight.earth_rotation_rate,
+    f=simupy_flight.earth_f
 )
 
 BD = BlockDiagram(kin_block)

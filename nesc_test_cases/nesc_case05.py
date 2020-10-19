@@ -1,5 +1,5 @@
 from simupy.block_diagram import BlockDiagram, DEFAULT_INTEGRATOR_OPTIONS
-import aerospace_sim_classes
+import simupy_flight
 import pandas as pd, matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -12,14 +12,14 @@ kg_per_slug = 14.5939
 int_opts = DEFAULT_INTEGRATOR_OPTIONS.copy()
 int_opts['max_step'] = 2**-4
 
-kin_block = aerospace_sim_classes.KinematicsBlock(
-    gravity=aerospace_sim_classes.get_spherical_gravity(aerospace_sim_classes.earth_spherical_gravity_constant),
-    winds=aerospace_sim_classes.get_constant_winds(),
-    density=aerospace_sim_classes.density_1976_atmosphere,
-    speed_of_sound=aerospace_sim_classes.get_constant_speed_of_sound(),
-    viscosity=aerospace_sim_classes.get_constant_viscosity(),
+kin_block = simupy_flight.KinematicsBlock(
+    gravity=simupy_flight.get_spherical_gravity(simupy_flight.earth_spherical_gravity_constant),
+    winds=simupy_flight.get_constant_winds(),
+    density=simupy_flight.density_1976_atmosphere,
+    speed_of_sound=simupy_flight.get_constant_speed_of_sound(),
+    viscosity=simupy_flight.get_constant_viscosity(),
     a = 20902255.199/ft_per_m,
-    omega_p=aerospace_sim_classes.earth_rotation_rate,
+    omega_p=simupy_flight.earth_rotation_rate,
     f=0.
 )
 
@@ -39,7 +39,7 @@ S_A = 0.1963495/(ft_per_m**2)
 b_l = 1.0
 c_l = 1.0
 a_l = b_l
-dyn_block =  aerospace_sim_classes.DynamicsBlock(aerospace_sim_classes.get_constant_aero(CD_b=0.1), m, Ixx, Iyy, Izz, Ixy, Iyz, Izx, x,y,z, x,y,z, S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=1.,)
+dyn_block =  simupy_flight.DynamicsBlock(simupy_flight.get_constant_aero(CD_b=0.1), m, Ixx, Iyy, Izz, Ixy, Iyz, Izx, x,y,z, x,y,z, S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=1.,)
 
 BD = BlockDiagram(kin_block, dyn_block)
 BD.connect(kin_block, dyn_block, inputs=np.arange(kin_block.dim_output))
