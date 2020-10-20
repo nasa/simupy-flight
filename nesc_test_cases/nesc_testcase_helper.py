@@ -1,3 +1,16 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from simupy.block_diagram import DEFAULT_INTEGRATOR_OPTIONS
+
+int_opts = DEFAULT_INTEGRATOR_OPTIONS.copy()
+int_opts['max_step'] = 2**-4
+
+data_relative_path = '..'
+
+ft_per_m = 3.28084
+# slug_per_kg = 0.0685218
+kg_per_slug = 14.5939
+
 def plot_nesc_comparisons(res, baseline_pds):
     long_lat_deg = res.y[:,13:15]*180/np.pi
     alt_ft = res.y[:,15]*ft_per_m
@@ -22,7 +35,6 @@ def plot_nesc_comparisons(res, baseline_pds):
     
     for axis in ax:
         axis.grid(True)
-    plt.show()
     
     fig, ax = plt.subplots(3, sharex=True, constrained_layout=True)
     for idx, baseline_pd in enumerate(baseline_pds):
@@ -47,7 +59,6 @@ def plot_nesc_comparisons(res, baseline_pds):
     ax[2].set_xlabel('time, s')
     for axis in ax:
         axis.grid(True)
-    plt.show()
     
     fig, ax = plt.subplots(3, sharex=True, constrained_layout=True)
     for idx, baseline_pd in enumerate(baseline_pds):

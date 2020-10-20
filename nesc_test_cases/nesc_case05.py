@@ -1,16 +1,10 @@
-from simupy.block_diagram import BlockDiagram, DEFAULT_INTEGRATOR_OPTIONS
+from simupy.block_diagram import BlockDiagram
 import simupy_flight
 import pandas as pd, matplotlib.pyplot as plt
 import numpy as np
 import os
-
-ft_per_m = 3.28084
-slug_per_kg = 0.0685218
-
-kg_per_slug = 14.5939
-
-int_opts = DEFAULT_INTEGRATOR_OPTIONS.copy()
-int_opts['max_step'] = 2**-4
+import glob
+from nesc_testcase_helper import plot_nesc_comparisons, data_relative_path, int_opts, ft_per_m, kg_per_slug
 
 kin_block = simupy_flight.KinematicsBlock(
     gravity=simupy_flight.get_spherical_gravity(simupy_flight.earth_spherical_gravity_constant),
@@ -68,14 +62,9 @@ print('position:', np.allclose(check_pos, orig_pos))
 print('attitude:', np.allclose(check_att, orig_att))
 
 res = BD.simulate(30, integrator_options=int_opts)
-check_output = kin_block.output_equation_function(res.t[-1], res.x[-1,:])
 
-
-
-##
-import glob
 baseline_pds = []
-for fname in glob.glob(os.path.join('Atmospheric_checkcases', 'Atmos_05_DroppedSphereRoundRotation', 'Atmos_05_sim_*.csv'),):
+for fname in glob.glob(os.path.join(data_relative_path, 'Atmospheric_checkcases', 'Atmos_05_DroppedSphereRoundRotation', 'Atmos_05_sim_*.csv'),):
     baseline_pds.append(pd.read_csv(fname, index_col=0))
 
 plot_nesc_comparisons(res, baseline_pds)

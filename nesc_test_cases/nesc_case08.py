@@ -1,14 +1,10 @@
-from simupy.block_diagram import BlockDiagram, DEFAULT_INTEGRATOR_OPTIONS
+from simupy.block_diagram import BlockDiagram
 import simupy_flight
-import pandas as pd, matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 import os
-
-ft_per_m = 3.28084
-slug_per_kg = 0.0685218
-
-kg_per_slug = 14.5939
-
+import glob
+from nesc_testcase_helper import plot_nesc_comparisons, data_relative_path, int_opts, ft_per_m, kg_per_slug
 
 Ixx = 3.6*kg_per_slug/(ft_per_m**2) #slug-ft2
 Iyy = 3.6*kg_per_slug/(ft_per_m**2) #slug-ft2
@@ -46,9 +42,6 @@ x_1 = h_ic
 wy_2 = -20/ft_per_m
 x_2 = 0.
 
-int_opts = DEFAULT_INTEGRATOR_OPTIONS.copy()
-int_opts['max_step'] = 2**-4
-
 def linear_winds(t, fx, fy, fz):
     winds_out = np.zeros(3)
     winds_out[1] = (wy_2-wy_1)*(fz-x_1)/(x_2-x_1) + wy_1
@@ -85,17 +78,9 @@ print('position:', np.allclose(check_pos, orig_pos))
 print('attitude:', np.allclose(check_att, orig_att))
 
 res = BD.simulate(30, integrator_options=int_opts)
-check_output = kin_block.output_equation_function(res.t[-1], res.x[-1,:])
 
-long_lat_deg = res.y[:,13:15]*180/np.pi
-alt_ft = res.y[:,15]*ft_per_m
-
-psi_theta_phi_deg = res.y[:,16:19]*180/np.pi
-
-
-import glob
 baseline_pds = []
-for fname in glob.glob(os.path.join('Atmospheric_checkcases', 'Atmos_08_DroppedSphere2DWindShear', 'Atmos_08_sim_*.csv'),):
+for fname in glob.glob(os.path.join(data_relative_path, 'Atmospheric_checkcases', 'Atmos_08_DroppedSphere2DWindShear', 'Atmos_08_sim_*.csv'),):
     baseline_pds.append(pd.read_csv(fname, index_col=0))
     
 plot_nesc_comparisons(res, baseline_pds)
