@@ -61,9 +61,9 @@ def ic_from_planetodetic(self, lamda_D, phi_D, h_D, V_N, V_E, V_D, psi, theta, p
     return (numpy.array([p_x, p_y, p_z, -V_E*x0 - self.planetodetics.omega_p*p_y - x1*x3 - x1*x5, V_E*x1 + self.planetodetics.omega_p*p_x - x0*x3 - x0*x5, -V_D*x4 + V_N*x2, (1/2)*x28, x33*(x0*x30 - x12*x16 + x12*x20 - x14*x6 - x19*x31 + x21*x23 + x25*x32 + x29), -x33*(x1*x23*x6 + x1*x30 + x10*x22 + x23*x7 + x25*x9 + x25 - x27), x33*(x0*x10*x18 + x0*x11 + x1*x17 + x1*x24 - x1*x31*x4 - x16*x26 + x25*x29 + x32), omega_X, omega_Y, omega_Z]))
 
 def kinematics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z):
+    [g_x, g_y, g_z] = self.gravity(p_x,p_y,p_z).ravel()
     [lamda_D, phi_D, h_D] = self.planetodetics.pcf2pd(p_x,p_y,p_z).ravel()
     lamda_D = lamda_D - self.planetodetics.omega_p*t
-    [g_x, g_y, g_z] = self.gravity(p_x,p_y,p_z).ravel()
     [W_N, W_E, W_D] = self.winds(t,lamda_D,phi_D,h_D).ravel()
     rho = self.density(t,lamda_D,phi_D,h_D)
     c_s = self.speed_of_sound(t,lamda_D,phi_D,h_D)
