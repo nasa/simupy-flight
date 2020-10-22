@@ -6,15 +6,14 @@ import os
 import glob
 from nesc_testcase_helper import plot_nesc_comparisons, data_relative_path, int_opts, ft_per_m, kg_per_slug
 
+
 kin_block = simupy_flight.KinematicsBlock(
     gravity=simupy_flight.earth_J2_gravity,
     winds=simupy_flight.get_constant_winds(),
     density=simupy_flight.get_constant_density(0.),
     speed_of_sound=simupy_flight.get_constant_speed_of_sound(),
     viscosity=simupy_flight.get_constant_viscosity(),
-    a = simupy_flight.earth_equitorial_radius,
-    omega_p=simupy_flight.earth_rotation_rate,
-    f=simupy_flight.earth_f
+    planetodetics=simupy_flight.Planetodetic(a=simupy_flight.earth_equitorial_radius, omega_p=simupy_flight.earth_rotation_rate, f=simupy_flight.earth_f)
 )
 
 Ixx = 0.001894220*kg_per_slug/(ft_per_m**2) #slug-ft2
@@ -48,7 +47,7 @@ omega_X_ic = 10.*np.pi/180
 omega_Y_ic = 20.*np.pi/180
 omega_Z_ic = 30.*np.pi/180
 
-kin_block.initial_condition = kin_block.ic_from_geodetic(0, long_ic, lat_ic, h_ic, V_N_ic, V_E_ic, V_D_ic, psi_ic, theta_ic, phi_ic, omega_X_ic, omega_Y_ic, omega_Z_ic)
+kin_block.initial_condition = kin_block.ic_from_planetodetic(long_ic, lat_ic, h_ic, V_N_ic, V_E_ic, V_D_ic, psi_ic, theta_ic, phi_ic, omega_X_ic, omega_Y_ic, omega_Z_ic)
 out_at_ic = kin_block.output_equation_function(0, kin_block.initial_condition)
 check_pos = out_at_ic[13:16]
 check_att = out_at_ic[16:19]

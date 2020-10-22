@@ -21,7 +21,7 @@ def tot_aero_forces_moments(self, qbar, V_T, alpha, beta, p_B, q_B, r_B, CD_b, C
     x16 = self.x_com - self.x_mrc
     return (numpy.array([x10*x9, x10*x11, x10*x12, self.a_l*x10*(CLcal_b + CLcal_e + self.a_l*p_B*x15*(Cp_b + Cp_e) - (x11*x13 - x12*x14)/self.a_l), self.c_l*x10*(CMcal_b + CMcal_e + self.c_l*q_B*x15*(Cq_b + Cq_e) - (x12*x16 - x13*x9)/self.c_l), self.b_l*x10*(CNcal_b + CNcal_e + self.b_l*r_B*x15*(Cr_b + Cr_e) - (-x11*x16 + x14*x9)/self.b_l)]))
 
-def dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, Phi_x, Phi_y, Phi_z, tau_x, tau_y, tau_z, CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e):
+def dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_D, phi_D, h_D, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, Phi_x, Phi_y, Phi_z, tau_x, tau_y, tau_z, CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e):
     qbar = (1/2)*V_T**2*rho
     Ma = V_T/c_s
     Re = V_T*self.d_l*rho/mu

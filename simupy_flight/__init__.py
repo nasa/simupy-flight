@@ -13,25 +13,36 @@ earth_rotation_rate = earth_rotation_rate_deg*np.pi/180
 earth_equitorial_radius = 6378137.0
 
 # kinematic functions
-def get_nonflat_gc2gd(a, f):
-    def gc2gde(px, py, pz):
+def get_nonflat_pc2pd(a, f):
+    def pcf2pd(px, py, pz):
         return np.array(erfa.gc2gde(a, f, np.array([px, py, pz])))
-    return gc2gde
+    return pcf2pd
 
-def get_flat_gc2gd():
-    def gc2gde(px, py, pz):
+def get_flat_pc2pd():
+    def pcf2pd(px, py, pz):
         return np.array([px, py, pz])
-    return gc2gde
+    return pcf2pd
 
-def get_nonflat_gd2gc(a, f):
-    def gd2gce(longitude, latitude, altitude):
+def get_nonflat_pd2pc(a, f):
+    def pd2pcf(longitude, latitude, altitude):
         return np.array(erfa.gd2gce(a, f, longitude, latitude, altitude))
-    return gd2gce
+    return pd2pcf
 
-def get_flat_gd2gc():
-    def gd2gce(longitude, latitude, altitude):
+def get_flat_pd2pc():
+    def pd2pcf(longitude, latitude, altitude):
         return np.array([longitude, latitude, altitude])
-    return gd2gce
+    return pd2pcf
+
+class Planetodetic:
+    def __init__(self, a=0., f=0., omega_p=0.):
+        self.omega_p, self.a, self.f = omega_p, a, f
+        if a<=0:
+            self.pcf2pd = get_flat_pc2pd()
+            self.pd2pcf = get_flat_pd2pc()
+        else:
+            self.pcf2pd = get_nonflat_pc2pd(a, f)
+            self.pd2pcf = get_nonflat_pd2pc(a, f)
+
 
 # constant atmosphere functions
 def get_constant_viscosity(viscosity_val=0.):
@@ -86,17 +97,16 @@ class KinematicsBlock(object):
     output equation for commonly used variables for flight vehicles according to the planet model. The KinematicsBlock 
     planet model is parameterized based on the following components:
 
-    gravity model: translational acceleration due to gravity as a function of planet-fixed position in rectangular coordinates
+    ``gravity`` model: translational acceleration due to gravity as a function of planet-fixed position in rectangular coordinates.
+    For 
 
-    atmospheric models: density, speed of sound, and viscocity outputs of the atmosphere model as a function of time (i.e.,
+    ``atmospheric`` models: density, speed of sound, and viscocity outputs of the atmosphere model as a function of time (i.e.,
     for stochasticity) and position in planet-fixed frame
 
-    planetodetic model parameters: semi-major axis length, flattening ratio
-    TODO: replace this with to_detic and to_centric transformation functions
-
-    planet rotation rate: used to adjust the local wind and to calculate a simple rotation transformation between planet-fixed
-    and planet-centered inertial
-    TODO: add generic rotation matrix call (i.e., to allow models including precession and nutation)
+    ``planetodetic`` model, must provide rotation rate in rad/s as ``omega_p`` and functions ``pd2pcf`` and ``pcf2pd`` to
+    convert between planetodetic rectangular coordinates and planetocentric spherical coordinates. Future versions may support
+    nutation and precession. In the absence of precession and nutation, the planetodetic model assumes pcf excludes sidereel rotation
+    which is accounted for by the kinematics model.
 
     TODO: document EOM's?
 
@@ -157,16 +167,9 @@ class KinematicsBlock(object):
     dim_output = 34
     dim_input = 7
 
-    def __init__(self, gravity, winds, density, speed_of_sound, viscosity, omega_p=0., a=0., f=0.,):
-        self.omega_p, self.a, self.f = omega_p, a, f
-        if a<=0:
-            self.gc2gd = get_flat_gc2gd()
-            self.gd2gc = get_flat_gd2gc(a, f)
-        else:
-            self.gc2gd = get_nonflat_gc2gd(a, f)
-            self.gd2gc = get_nonflat_gd2gc(a, f)
-
-        self.gravity, self.winds, self.density, self.speed_of_sound, self.viscosity = gravity, winds, density, speed_of_sound, viscosity
+    def __init__(self, gravity, winds, density, speed_of_sound, viscosity, planetodetics):
+        (self.gravity, self.winds, self.density, self.speed_of_sound, self.viscosity, self.planetodetics) =\
+            gravity, winds, density, speed_of_sound, viscosity, planetodetics
     
     def prepare_to_integrate(self, *args, **kwargs):
         return
@@ -182,8 +185,8 @@ class KinematicsBlock(object):
     def kinematics_state_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, A_X, A_Y, A_Z, alpha_X, alpha_Y, alpha_Z, c_q=0.,):
         return kinematics.kinematics_state_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, A_X, A_Y, A_Z, alpha_X, alpha_Y, alpha_Z, c_q)
 
-    def ic_from_geodetic(self, t, lamda_E, phi_E, h, V_N, V_E, V_D, psi, theta, phi, omega_X, omega_Y, omega_Z):
-        return kinematics.ic_from_geodetic(self, t, lamda_E, phi_E, h, V_N, V_E, V_D, psi, theta, phi, omega_X, omega_Y, omega_Z)
+    def ic_from_planetodetic(self, lamda_E, phi_E, h, V_N, V_E, V_D, psi, theta, phi, omega_X, omega_Y, omega_Z):
+        return kinematics.ic_from_planetodetic(self, lamda_E, phi_E, h, V_N, V_E, V_D, psi, theta, phi, omega_X, omega_Y, omega_Z)
 
     def kinematics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z):
         return kinematics.kinematics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z)
