@@ -31,7 +31,7 @@ S_A = 0.1963495/(ft_per_m**2)
 b_l = 1.0
 c_l = 1.0
 a_l = b_l
-dyn_block =  simupy_flight.DynamicsBlock(simupy_flight.get_constant_aero(CD_b=0.1), m, Ixx, Iyy, Izz, Ixy, Iyz, Izx, x,y,z, x,y,z, S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=1.,)
+dyn_block =  simupy_flight.DynamicsBlock(simupy_flight.get_constant_aero(CD_b=0.1), m, Ixx, Iyy, Izz, Ixy, Iyz, Izx, x,y,z, x,y,z, S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=0.,)
 
 BD = BlockDiagram(kin_block, dyn_block)
 BD.connect(kin_block, dyn_block, inputs=np.arange(kin_block.dim_output))

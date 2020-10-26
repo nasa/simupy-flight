@@ -57,7 +57,7 @@ kin_block = simupy_flight.KinematicsBlock(
 )
 
 
-dyn_block =  simupy_flight.DynamicsBlock(simupy_flight.get_constant_aero(CD_b=0.1), m, Ixx, Iyy, Izz, Ixy, Iyz, Izx, x,y,z, x,y,z, S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=1.,)
+dyn_block =  simupy_flight.DynamicsBlock(simupy_flight.get_constant_aero(CD_b=0.1), m, Ixx, Iyy, Izz, Ixy, Iyz, Izx, x,y,z, x,y,z, S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=0.,)
 
 BD = BlockDiagram(kin_block, dyn_block)
 BD.connect(kin_block, dyn_block, inputs=np.arange(kin_block.dim_output))
