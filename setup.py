@@ -23,9 +23,7 @@ setup(
     python_requires='>=3',
     install_requires=['numpy>=1.11.3', 'scipy>=0.18.1', 'simupy>=1.0.0', 'pyerfa', ],
     extras_require={
-        'derivation': ['sympy>=1.0', 'jupyter-lab'],
-        'doc': ['sphinx>=1.6.3', 'sympy>=1.0'],
-        'examples': ['matplotlib>=2.0', 'sympy>=1.0'],
+        'derivation': ['sympy==1.4', 'jupyter-lab'],
     },
 
     classifiers=[
