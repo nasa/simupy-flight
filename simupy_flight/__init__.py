@@ -45,7 +45,7 @@ class Planetodetic:
 
 
 # constant atmosphere functions
-def get_constant_viscosity(viscosity_val=0.):
+def get_constant_viscosity(viscosity_val=1.):
     def viscosity_function(t,ap_x,ap_y,ap_z):
         return viscosity_val
     return viscosity_function
@@ -172,6 +172,65 @@ class KinematicsBlock(object):
     dim_output = 34
     dim_input = 7
 
+    p_x_idx = 0
+    p_y_idx = 1
+    p_z_idx = 2
+    v_x_idx = 3
+    v_y_idx = 4
+    v_z_idx = 5
+    q_0_idx = 6
+    q_1_idx = 7
+    q_2_idx = 8
+    q_3_idx = 9
+    omega_X_idx = 10
+    omega_Y_idx = 11
+    omega_Z_idx = 12
+    lamda_D_idx = 13
+    phi_D_idx = 14
+    h_D_idx = 15
+    psi_idx = 16
+    theta_idx = 17
+    phi_idx = 18
+    rho_idx = 19
+    c_s_idx = 20
+    mu_idx = 21
+    V_T_idx = 22
+    alpha_idx = 23
+    beta_idx = 24
+    p_B_idx = 25
+    q_B_idx = 26
+    r_B_idx = 27
+    V_N_idx = 28
+    V_E_idx = 29
+    V_D_idx = 30
+    W_N_idx = 31
+    W_E_idx = 32
+    W_D_idx = 33
+
+    output_column_names = ['p_x', 'p_y', 'p_z', 
+        'v_x', 'v_y', 'v_z', 
+        'q_0', 'q_1', 'q_2', 'q_3', 
+        'omega_X', 'omega_Y', 'omega_Z', 
+        'lamda_D', 'phi_D', 'h_D',
+        'psi', 'theta', 'phi', 
+        'rho', 'c_s', 'mu', 
+        'V_T', 'alpha', 'beta', 
+        'p_B', 'q_B', 'r_B', 
+        'V_N', 'V_E', 'V_D', 
+        'W_N', 'W_E', 'W_D',]
+    
+    output_column_names_latex = ['$p_{x}$', '$p_{y}$', '$p_{z}$', 
+        '$v_{x}$', '$v_{y}$', '$v_{z}$', 
+        '$q_{0}$', '$q_{1}$', '$q_{2}$', '$q_{3}$', 
+        '$\\omega_{X}$', '$\\omega_{Y}$', '$\\omega_{Z}$', 
+        '$\\lambda_{D}$', '$\\phi_{D}$', '$h_{D}$', 
+        '$\\psi$', '$\\theta$', '$\\phi$', 
+        '$\\rho$', '$c_{s}$', '$\\mu$', 
+        '$V_{T}$', '$\\alpha$', '$\\beta$', 
+        '$p_{B}$', '$q_{B}$', '$r_{B}$',
+        '$V_{N}$', '$V_{E}$', '$V_{D}$',
+        '$W_{N}$', '$W_{E}$', '$W_{D}$',]
+
     def __init__(self, gravity, winds, density, speed_of_sound, viscosity, planetodetics):
         (self.gravity, self.winds, self.density, self.speed_of_sound, self.viscosity, self.planetodetics) =\
             gravity, winds, density, speed_of_sound, viscosity, planetodetics
@@ -265,6 +324,12 @@ class DynamicsBlock(object):
     dim_output = 6
     dim_input = 34
     initial_condition = np.empty(0)
+
+    output_column_names = ['A_X', 'A_Y', 'A_Z', 
+        'alpha_X', 'alpha_Y', 'alpha_Z']
+
+    output_column_names_latex = ['$A_{X}$', '$A_{Y}$', '$A_{Z}$', 
+        '$\\alpha_{X}$', '$\\alpha_{Y}$', '$\\alpha_{Z}$']
 
     def __init__(self, base_aero_coeffs, m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com, x_mrc, y_mrc, z_mrc, S_A, a_l, b_l, c_l, d_l, input_aero_coeffs=None, input_force_moment=None):
         # TODO: Should these be name-spaced into an aero and inertia namespace?
