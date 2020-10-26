@@ -90,6 +90,11 @@ def get_constant_aero(CD_b=0., CS_b=0., CL_b=0., CLcal_b=0., CMcal_b=0., CNcal_b
         return aero_vals
     return aero_function
 
+def get_constant_force_moments(FX=0., FY=0., FZ=0., MX=0., MY=0., MZ=0.,):
+    force_moment_vals = np.array([FX, FY, FZ, MX, MY, MZ])
+    def force_moment_function(*args):
+        return force_moment_vals
+    return force_moment_function
 
 class KinematicsBlock(object):
     """
@@ -105,7 +110,7 @@ class KinematicsBlock(object):
 
     ``planetodetic`` model, must provide rotation rate in rad/s as ``omega_p`` and functions ``pd2pcf`` and ``pcf2pd`` to
     convert between planetodetic rectangular coordinates and planetocentric spherical coordinates. Future versions may support
-    nutation and precession. In the absence of precession and nutation, the planetodetic model assumes pcf excludes sidereel rotation
+    nutation and precession. The planetodetic model should assume pcf excludes sidereel rotation
     which is accounted for by the kinematics model.
 
     TODO: document EOM's?
@@ -180,13 +185,11 @@ class KinematicsBlock(object):
     def output_equation_function(self, t, x):
         return self.kinematics_output_function(t, *x)
 
-    # TODO: need to be able to construct inertia to body angular velocities given local to body
-
     def kinematics_state_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, A_X, A_Y, A_Z, alpha_X, alpha_Y, alpha_Z, c_q=0.,):
         return kinematics.kinematics_state_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, A_X, A_Y, A_Z, alpha_X, alpha_Y, alpha_Z, c_q)
 
-    def ic_from_planetodetic(self, lamda_E, phi_E, h, V_N, V_E, V_D, psi, theta, phi, omega_X, omega_Y, omega_Z):
-        return kinematics.ic_from_planetodetic(self, lamda_E, phi_E, h, V_N, V_E, V_D, psi, theta, phi, omega_X, omega_Y, omega_Z)
+    def ic_from_planetodetic(self, lamda_E=0., phi_E=0., h=0., V_N=0., V_E=0., V_D=0., psi=0., theta=0., phi=0., p_B=0., q_B=0., r_B=0.):
+        return kinematics.ic_from_planetodetic(self, lamda_E, phi_E, h, V_N, V_E, V_D, psi, theta, phi, p_B, q_B, r_B)
 
     def kinematics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z):
         return kinematics.kinematics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z)
@@ -246,15 +249,6 @@ class DynamicsBlock(object):
         [31:34] W_N, W_E, W_D
         winds acting on the vehicle expressed in NED frame
 
-        [34:37] Phi_x, Phi_y, Phi_z
-        Extra force acting on vehicle (center of mass) expressed in body-fixed coordinates
-
-        [37:40] tau_x, tau_y, tau_z
-        Extra moment acting on vehicle expressed in body-fixed coordinates
-
-        [40:49] CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e
-        Extra aerodynamic coefficient components (additive)
-
     The output components are:
         [0:3] A_X, A_Y, A_Z
         translational acceleration of vehicle center of mass due to non-gravitaitonal forces in the inertial coordinate system 
@@ -263,29 +257,64 @@ class DynamicsBlock(object):
               
         [3:6] alpha_X, alpha_Y, alpha_Z
         angular acceleration of vehicle coordinate system in the inertial coordinate system expressed in body-fixed coordinates, 
-        computed assuming constant inertia and total moments due to aerodynamics
+        about the center of mass computed assuming constant inertia and total moments due to aerodynamics
         (base model and extra aerodynamic coefficients input components) and the extra moment input components.
+
+    class DynamicsBlockWithElevatorAndEngine(DynamicsBlock):
+        dim_input = DynamicsBlock.dim_input + 2
+        elevator_deflection_input_idx = 50
+        throttle_input_idx = 51
+
+
+        def __init__(..., elevator_aero, engine_model):
+            ...
+        
+        def extra_aero(Mach, Reynolds, alpha, beta, eleveator_deflection):
+            eleveator_deflection = args[0]
+            return self.elevator_aero(mach,reynolds, alpha, beta, elevator_deflection)
+        
+        def extra_forces_moments(*args):
+            throtle_input = args[-1]
+            return self.engine_model(throtle_input)
+        
+    
+
+        
+        
     """
     dim_state = 0
     dim_output = 6
-    dim_input = 49
+    dim_input = 34
     initial_condition = np.empty(0)
 
-    def __init__(self, base_aero_coeffs, m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com, x_mrc, y_mrc, z_mrc, S_A, a_l, b_l, c_l, d_l):
-        # TODO: make mrc, S_A, ref lengths, etc a property of aero model, mass stuff property of mass model?
+    def __init__(self, base_aero_coeffs, m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com, x_mrc, y_mrc, z_mrc, S_A, a_l, b_l, c_l, d_l, input_aero_coeffs=None, input_force_moment=None):
+        # TODO: Should these be name-spaced into an aero and inertia namespace?
         self.base_aero_coeffs = base_aero_coeffs
+
+        if input_aero_coeffs is None:
+            # this default should be able to handle extra aero? 
+            input_aero_coeffs = get_constant_aero()
+        self.input_aero_coeffs = input_aero_coeffs
+
+        if input_force_moment is None:
+            input_force_moment = get_constant_force_moments()
+        self.input_force_moment = input_force_moment
+
         self.m, self.I_xx, self.I_yy, self.I_zz, self.I_xy, self.I_yz, self.I_xz, self.x_com, self.y_com, self.z_com, self.x_mrc, self.y_mrc, self.z_mrc, self.S_A, self.a_l, self.b_l, self.c_l, self.d_l = m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com, x_mrc, y_mrc, z_mrc, S_A, a_l, b_l, c_l, d_l
 
     def prepare_to_integrate(self, *args, **kwargs):
         return
 
-    def output_equation_function(self, t, x):
-        return self.dynamics_output_function(t, *x)
+    def output_equation_function(self, t, u):
+        # TODO: test that an inherited class that overwrites dim_input still has access to DynamicsBlock.dim_input for this to work.
+        uu = u[:DynamicsBlock.dim_input]
+        u_extra = u[DynamicsBlock.dim_input:]
+        return self.dynamics_output_function(t, *u, *u_extra)
     
-    # below is from direct_eom output
-    def tot_aero_forces_moments(self, qbar, V_T, alpha, beta, p_B, q_B, r_B, CD_b, CS_b, CL_b, CLcal_b, CMcal_b, CNcal_b, Cp_b, Cq_b, Cr_b, CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e):
-        return dynamics.tot_aero_forces_moments(self, qbar, V_T, alpha, beta, p_B, q_B, r_B, CD_b, CS_b, CL_b, CLcal_b, CMcal_b, CNcal_b, Cp_b, Cq_b, Cr_b, CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e)
 
-    def dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, Phi_x, Phi_y, Phi_z, tau_x, tau_y, tau_z, CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e):
-        return dynamics.dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, Phi_x, Phi_y, Phi_z, tau_x, tau_y, tau_z, CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e)
+    def tot_aero_forces_moments(self, qbar, V_T, Ma, Re, alpha, beta, p_B, q_B, r_B, CD_b, CS_b, CL_b, CLcal_b, CMcal_b, CNcal_b, Cp_b, Cq_b, Cr_b, CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e):
+        return dynamics.tot_aero_forces_moments(self, qbar, V_T, Ma, Re, alpha, beta, p_B, q_B, r_B, CD_b, CS_b, CL_b, CLcal_b, CMcal_b, CNcal_b, Cp_b, Cq_b, Cr_b, CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e)
+
+    def dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, *args):
+        return dynamics.dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, *args)
 

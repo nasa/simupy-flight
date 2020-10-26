@@ -22,7 +22,7 @@ def kinematics_state_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q
     x16 = (1/2)*omega_Z
     return (numpy.array([v_x, v_y, v_z, x4*(A_X*x0 + A_X*x1 - A_X*x2 - A_X*x3 + g_x*x0 + g_x*x1 + g_x*x2 + g_x*x3 + q_1*x10 + q_2*x9 - x5*x6 + x5*x7), x4*(A_Y*x0 - A_Y*x1 + A_Y*x2 - A_Y*x3 + g_y*x0 + g_y*x1 + g_y*x2 + g_y*x3 - q_1*x9 + q_2*x10 + x11*x6 + x11*x7), x4*(A_Z*x0 - A_Z*x1 - A_Z*x2 + A_Z*x3 + g_z*x0 + g_z*x1 + g_z*x2 + g_z*x3 + q_0*q_1*x5 - q_0*q_2*x11 + q_1*q_3*x11 + q_2*q_3*x5), c_q*q_0 - omega_Y*x13 - omega_Z*x14 - q_1*x12, c_q*q_1 - omega_Y*x14 + omega_Z*x13 + q_0*x12, c_q*q_2 + q_0*x15 - q_1*x16 + q_3*x12, c_q*q_3 + q_0*x16 + q_1*x15 - q_2*x12, alpha_X, alpha_Y, alpha_Z]))
 
-def ic_from_planetodetic(self, lamda_D, phi_D, h_D, V_N, V_E, V_D, psi, theta, phi, omega_X, omega_Y, omega_Z):
+def ic_from_planetodetic(self, lamda_D, phi_D, h_D, V_N, V_E, V_D, psi, theta, phi, p_B, q_B, r_B):
     [p_x, p_y, p_z] = self.planetodetics.pd2pcf(lamda_D,phi_D,h_D).ravel()
     x0 = numpy.sin(lamda_D)
     x1 = numpy.cos(lamda_D)
@@ -36,29 +36,54 @@ def ic_from_planetodetic(self, lamda_D, phi_D, h_D, V_N, V_E, V_D, psi, theta, p
     x9 = x6*x8
     x10 = numpy.sin(theta)
     x11 = x10*x2
-    x12 = numpy.sin(phi)
-    x13 = numpy.sin(psi)
-    x14 = x13*x2
-    x15 = numpy.cos(theta)
-    x16 = x15*x4
-    x17 = x13*x15
-    x18 = x12*x13
-    x19 = x1*x10
-    x20 = x11*x7
-    x21 = x0*x6
-    x22 = x13*x21
-    x23 = x15*x2
-    x24 = x12*x23
-    x25 = x10*x4
-    x26 = x0*x7
-    x27 = x12*x26
-    x28 = numpy.sqrt(-x0*x17 - x0*x24 + x1*x11 + x12*x14 - x16*x6 - x16*x8 + x18*x19 + x20*x6 + x22*x4 - x25*x27 + x9 + 1)
-    x29 = x12*x8
-    x30 = x18*x4
-    x31 = x13*x6
-    x32 = x26*x6
-    x33 = (1/2)/x28
-    return (numpy.array([p_x, p_y, p_z, -V_E*x0 - self.planetodetics.omega_p*p_y - x1*x3 - x1*x5, V_E*x1 + self.planetodetics.omega_p*p_x - x0*x3 - x0*x5, -V_D*x4 + V_N*x2, (1/2)*x28, x33*(x0*x30 - x12*x16 + x12*x20 - x14*x6 - x19*x31 + x21*x23 + x25*x32 + x29), -x33*(x1*x23*x6 + x1*x30 + x10*x22 + x23*x7 + x25*x9 + x25 - x27), x33*(x0*x10*x18 + x0*x11 + x1*x17 + x1*x24 - x1*x31*x4 - x16*x26 + x25*x29 + x32), omega_X, omega_Y, omega_Z]))
+    x12 = x1*x11
+    x13 = numpy.sin(phi)
+    x14 = numpy.sin(psi)
+    x15 = x14*x2
+    x16 = x13*x15
+    x17 = numpy.cos(theta)
+    x18 = x17*x4
+    x19 = x18*x6
+    x20 = x14*x17
+    x21 = x0*x20
+    x22 = x13*x14
+    x23 = x1*x10
+    x24 = x22*x23
+    x25 = x11*x7
+    x26 = x25*x6
+    x27 = x0*x6
+    x28 = x14*x27
+    x29 = x28*x4
+    x30 = x18*x8
+    x31 = x17*x2
+    x32 = x13*x31
+    x33 = x0*x32
+    x34 = x10*x4
+    x35 = x0*x7
+    x36 = x13*x35
+    x37 = x34*x36
+    x38 = x12 + x16 - x19 - x21 + x24 + x26 + x29 - x30 - x33 - x37 + x9 + 1
+    x39 = numpy.sqrt(x38)
+    x40 = x13*x8
+    x41 = x22*x4
+    x42 = x14*x6
+    x43 = x35*x6
+    x44 = x0*x41 - x13*x18 + x13*x25 - x15*x6 - x23*x42 + x27*x31 + x34*x43 + x40
+    x45 = (1/2)/x39
+    x46 = x1*x31*x6 + x1*x41 + x10*x28 + x31*x7 + x34*x9 + x34 - x36
+    x47 = x0*x10*x22 + x0*x11 + x1*x20 + x1*x32 - x1*x4*x42 - x18*x35 + x34*x40 + x43
+    x48 = 1/x38
+    x49 = (1/4)*x48
+    x50 = x46**2*x49
+    x51 = x44**2*x49
+    x52 = x47**2*x49
+    x53 = (1/4)*x12 + (1/4)*x16 - 1/4*x19 - 1/4*x21 + (1/4)*x24 + (1/4)*x26 + (1/4)*x29 - 1/4*x30 - 1/4*x33 - 1/4*x37 + (1/4)*x9 + 1/4
+    x54 = 1/(x50 + x51 + x52 + x53)
+    x55 = (1/2)*self.planetodetics.omega_p
+    x56 = x46*x55
+    x57 = x44*x55
+    x58 = x47*x48
+    return (numpy.array([p_x, p_y, p_z, -V_E*x0 - self.planetodetics.omega_p*p_y - x1*x3 - x1*x5, V_E*x1 + self.planetodetics.omega_p*p_x - x0*x3 - x0*x5, -V_D*x4 + V_N*x2, (1/2)*x39, x44*x45, -x45*x46, x45*x47, x54*(p_B*x50 + p_B*x51 + p_B*x52 + p_B*x53 + x56 + x57*x58), x54*(q_B*x50 + q_B*x51 + q_B*x52 + q_B*x53 - x56*x58 + x57), x54*(-self.planetodetics.omega_p*x50 - self.planetodetics.omega_p*x51 + self.planetodetics.omega_p*x52 + self.planetodetics.omega_p*x53 + r_B*x50 + r_B*x51 + r_B*x52 + r_B*x53)]))
 
 def kinematics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z):
     [g_x, g_y, g_z] = self.gravity(p_x,p_y,p_z).ravel()
