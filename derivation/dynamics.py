@@ -1,7 +1,9 @@
 import numpy
 
 
-def tot_aero_forces_moments(self, qbar, V_T, Ma, Re, alpha, beta, p_B, q_B, r_B, CD_b, CS_b, CL_b, CLcal_b, CMcal_b, CNcal_b, Cp_b, Cq_b, Cr_b, CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e):
+def tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args):
+    [CD_b, CS_b, CL_b, CLcal_b, CMcal_b, CNcal_b, Cp_b, Cq_b, Cr_b] = self.base_aero_coeffs(alpha,beta,Ma,Re).ravel()
+    [CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e] = self.input_aero_coeffs(alpha,beta,Ma,Re,*args).ravel()
     x0 = -CL_b - CL_e
     x1 = numpy.sin(alpha)
     x2 = numpy.cos(alpha)
@@ -25,9 +27,7 @@ def dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_
     qbar = (1/2)*V_T**2*rho
     Ma = V_T/c_s
     Re = V_T*self.d_l*rho/mu
-    [CD_b, CS_b, CL_b, CLcal_b, CMcal_b, CNcal_b, Cp_b, Cq_b, Cr_b] = self.base_aero_coeffs(alpha,beta,Ma,Re).ravel()
-    [CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e] = self.input_aero_coeffs(alpha,beta,Ma,Re,*args).ravel()
-    [F_ax, F_ay, F_az, Lcal, Mcal, Ncal] = self.tot_aero_forces_moments(qbar,V_T,Ma,Re,alpha,beta,p_B,q_B,r_B,CD_b,CS_b,CL_b,CLcal_b,CMcal_b,CNcal_b,Cp_b,Cq_b,Cr_b,CD_e,CS_e,CL_e,CLcal_e,CMcal_e,CNcal_e,Cp_e,Cq_e,Cr_e).ravel()
+    [F_ax, F_ay, F_az, Lcal, Mcal, Ncal] = self.tot_aero_forces_moments(qbar,Ma,Re,V_T,alpha,beta,p_B,q_B,r_B,*args).ravel()
     [Phi_x, Phi_y, Phi_z, tau_x, tau_y, tau_z] = self.input_force_moment(t,p_x,p_y,p_z,v_x,v_y,v_z,q_0,q_1,q_2,q_3,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*args).ravel()
     [F_x, F_y, F_z, M_x, M_y, M_z] = numpy.array([F_ax + Phi_x, F_ay + Phi_y, F_az + Phi_z, Lcal + tau_x, Mcal + tau_y, Ncal + tau_z]).ravel()
     x0 = 1/self.m

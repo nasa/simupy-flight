@@ -260,27 +260,6 @@ class DynamicsBlock(object):
         about the center of mass computed assuming constant inertia and total moments due to aerodynamics
         (base model and extra aerodynamic coefficients input components) and the extra moment input components.
 
-    class DynamicsBlockWithElevatorAndEngine(DynamicsBlock):
-        dim_input = DynamicsBlock.dim_input + 2
-        elevator_deflection_input_idx = 50
-        throttle_input_idx = 51
-
-
-        def __init__(..., elevator_aero, engine_model):
-            ...
-        
-        def extra_aero(Mach, Reynolds, alpha, beta, eleveator_deflection):
-            eleveator_deflection = args[0]
-            return self.elevator_aero(mach,reynolds, alpha, beta, elevator_deflection)
-        
-        def extra_forces_moments(*args):
-            throtle_input = args[-1]
-            return self.engine_model(throtle_input)
-        
-    
-
-        
-        
     """
     dim_state = 0
     dim_output = 6
@@ -312,8 +291,8 @@ class DynamicsBlock(object):
         return self.dynamics_output_function(t, *u, *u_extra)
     
 
-    def tot_aero_forces_moments(self, qbar, V_T, Ma, Re, alpha, beta, p_B, q_B, r_B, CD_b, CS_b, CL_b, CLcal_b, CMcal_b, CNcal_b, Cp_b, Cq_b, Cr_b, CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e):
-        return dynamics.tot_aero_forces_moments(self, qbar, V_T, Ma, Re, alpha, beta, p_B, q_B, r_B, CD_b, CS_b, CL_b, CLcal_b, CMcal_b, CNcal_b, Cp_b, Cq_b, Cr_b, CD_e, CS_e, CL_e, CLcal_e, CMcal_e, CNcal_e, Cp_e, Cq_e, Cr_e)
+    def tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args):
+        return dynamics.tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args)
 
     def dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, *args):
         return dynamics.dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, *args)
