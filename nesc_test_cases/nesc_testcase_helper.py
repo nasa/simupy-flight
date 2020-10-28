@@ -8,7 +8,6 @@ int_opts['max_step'] = 2**-4
 data_relative_path = '..'
 
 ft_per_m = 3.28084
-# slug_per_kg = 0.0685218
 kg_per_slug = 14.5939
 
 def plot_nesc_comparisons(res, baseline_pds):
