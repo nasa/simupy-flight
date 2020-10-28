@@ -11,6 +11,7 @@ earth_J2_constant = 0.00108262982
 earth_rotation_rate_deg = 0.004178073
 earth_rotation_rate = earth_rotation_rate_deg*np.pi/180
 earth_equitorial_radius = 6378137.0
+earth_mean_radius = 6371007.2
 
 # kinematic functions
 def get_nonflat_pc2pd(a, f):
@@ -105,8 +106,10 @@ class KinematicsBlock(object):
     ``gravity`` model: translational acceleration due to gravity as a function of planet-fixed position in rectangular coordinates.
     For 
 
-    ``atmospheric`` models: density, speed of sound, and viscocity outputs of the atmosphere model as a function of time (i.e.,
+    atmospheric models: ``density``, ``speed_of_sound``, and ``viscocity`` outputs of the atmosphere model as a function of time (i.e.,
     for stochasticity) and position in planet-fixed frame
+
+    ``winds`` model: wind in local NED frame as a function of time and planetodetic position
 
     ``planetodetic`` model, must provide rotation rate in rad/s as ``omega_p`` and functions ``pd2pcf`` and ``pcf2pd`` to
     convert between planetodetic rectangular coordinates and planetocentric spherical coordinates. Future versions may support
@@ -323,6 +326,7 @@ class DynamicsBlock(object):
     dim_state = 0
     dim_output = 6
     dim_input = 34
+
     initial_condition = np.empty(0)
 
     output_column_names = ['A_X', 'A_Y', 'A_Z', 
@@ -330,6 +334,46 @@ class DynamicsBlock(object):
 
     output_column_names_latex = ['$A_{X}$', '$A_{Y}$', '$A_{Z}$', 
         '$\\alpha_{X}$', '$\\alpha_{Y}$', '$\\alpha_{Z}$']
+
+    t_arg_idx = 0
+    p_x_arg_idx = 1
+    p_y_arg_idx = 2
+    p_z_arg_idx = 3
+    v_x_arg_idx = 4
+    v_y_arg_idx = 5
+    v_z_arg_idx = 6
+    q_0_arg_idx = 7
+    q_1_arg_idx = 8
+    q_2_arg_idx = 9
+    q_3_arg_idx = 10
+    omega_X_arg_idx = 11
+    omega_Y_arg_idx = 12
+    omega_Z_arg_idx = 13
+    lamda_D_arg_idx = 14
+    phi_D_arg_idx = 15
+    h_D_arg_idx = 16
+    psi_arg_idx = 17
+    theta_arg_idx = 18
+    phi_arg_idx = 19
+    rho_arg_idx = 20
+    c_s_arg_idx = 21
+    mu_arg_idx = 22
+    V_T_arg_idx = 23
+    alpha_arg_idx = 24
+    beta_arg_idx = 25
+    p_B_arg_idx = 26
+    q_B_arg_idx = 27
+    r_B_arg_idx = 28
+    V_N_arg_idx = 29
+    V_E_arg_idx = 30
+    V_D_arg_idx = 31
+    W_N_arg_idx = 32
+    W_E_arg_idx = 33
+    W_D_arg_idx = 34
+    qbar_arg_idx = 35
+    Ma_arg_idx = 36
+    Re_arg_idx = 37
+    starargs_idx = 38
 
     def __init__(self, base_aero_coeffs, m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com, x_mrc, y_mrc, z_mrc, S_A, a_l, b_l, c_l, d_l, input_aero_coeffs=None, input_force_moment=None):
         # TODO: Should these be name-spaced into an aero and inertia namespace?
