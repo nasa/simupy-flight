@@ -283,6 +283,12 @@ class DynamicsBlock(object):
     with the static moment coefficients which does not usually hold; to model damping coefficients it is recommended
     to set the center of mass and moment reference center to the same location at the arbitrary reference (i.e., [0,0,0])
 
+    Processing of ``input_aero_coeffs`` and ``input_force_moment`` parameterized models follow the same logic:
+        if None: assume that a child class will over-write
+        if callable: use directly (so it should have the correct signature)
+        else: try to build a function that returns constant value(s)
+
+    Attributes ``input_aero_coeffs_idx`` and ``input_force_moment_idx`` are 
 
 
     The input components are:
@@ -375,34 +381,70 @@ class DynamicsBlock(object):
     Re_arg_idx = 37
     starargs_idx = 38
 
-    def __init__(self, base_aero_coeffs, m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com, x_mrc, y_mrc, z_mrc, S_A, a_l, b_l, c_l, d_l, input_aero_coeffs=None, input_force_moment=None):
+    def __init__(self,  
+            m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com, 
+            base_aero_coeffs, x_mrc, y_mrc, z_mrc, S_A, a_l, b_l, c_l, d_l, 
+            input_aero_coeffs=0.0, input_force_moment=0.0,
+            input_aero_coeffs_idx=None, input_force_moment_idx=None,
+            ):
         # TODO: Should these be name-spaced into an aero and inertia namespace?
         self.base_aero_coeffs = base_aero_coeffs
 
-        if input_aero_coeffs is None:
-            # this default should be able to handle extra aero? 
-            input_aero_coeffs = get_constant_aero()
-        self.input_aero_coeffs = input_aero_coeffs
+        if input_aero_coeffs is None: 
+            pass
+        else:
+            if callable(input_aero_coeffs):
+                pass
+            else:
+                input_aero_coeff_vals = np.array(input_aero_coeffs, dtype=np.float_).reshape(-1)
+                if input_aero_coeff_vals.size == 1:
+                    input_aero_coeff_vals = np.tile(input_aero_coeff_vals, 9)
+                input_aero_coeffs = get_constant_aero(*input_aero_coeff_vals)
+            self._input_aero_coeffs = input_aero_coeffs
 
-        if input_force_moment is None:
-            input_force_moment = get_constant_force_moments()
-        self.input_force_moment = input_force_moment
+        if input_force_moment is None: 
+            pass
+        else:
+            if callable(input_force_moment):
+                pass
+            else:
+                input_force_moment_vals = np.array(input_force_moment, dtype=np.float_).reshape(-1)
+                if input_force_moment_vals.size == 1:
+                    input_force_moment_vals = np.tile(input_force_moment_vals, 6)
+                input_force_moment = get_constant_force_moments(*input_force_moment_vals)
+            self._input_force_moment = input_force_moment
+        
+        if input_aero_coeffs_idx is None:
+            input_aero_coeffs_idx = np.arange(self.dim_input - DynamicsBlock.dim_input)
+        self.input_aero_coeffs_idx = input_aero_coeffs_idx
+
+        if input_force_moment_idx is None:
+            input_force_moment_idx = np.arange(self.dim_input - DynamicsBlock.dim_input)
+        self.input_force_moment_idx = input_force_moment_idx
 
         self.m, self.I_xx, self.I_yy, self.I_zz, self.I_xy, self.I_yz, self.I_xz, self.x_com, self.y_com, self.z_com, self.x_mrc, self.y_mrc, self.z_mrc, self.S_A, self.a_l, self.b_l, self.c_l, self.d_l = m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com, x_mrc, y_mrc, z_mrc, S_A, a_l, b_l, c_l, d_l
 
     def prepare_to_integrate(self, *args, **kwargs):
         return
+    
+    def input_aero_coeffs(self, alpha, beta, Ma, Re, *args):
+        filtered_args = np.array(args)[self.input_aero_coeffs_idx]
+        return self._input_aero_coeffs(alpha, beta, Ma, Re, *filtered_args)
+    
+    def input_force_moment(self,t,p_x,p_y,p_z,v_x,v_y,v_z,q_0,q_1,q_2,q_3,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*args):
+        filtered_args = np.array(args)[self.input_force_moment_idx]
+        return self._input_force_moment(t,p_x,p_y,p_z,v_x,v_y,v_z,q_0,q_1,q_2,q_3,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*filtered_args)
 
     def output_equation_function(self, t, u):
         # TODO: test that an inherited class that overwrites dim_input still has access to DynamicsBlock.dim_input for this to work.
-        uu = u[:DynamicsBlock.dim_input]
-        u_extra = u[DynamicsBlock.dim_input:]
-        return self.dynamics_output_function(t, *u, *u_extra)
+        uu = u[..., :DynamicsBlock.dim_input]
+        u_extra = u[..., DynamicsBlock.dim_input:]
+        return self.dynamics_output_function(t, *uu, u_extra)
     
 
     def tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args):
         return dynamics.tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args)
 
-    def dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, *args):
+    def dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, args):
         return dynamics.dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, *args)
 
