@@ -401,7 +401,7 @@ class Vehicle(object):
                 if input_aero_coeff_vals.size == 1:
                     input_aero_coeff_vals = np.tile(input_aero_coeff_vals, 9)
                 input_aero_coeffs = get_constant_aero(*input_aero_coeff_vals)
-            self._input_aero_coeffs = input_aero_coeffs
+            self.input_aero_coeffs = input_aero_coeffs
 
         if input_force_moment is None: 
             pass
@@ -413,7 +413,7 @@ class Vehicle(object):
                 if input_force_moment_vals.size == 1:
                     input_force_moment_vals = np.tile(input_force_moment_vals, 6)
                 input_force_moment = get_constant_force_moments(*input_force_moment_vals)
-            self._input_force_moment = input_force_moment
+            self.input_force_moment = input_force_moment
         
         if input_aero_coeffs_idx is None:
             input_aero_coeffs_idx = np.arange(self.dim_input - Vehicle.dim_input)
@@ -429,13 +429,13 @@ class Vehicle(object):
     def prepare_to_integrate(self, *args, **kwargs):
         return
     
-    def input_aero_coeffs(self, alpha, beta, Ma, Re, *args):
+    def _input_aero_coeffs(self, alpha, beta, Ma, Re, *args):
         filtered_args = np.array(args)[self.input_aero_coeffs_idx]
-        return self._input_aero_coeffs(alpha, beta, Ma, Re, *filtered_args)
+        return self.input_aero_coeffs(alpha, beta, Ma, Re, *filtered_args)
     
-    def input_force_moment(self,t,p_x,p_y,p_z,v_x,v_y,v_z,q_0,q_1,q_2,q_3,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*args):
+    def _input_force_moment(self,t,p_x,p_y,p_z,v_x,v_y,v_z,q_0,q_1,q_2,q_3,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*args):
         filtered_args = np.array(args)[self.input_force_moment_idx]
-        return self._input_force_moment(t,p_x,p_y,p_z,v_x,v_y,v_z,q_0,q_1,q_2,q_3,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*filtered_args)
+        return self.input_force_moment(t,p_x,p_y,p_z,v_x,v_y,v_z,q_0,q_1,q_2,q_3,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*filtered_args)
 
     def output_equation_function(self, t, u):
         # TODO: test that an inherited class that overwrites dim_input still has access to Vehicle.dim_input for this to work.

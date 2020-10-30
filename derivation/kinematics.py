@@ -86,7 +86,6 @@ def ic_from_planetodetic(self, lamda_D, phi_D, h_D, V_N, V_E, V_D, psi, theta, p
     return (numpy.array([p_x, p_y, p_z, -V_E*x0 - self.planetodetics.omega_p*p_y - x1*x3 - x1*x5, V_E*x1 + self.planetodetics.omega_p*p_x - x0*x3 - x0*x5, -V_D*x4 + V_N*x2, (1/2)*x39, x44*x45, -x45*x46, x45*x47, x54*(p_B*x50 + p_B*x51 + p_B*x52 + p_B*x53 + x56 + x57*x58), x54*(q_B*x50 + q_B*x51 + q_B*x52 + q_B*x53 - x56*x58 + x57), x54*(-self.planetodetics.omega_p*x50 - self.planetodetics.omega_p*x51 + self.planetodetics.omega_p*x52 + self.planetodetics.omega_p*x53 + r_B*x50 + r_B*x51 + r_B*x52 + r_B*x53)]))
 
 def kinematics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z):
-    [g_x, g_y, g_z] = self.gravity(p_x,p_y,p_z).ravel()
     [lamda_D, phi_D, h_D] = self.planetodetics.pcf2pd(p_x,p_y,p_z).ravel()
     lamda_D = lamda_D - self.planetodetics.omega_p*t
     [W_N, W_E, W_D] = self.winds(t,lamda_D,phi_D,h_D).ravel()
