@@ -270,7 +270,7 @@ class Vehicle(object):
     base_aero_coeffs is assumed to be a function of angles of attack and sideslip, and Mach and Reynolds number
     Should return coefficients of:
         drag, sideforce, and lift (force coefficients expressed in wind coordinate system), 
-        static roll, pitch, and yaw moments (moment coefficients expressed in body-fixed coordinate system), and
+        static roll, pitch, and yaw moments (moment coefficients expressed in body-fixed Forward-Right-Down coordinate system), and
         dynamic or damping roll, pitch, and yaw moments (also moment coefficients expressed in body-fixed coordinate system)
     
     S_A is the reference area
