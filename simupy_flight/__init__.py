@@ -108,25 +108,23 @@ class Planet(object):
     atmospheric models: ``density``, ``speed_of_sound``, and ``viscocity`` outputs of the atmosphere model as a function of time (i.e.,
     for stochasticity) and position in planet-fixed frame
 
-    ``winds`` model: wind in local NED frame as a function of time and planetodetic position
+    ``winds`` model: wind in local NED frame as a function of time and planetodetic position. Positive wind indicates wind in specified
+    direction so wind "from west" is a positive W_E component.
 
     ``planetodetic`` model, must provide rotation rate in rad/s as ``omega_p`` and functions ``pd2pcf`` and ``pcf2pd`` to
     convert between planetodetic rectangular coordinates and planetocentric spherical coordinates. Future versions may support
     nutation and precession. The planetodetic model should assume pcf excludes sidereel rotation
     which is accounted for by the kinematics model.
 
-    TODO: document EOM's?
-
-
     The state components are:
         [0:3] p_x, p_y, p_z
         translational position (of vehicle center of mass) relative to inertial origin expressed in inertial coordinate system
 
-        [3:6] v_x, v_y, v_z
-        translational velocity (of vehicle center of mass) in the inertial coordinate system expressed in inertial coordinates
-
-        [6:10] q_0, q_1, q_2, q_3
+        [3:7] q_0, q_1, q_2, q_3
         quaternion components representing the rotation from the inertial to the body-fixed coordinate systems
+
+        [7:10] v_x, v_y, v_z
+        translational velocity (of vehicle center of mass) in the inertial coordinate system expressed in inertial coordinates
 
         [10:13] omega_X, omega_Y, omega_Z
         angular velocity from inertial coordinate system to body-fixed coordinate system expressed in body-fixed coordinates
@@ -134,17 +132,17 @@ class Planet(object):
     The input components are:
         [0:3] A_X, A_Y, A_Z
         translational acceleration of vehicle center of mass due to non-gravitaitonal forces in the inertial coordinate system 
-        expressed in body-fixed coordinates
+        expressed in body-fixed Forward-Right-Down (FRD) coordinate system
               
         [3:6] alpha_X, alpha_Y, alpha_Z
-        angular acceleration of vehicle coordinate system in the inertial coordinate system expressed in body-fixed coordinates
+        angular acceleration of vehicle coordinate system in the inertial coordinate system expressed in body-fixed FRD coordinates
 
         [6] c_q
         scaling parameter for non-unit quaternion kinematics integration; this is a control for numerical behavior of the integration
         and can be ignored in most circumstances
 
     The output components are:
-        [0:13] p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z
+        [0:13] p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_y, v_z, omega_X, omega_Y, omega_Z
         The state components listed above
 
         [13:16] lamda_E, phi_E, h
@@ -177,13 +175,13 @@ class Planet(object):
     p_x_idx = 0
     p_y_idx = 1
     p_z_idx = 2
-    v_x_idx = 3
-    v_y_idx = 4
-    v_z_idx = 5
-    q_0_idx = 6
-    q_1_idx = 7
-    q_2_idx = 8
-    q_3_idx = 9
+    q_0_idx = 3
+    q_1_idx = 4
+    q_2_idx = 5
+    q_3_idx = 6
+    v_x_idx = 7
+    v_y_idx = 8
+    v_z_idx = 9
     omega_X_idx = 10
     omega_Y_idx = 11
     omega_Z_idx = 12
@@ -209,21 +207,21 @@ class Planet(object):
     W_E_idx = 32
     W_D_idx = 33
 
-    output_column_names = ['p_x', 'p_y', 'p_z', 
-        'v_x', 'v_y', 'v_z', 
+    output_column_names = ['p_x', 'p_y', 'p_z',
         'q_0', 'q_1', 'q_2', 'q_3', 
+        'v_x', 'v_y', 'v_z', 
         'omega_X', 'omega_Y', 'omega_Z', 
         'lamda_D', 'phi_D', 'h_D',
         'psi', 'theta', 'phi', 
-        'rho', 'c_s', 'mu', 
-        'V_T', 'alpha', 'beta', 
-        'p_B', 'q_B', 'r_B', 
-        'V_N', 'V_E', 'V_D', 
+        'rho', 'c_s', 'mu',
+        'V_T', 'alpha', 'beta',
+        'p_B', 'q_B', 'r_B',
+        'V_N', 'V_E', 'V_D',
         'W_N', 'W_E', 'W_D',]
     
     output_column_names_latex = ['$p_{x}$', '$p_{y}$', '$p_{z}$', 
+        '$q_{0}$', '$q_{1}$', '$q_{2}$', '$q_{3}$',
         '$v_{x}$', '$v_{y}$', '$v_{z}$', 
-        '$q_{0}$', '$q_{1}$', '$q_{2}$', '$q_{3}$', 
         '$\\omega_{X}$', '$\\omega_{Y}$', '$\\omega_{Z}$', 
         '$\\lambda_{D}$', '$\\phi_{D}$', '$h_{D}$', 
         '$\\psi$', '$\\theta$', '$\\phi$', 
@@ -241,19 +239,13 @@ class Planet(object):
         return
 
     def state_equation_function(self, t, x, u):
-        return self.kinematics_state_function(t, *x, *u)
+        return kinematics.kinematics_state_function(self, t, *x, *u)
     
     def output_equation_function(self, t, x):
-        return self.kinematics_output_function(t, *x)
-
-    def kinematics_state_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, A_X, A_Y, A_Z, alpha_X, alpha_Y, alpha_Z, c_q=0.,):
-        return kinematics.kinematics_state_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, A_X, A_Y, A_Z, alpha_X, alpha_Y, alpha_Z, c_q)
+        return kinematics.kinematics_output_function(self, t, *x)
 
     def ic_from_planetodetic(self, lamda_E=0., phi_E=0., h=0., V_N=0., V_E=0., V_D=0., psi=0., theta=0., phi=0., p_B=0., q_B=0., r_B=0.):
         return kinematics.ic_from_planetodetic(self, lamda_E, phi_E, h, V_N, V_E, V_D, psi, theta, phi, p_B, q_B, r_B)
-
-    def kinematics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z):
-        return kinematics.kinematics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z)
 
 
 class Vehicle(object):
@@ -287,13 +279,13 @@ class Vehicle(object):
         if callable: use directly (so it should have the correct signature)
         else: try to build a function that returns constant value(s)
 
-    Attributes ``input_aero_coeffs_idx`` and ``input_force_moment_idx`` are used to route extra inputs to the input aero and foce/moment
+    Attributes ``input_aero_coeffs_idx`` and ``input_force_moment_idx`` are used to route extra (control) inputs to the input aero and foce/moment
     functions respectively. Use ``None`` to route all inputs, use a list of integers to route particular inputs including an empty list
     for no routing.
 
 
     The input components are:
-        [0:13] p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z
+        [0:13] p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_y, v_z, omega_X, omega_Y, omega_Z
         The vehicle state components
 
         [13:16] lamda_E, phi_E, h
@@ -321,11 +313,11 @@ class Vehicle(object):
     The output components are:
         [0:3] A_X, A_Y, A_Z
         translational acceleration of vehicle center of mass due to non-gravitaitonal forces in the inertial coordinate system 
-        expressed in body-fixed coordinates, computed assuming constant mass and total non-gravitational forces due to aerodynamics
+        expressed in body-fixed Forward-Right-Down (FRD) coordinates, computed assuming constant mass and total non-gravitational forces due to aerodynamics
         (base model and extra aerodynamic coefficients input components) and the extra force input components.
               
         [3:6] alpha_X, alpha_Y, alpha_Z
-        angular acceleration of vehicle coordinate system in the inertial coordinate system expressed in body-fixed coordinates, 
+        angular acceleration of vehicle coordinate system in the inertial coordinate system expressed in body-fixed FRD coordinates, 
         about the center of mass computed assuming constant inertia and total moments due to aerodynamics
         (base model and extra aerodynamic coefficients input components) and the extra moment input components.
 
@@ -346,13 +338,13 @@ class Vehicle(object):
     p_x_arg_idx = 1
     p_y_arg_idx = 2
     p_z_arg_idx = 3
-    v_x_arg_idx = 4
-    v_y_arg_idx = 5
-    v_z_arg_idx = 6
-    q_0_arg_idx = 7
-    q_1_arg_idx = 8
-    q_2_arg_idx = 9
-    q_3_arg_idx = 10
+    q_0_arg_idx = 4
+    q_1_arg_idx = 5
+    q_2_arg_idx = 6
+    q_3_arg_idx = 7
+    v_x_arg_idx = 8
+    v_y_arg_idx = 9
+    v_z_arg_idx = 10
     omega_X_arg_idx = 11
     omega_Y_arg_idx = 12
     omega_Z_arg_idx = 13
@@ -433,7 +425,7 @@ class Vehicle(object):
         filtered_args = np.array(args)[self.input_aero_coeffs_idx]
         return self.input_aero_coeffs(alpha, beta, Ma, Re, *filtered_args)
     
-    def _input_force_moment(self,t,p_x,p_y,p_z,v_x,v_y,v_z,q_0,q_1,q_2,q_3,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*args):
+    def _input_force_moment(self,t,p_x,p_y,p_z,q_0,q_1,q_2,q_3,v_x,v_y,v_z,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*args):
         filtered_args = np.array(args)[self.input_force_moment_idx]
         return self.input_force_moment(t,p_x,p_y,p_z,v_x,v_y,v_z,q_0,q_1,q_2,q_3,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*filtered_args)
 
@@ -441,12 +433,7 @@ class Vehicle(object):
         # TODO: test that an inherited class that overwrites dim_input still has access to Vehicle.dim_input for this to work.
         uu = u[..., :Vehicle.dim_input]
         u_extra = u[..., Vehicle.dim_input:]
-        return self.dynamics_output_function(t, *uu, u_extra)
-    
+        return dynamics.dynamics_output_function(self, t, *uu, u_extra)
 
     def tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args):
         return dynamics.tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args)
-
-    def dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, args=tuple()):
-        return dynamics.dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, *args)
-
