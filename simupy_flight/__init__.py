@@ -96,10 +96,10 @@ def get_constant_force_moments(FX=0., FY=0., FZ=0., MX=0., MY=0., MZ=0.,):
         return force_moment_vals
     return force_moment_function
 
-class KinematicsBlock(object):
-    """ TODO: rename to planet/vehicle
-    The KinematicsBlock is the state dynamics block that provides the kinematic equations of motion for integration and an
-    output equation for commonly used variables for flight vehicles according to the planet model. The KinematicsBlock 
+class Planet(object):
+    """
+    The Planet is the state dynamics block that provides the kinematic equations of motion for integration and an
+    output equation for commonly used variables for flight vehicles according to the planet model. The Planet 
     planet model is parameterized based on the following components:
 
     ``gravity`` model: translational acceleration due to gravity as a function of planet-fixed position in rectangular coordinates.
@@ -256,9 +256,9 @@ class KinematicsBlock(object):
         return kinematics.kinematics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z)
 
 
-class DynamicsBlock(object):
+class Vehicle(object):
     """
-    The DynamicsBlock is a state-less dynamics block that provides a common calculation for the dynamics of a flight vehicle. The DynamicsBlock 
+    The Vehicle is a state-less dynamics block that provides a common calculation for the dynamics of a flight vehicle. The Vehicle 
     vehicle model is parameterized based on the following components:
 
     Inertial properties: m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com
@@ -416,12 +416,12 @@ class DynamicsBlock(object):
             self._input_force_moment = input_force_moment
         
         if input_aero_coeffs_idx is None:
-            input_aero_coeffs_idx = np.arange(self.dim_input - DynamicsBlock.dim_input)
+            input_aero_coeffs_idx = np.arange(self.dim_input - Vehicle.dim_input)
         # TODO: defensive checking for routing indices
         self.input_aero_coeffs_idx = input_aero_coeffs_idx
 
         if input_force_moment_idx is None:
-            input_force_moment_idx = np.arange(self.dim_input - DynamicsBlock.dim_input)
+            input_force_moment_idx = np.arange(self.dim_input - Vehicle.dim_input)
         self.input_force_moment_idx = input_force_moment_idx
 
         self.m, self.I_xx, self.I_yy, self.I_zz, self.I_xy, self.I_yz, self.I_xz, self.x_com, self.y_com, self.z_com, self.x_mrc, self.y_mrc, self.z_mrc, self.S_A, self.a_l, self.b_l, self.c_l, self.d_l = m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com, x_mrc, y_mrc, z_mrc, S_A, a_l, b_l, c_l, d_l
@@ -438,9 +438,9 @@ class DynamicsBlock(object):
         return self._input_force_moment(t,p_x,p_y,p_z,v_x,v_y,v_z,q_0,q_1,q_2,q_3,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*filtered_args)
 
     def output_equation_function(self, t, u):
-        # TODO: test that an inherited class that overwrites dim_input still has access to DynamicsBlock.dim_input for this to work.
-        uu = u[..., :DynamicsBlock.dim_input]
-        u_extra = u[..., DynamicsBlock.dim_input:]
+        # TODO: test that an inherited class that overwrites dim_input still has access to Vehicle.dim_input for this to work.
+        uu = u[..., :Vehicle.dim_input]
+        u_extra = u[..., Vehicle.dim_input:]
         return self.dynamics_output_function(t, *uu, u_extra)
     
 
