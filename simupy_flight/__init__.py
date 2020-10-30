@@ -1,5 +1,4 @@
 from .version import __version__
-import numpy
 import numpy as np
 import erfa
 import fluids.atmosphere
@@ -98,7 +97,7 @@ def get_constant_force_moments(FX=0., FY=0., FZ=0., MX=0., MY=0., MZ=0.,):
     return force_moment_function
 
 class KinematicsBlock(object):
-    """
+    """ TODO: rename to planet/vehicle
     The KinematicsBlock is the state dynamics block that provides the kinematic equations of motion for integration and an
     output equation for commonly used variables for flight vehicles according to the planet model. The KinematicsBlock 
     planet model is parameterized based on the following components:
@@ -284,11 +283,13 @@ class DynamicsBlock(object):
     to set the center of mass and moment reference center to the same location at the arbitrary reference (i.e., [0,0,0])
 
     Processing of ``input_aero_coeffs`` and ``input_force_moment`` parameterized models follow the same logic:
-        if None: assume that a child class will over-write
+        if ``None``: assume that a child class will over-write
         if callable: use directly (so it should have the correct signature)
         else: try to build a function that returns constant value(s)
 
-    Attributes ``input_aero_coeffs_idx`` and ``input_force_moment_idx`` are 
+    Attributes ``input_aero_coeffs_idx`` and ``input_force_moment_idx`` are used to route extra inputs to the input aero and foce/moment
+    functions respectively. Use ``None`` to route all inputs, use a list of integers to route particular inputs including an empty list
+    for no routing.
 
 
     The input components are:
@@ -416,6 +417,7 @@ class DynamicsBlock(object):
         
         if input_aero_coeffs_idx is None:
             input_aero_coeffs_idx = np.arange(self.dim_input - DynamicsBlock.dim_input)
+        # TODO: defensive checking for routing indices
         self.input_aero_coeffs_idx = input_aero_coeffs_idx
 
         if input_force_moment_idx is None:
@@ -445,6 +447,6 @@ class DynamicsBlock(object):
     def tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args):
         return dynamics.tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args)
 
-    def dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, args):
+    def dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, args=tuple()):
         return dynamics.dynamics_output_function(self, t, p_x, p_y, p_z, v_x, v_y, v_z, q_0, q_1, q_2, q_3, omega_X, omega_Y, omega_Z, lamda_E, phi_E, h, psi, theta, phi, rho, c_s, mu, V_T, alpha, beta, p_B, q_B, r_B, V_N, V_E, V_D, W_N, W_E, W_D, *args)
 

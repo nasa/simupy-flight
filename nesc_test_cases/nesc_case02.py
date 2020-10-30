@@ -28,7 +28,7 @@ x = 0.
 y = 0.
 z = 0.
 
-dyn_block =  simupy_flight.DynamicsBlock(simupy_flight.get_constant_aero(), m, Ixx, Iyy, Izz, Ixy, Iyz, Izx, x,y,z, x,y,z, S_A=0., a_l=1., b_l=1., c_l=1., d_l=0.,)
+dyn_block =  simupy_flight.DynamicsBlock(base_aero_coeffs=simupy_flight.get_constant_aero(), m=m, I_xx=Ixx, I_yy=Iyy, I_zz=Izz, I_xy=Ixy, I_yz=Iyz, I_xz=Izx, x_com=x, y_com=y, z_com=z, x_mrc=x, y_mrc=y, z_mrc=z, S_A=0., a_l=1., b_l=1., c_l=1., d_l=0.,)
 
 BD = BlockDiagram(kin_block, dyn_block)
 BD.connect(kin_block, dyn_block, inputs=np.arange(kin_block.dim_output))
