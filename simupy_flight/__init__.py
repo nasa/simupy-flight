@@ -370,7 +370,10 @@ class Vehicle(object):
             base_aero_coeffs, x_mrc, y_mrc, z_mrc, S_A, a_l, b_l, c_l, d_l, 
             input_aero_coeffs=0.0, input_force_moment=0.0,
             input_aero_coeffs_idx=None, input_force_moment_idx=None,
+            dim_additional_input=0,
             ):
+        
+        self.dim_input = Vehicle.dim_input + dim_additional_input
         # TODO: Should these be name-spaced into an aero and inertia namespace?
         self.base_aero_coeffs = base_aero_coeffs
 
