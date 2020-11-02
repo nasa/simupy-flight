@@ -56,4 +56,4 @@ baseline_pds = []
 for fname in glob.glob(os.path.join(data_relative_path, 'Atmospheric_checkcases', 'Atmos_02_TumblingBrickNoDamping', 'Atmos_02_sim_*.csv'),):
     baseline_pds.append(pd.read_csv(fname, index_col=0))
     
-plot_nesc_comparisons(res, baseline_pds)
+plot_nesc_comparisons(res, baseline_pds, '02')
