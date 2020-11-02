@@ -9,9 +9,7 @@ from nesc_testcase_helper import plot_nesc_comparisons, data_relative_path, int_
 planet = simupy_flight.Planet(
     gravity=simupy_flight.get_spherical_gravity(simupy_flight.earth_spherical_gravity_constant),
     winds=simupy_flight.get_constant_winds(),
-    density=simupy_flight.density_1976_atmosphere,
-    speed_of_sound=simupy_flight.get_constant_speed_of_sound(),
-    viscosity=simupy_flight.get_constant_viscosity(),
+    atmosphere=simupy_flight.atmosphere_1976,
     planetodetics=simupy_flight.Planetodetic(a=20902255.199/ft_per_m, omega_p=0., f=0.)
 )
 

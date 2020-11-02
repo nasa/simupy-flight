@@ -45,24 +45,15 @@ class Planetodetic:
 
 
 # constant atmosphere functions
-def get_constant_viscosity(viscosity_val=1.):
-    def viscosity_function(t,ap_x,ap_y,ap_z):
-        return viscosity_val
-    return viscosity_function
+def get_constant_atmosphere(density_val=0., speed_of_sound_val=1., viscocity_val=1.,):
+    atmosphere_val = np.array([density_val, speed_of_sound_val, viscocity_val])
+    def atmosphere_constant(t,ap_x,ap_y,ap_z):
+        return atmosphere_val
+    return atmosphere_constant
 
-def get_constant_density(density_val=0.):
-    def density_function(t,ap_x,ap_y,ap_z):
-        return density_val
-    return density_function
-
-def get_constant_speed_of_sound(speed_of_sound_val=1.):
-    def speed_of_sound_function(t,ap_x,ap_y,ap_z):
-        return speed_of_sound_val
-    return speed_of_sound_function
-
-def density_1976_atmosphere(t,ap_x,ap_y,ap_z):
+def atmosphere_1976(t,ap_x,ap_y,ap_z):
     atmo = fluids.atmosphere.ATMOSPHERE_1976(ap_z)
-    return atmo.rho
+    return np.array([atmo.rho, atmo.v_sonic, atmo.mu])
 
 # gravity functions
 def get_spherical_gravity(gravitational_constant):
@@ -105,7 +96,7 @@ class Planet(object):
     ``gravity`` model: translational acceleration due to gravity as a function of planet-fixed position in rectangular coordinates.
     For 
 
-    atmospheric models: ``density``, ``speed_of_sound``, and ``viscocity`` outputs of the atmosphere model as a function of time (i.e.,
+    ``atmosphere`` models: density, speed of sound, and viscocity outputs of the atmosphere model as a function of time (i.e.,
     for stochasticity) and position in planet-fixed frame
 
     ``winds`` model: wind in local NED frame as a function of time and planetodetic position. Positive wind indicates wind in specified
@@ -147,7 +138,7 @@ class Planet(object):
 
         [13:16] lamda_E, phi_E, h
         translational position of the vehicle center of mass in the planet-fixed frame expressed in
-        planetodetic spherical position coordinates: lattitude, longitude, and altitude (TODO: verify order)
+        planetodetic spherical position coordinates: longitude, latitude, and altitude
 
         [16:19] psi, theta, phi
         euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll
@@ -231,9 +222,9 @@ class Planet(object):
         '$V_{N}$', '$V_{E}$', '$V_{D}$',
         '$W_{N}$', '$W_{E}$', '$W_{D}$',]
 
-    def __init__(self, gravity, winds, density, speed_of_sound, viscosity, planetodetics):
-        (self.gravity, self.winds, self.density, self.speed_of_sound, self.viscosity, self.planetodetics) =\
-            gravity, winds, density, speed_of_sound, viscosity, planetodetics
+    def __init__(self, gravity, winds, atmosphere, planetodetics):
+        (self.gravity, self.winds, self.atmosphere, self.planetodetics) =\
+            gravity, winds, atmosphere, planetodetics
     
     def prepare_to_integrate(self, *args, **kwargs):
         return
@@ -290,7 +281,7 @@ class Vehicle(object):
 
         [13:16] lamda_E, phi_E, h
         translational position of the vehicle center of mass in the planet-fixed frame expressed in
-        planetodetic spherical position coordinates: latitude, longitude, and altitude (TODO: verify order)
+        planetodetic spherical position coordinates: longitude, latitude, and altitude
 
         [16:19] psi, theta, phi
         euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll

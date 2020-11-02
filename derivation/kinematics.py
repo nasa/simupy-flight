@@ -89,9 +89,7 @@ def kinematics_output_function(self, t, p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, 
     [lamda_D, phi_D, h_D] = self.planetodetics.pcf2pd(p_x,p_y,p_z).ravel()
     lamda_D = lamda_D - self.planetodetics.omega_p*t
     [W_N, W_E, W_D] = self.winds(t,lamda_D,phi_D,h_D).ravel()
-    rho = self.density(t,lamda_D,phi_D,h_D)
-    c_s = self.speed_of_sound(t,lamda_D,phi_D,h_D)
-    mu = self.viscosity(t,lamda_D,phi_D,h_D)
+    [rho, c_s, mu] = self.atmosphere(t,lamda_D,phi_D,h_D).ravel()
     x0 = numpy.cos(lamda_D)
     x1 = self.planetodetics.omega_p*t
     x2 = numpy.cos(x1)

@@ -50,9 +50,7 @@ def linear_winds(t, fx, fy, fz):
 planet = simupy_flight.Planet(
     gravity=simupy_flight.earth_J2_gravity,
     winds=linear_winds,
-    density=simupy_flight.density_1976_atmosphere,
-    speed_of_sound=simupy_flight.get_constant_speed_of_sound(),
-    viscosity=simupy_flight.get_constant_viscosity(),
+    atmosphere=simupy_flight.atmosphere_1976,
     planetodetics=simupy_flight.Planetodetic(a=simupy_flight.earth_equitorial_radius, omega_p=simupy_flight.earth_rotation_rate, f=simupy_flight.earth_f)
 )
 
