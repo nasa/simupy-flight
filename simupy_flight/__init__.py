@@ -427,7 +427,7 @@ class Vehicle(object):
         # TODO: test that an inherited class that overwrites dim_input still has access to Vehicle.dim_input for this to work.
         uu = u[..., :Vehicle.dim_input]
         u_extra = u[..., Vehicle.dim_input:]
-        return dynamics.dynamics_output_function(self, t, *uu, u_extra)
+        return dynamics.dynamics_output_function(self, t, *uu, *u_extra)
 
     def tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args):
         return dynamics.tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args)

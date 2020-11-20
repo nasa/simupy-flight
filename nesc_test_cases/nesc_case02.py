@@ -26,7 +26,7 @@ x = 0.
 y = 0.
 z = 0.
 
-vehicle =  simupy_flight.Vehicle(base_aero_coeffs=simupy_flight.get_constant_aero(), m=m, I_xx=Ixx, I_yy=Iyy, I_zz=Izz, I_xy=Ixy, I_yz=Iyz, I_xz=Izx, x_com=x, y_com=y, z_com=z, x_mrc=x, y_mrc=y, z_mrc=z, S_A=0., a_l=1., b_l=1., c_l=1., d_l=0.,)
+vehicle = simupy_flight.Vehicle(base_aero_coeffs=simupy_flight.get_constant_aero(), m=m, I_xx=Ixx, I_yy=Iyy, I_zz=Izz, I_xy=Ixy, I_yz=Iyz, I_xz=Izx, x_com=x, y_com=y, z_com=z, x_mrc=x, y_mrc=y, z_mrc=z, S_A=0., a_l=1., b_l=1., c_l=1., d_l=0.,)
 
 BD = BlockDiagram(planet, vehicle)
 BD.connect(planet, vehicle, inputs=np.arange(planet.dim_output))

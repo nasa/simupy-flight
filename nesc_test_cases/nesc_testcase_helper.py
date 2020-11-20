@@ -12,6 +12,9 @@ data_relative_path = '..'
 ft_per_m = 3.28084
 kg_per_slug = 14.5939
 
+interactive_mode = True
+include_simupy_in_autoscale = True
+
 frame_rate_for_differencing = 10
 
 def deg_diff(sim, baseline):
@@ -22,7 +25,7 @@ def deg_diff(sim, baseline):
     return diff_rad*180/np.pi
     
 
-def plot_cols(simupy_res, baseline_pds, baseline_cols, sfvt_idxs, labels):
+def plot_cols(simupy_res, baseline_pds, sfvt_idxs, baseline_cols, labels):
     
     abs_fig, abs_axes = plt.subplots(3, sharex=True, constrained_layout=True)
     delta_fig, delta_axes = plt.subplots(3, sharex=True, constrained_layout=True)
@@ -33,7 +36,7 @@ def plot_cols(simupy_res, baseline_pds, baseline_cols, sfvt_idxs, labels):
     times_for_average = np.arange(0, tf, 1/frame_rate_for_differencing)
     
     
-    for sfvt_idx, baseline_col, label, abs_ax, delta_ax in zip(baseline_cols, sfvt_idxs, labels, abs_axes, delta_axes):
+    for sfvt_idx, baseline_col, label, abs_ax, delta_ax in zip(sfvt_idxs, baseline_cols, labels, abs_axes, delta_axes):
         # collect and plot direct value of simupy result
         simupy_y = simupy_res.y[:, sfvt_idx]
         if 'deg' in baseline_col:
@@ -60,7 +63,8 @@ def plot_cols(simupy_res, baseline_pds, baseline_cols, sfvt_idxs, labels):
 
         abs_ax_ylim = abs_ax.get_ylim()
         abs_ax.plot(simupy_res.t, simupy_y, 'k--', label='SimuPy')
-        abs_ax.set_ylim(*abs_ax_ylim)
+        if not include_simupy_in_autoscale:
+            abs_ax.set_ylim(*abs_ax_ylim)
 
         # compute average
         average_value[:] = average_value[:]/num_of_averages
@@ -90,7 +94,8 @@ def plot_cols(simupy_res, baseline_pds, baseline_cols, sfvt_idxs, labels):
         
         delta_ax_ylim = delta_ax.get_ylim()
         delta_ax.plot(times_for_average, simupy_y, 'k--', label='SimuPy')
-        delta_ax.set_ylim(*delta_ax_ylim)
+        if not include_simupy_in_autoscale:
+            delta_ax.set_ylim(*delta_ax_ylim)
         
         abs_ax.set_ylabel(label)
         delta_ax.set_ylabel('$\\Delta$ ' + label)
@@ -113,12 +118,12 @@ def plot_nesc_comparisons(simupy_res, baseline_pds, name=''):
     ['longitude_deg', 'latitude_deg', 'altitudeMsl_ft'],
     ['longitude, deg', 'latitude, deg', 'altitude, ft'],
     )
+    if not interactive_mode:
+        abs_fig.set_size_inches(4, 6)
+        delta_fig.set_size_inches(4, 6)
 
-    abs_fig.set_size_inches(4, 6)
-    delta_fig.set_size_inches(4, 6)
-
-    abs_fig.savefig(name + 'geodetic_pos.pdf')
-    delta_fig.savefig(name + 'geodetic_pos_delta.pdf')
+        abs_fig.savefig(name + 'geodetic_pos.pdf')
+        delta_fig.savefig(name + 'geodetic_pos_delta.pdf')
     
     abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds,
     [Planet.psi_idx, Planet.theta_idx, Planet.phi_idx],
@@ -127,11 +132,12 @@ def plot_nesc_comparisons(simupy_res, baseline_pds, name=''):
     ['$\\psi$, deg', '$\\theta$, deg', '$\\phi$, deg']
     )
 
-    abs_fig.set_size_inches(4, 6)
-    delta_fig.set_size_inches(4, 6)
+    if not interactive_mode:
+        abs_fig.set_size_inches(4, 6)
+        delta_fig.set_size_inches(4, 6)
 
-    abs_fig.savefig(name + 'eulerangle.pdf')
-    delta_fig.savefig(name + 'eulerangle_delta.pdf')
+        abs_fig.savefig(name + 'eulerangle.pdf')
+        delta_fig.savefig(name + 'eulerangle_delta.pdf')
     
     abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds,
     # [Planet.p_B_idx, Planet.q_B_idx, Planet.r_B_idx],
@@ -140,23 +146,25 @@ def plot_nesc_comparisons(simupy_res, baseline_pds, name=''):
     ['$p$, deg/s', '$q$, deg/s', '$r$, deg/s']
     )
 
-    abs_fig.set_size_inches(4, 6)
-    delta_fig.set_size_inches(4, 6)
+    if not interactive_mode:
+        abs_fig.set_size_inches(4, 6)
+        delta_fig.set_size_inches(4, 6)
 
-    abs_fig.savefig(name + 'body_rates.pdf')
-    delta_fig.savefig(name + 'body_rates_delta.pdf')
+        abs_fig.savefig(name + 'body_rates.pdf')
+        delta_fig.savefig(name + 'body_rates_delta.pdf')
     
-    # abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds,
-    # [Planet.p_x_idx, Planet.p_y_idx, Planet.p_z_idx],
-    # ['eiPosition_ft_X', 'eiPosition_ft_Y', 'eiPosition_ft_X'],
-    # ['inertial $x$, ft', 'inertial $y$, ft', 'inertial $z$, ft']
-    # )
+    abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds,
+    [Planet.p_x_idx, Planet.p_y_idx, Planet.p_z_idx],
+    ['eiPosition_ft_X', 'eiPosition_ft_Y', 'eiPosition_ft_Z'],
+    ['inertial $x$, ft', 'inertial $y$, ft', 'inertial $z$, ft']
+    )
 
-    # abs_fig.set_size_inches(4, 6)
-    # delta_fig.set_size_inches(4, 6)
+    if not interactive_mode:
+        abs_fig.set_size_inches(4, 6)
+        delta_fig.set_size_inches(4, 6)
 
-    # abs_fig.savefig(name + 'inertial_pos.pdf')
-    # delta_fig.savefig(name + 'inertial_pos_delta.pdf')
+        abs_fig.savefig(name + 'inertial_pos.pdf')
+        delta_fig.savefig(name + 'inertial_pos_delta.pdf')
     
     abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds,
     [Planet.V_N_idx, Planet.V_E_idx, Planet.V_D_idx],
@@ -164,10 +172,12 @@ def plot_nesc_comparisons(simupy_res, baseline_pds, name=''):
     ['relative velocity\nN, ft/s', 'relative velocity\nE, ft/s', 'relative velocity\nD, ft/s']
     )
 
-    abs_fig.set_size_inches(4, 6)
-    delta_fig.set_size_inches(4, 6)
+    if not interactive_mode:
+        abs_fig.set_size_inches(4, 6)
+        delta_fig.set_size_inches(4, 6)
 
-    abs_fig.savefig(name + 'velocity_NED.pdf')
-    delta_fig.savefig(name + 'velocity_NED_delta.pdf')
+        abs_fig.savefig(name + 'velocity_NED.pdf')
+        delta_fig.savefig(name + 'velocity_NED_delta.pdf')
     
-    #plt.show()
+    if interactive_mode:
+        plt.show()

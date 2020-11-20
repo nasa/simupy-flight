@@ -29,7 +29,7 @@ S_A = 0.1963495/(ft_per_m**2)
 b_l = 1.0
 c_l = 1.0
 a_l = b_l
-vehicle =  simupy_flight.Vehicle(base_aero_coeffs=simupy_flight.get_constant_aero(CD_b=0.1), m=m, I_xx=Ixx, I_yy=Iyy, I_zz=Izz, I_xy=Ixy, I_yz=Iyz, I_xz=Izx, x_com=x, y_com=y, z_com=z, x_mrc=x, y_mrc=y, z_mrc=z, S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=0.,)
+vehicle = simupy_flight.Vehicle(base_aero_coeffs=simupy_flight.get_constant_aero(CD_b=0.1), m=m, I_xx=Ixx, I_yy=Iyy, I_zz=Izz, I_xy=Ixy, I_yz=Iyz, I_xz=Izx, x_com=x, y_com=y, z_com=z, x_mrc=x, y_mrc=y, z_mrc=z, S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=0.,)
 
 BD = BlockDiagram(planet, vehicle)
 BD.connect(planet, vehicle, inputs=np.arange(planet.dim_output))
