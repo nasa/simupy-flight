@@ -155,3 +155,22 @@ def kinematics_output_function(self, t, p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, 
     x62 = 2*self.planetodetics.omega_p
     x63 = x12*x20
     return (numpy.array([p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_y, v_z, omega_X, omega_Y, omega_Z, lamda_D, phi_D, h_D, numpy.arctan2(x6*(x11*x9 + x12*x15), x6*(-x15*x22 + x16*x19 + x20*x21)), -numpy.arcsin(x6*(-x15*x24 + x16*x21 + x23*(-x17 + x18))), numpy.arctan2(x6*(-x23*x27 + x24*(x28 + x30) + x32*(x13 - x14)), x6*(x20*(x28 + x34) + 2*x24*(x25 - x26) - x32*x35)), rho, c_s, mu, x54, numpy.arctan2(x6*(x35*x59 + x55*(x30 + x56) + 2*x60*(-x25 + x26)), x6*(x15*x60 + x19*x55 + x58*(x29 + x33 + x5))), numpy.arcsin(numpy.select([numpy.greater(x61, 1.0),numpy.less(x61, -1.0),numpy.greater(x54, 0.0)], [1.0,-1.0,x61], default=0.0)), x6*(omega_X*x0 + omega_X*x1 + omega_X*x3 + omega_X*x4 - x17*x62 + x18*x62), x6*(omega_Y*x0 + omega_Y*x1 + omega_Y*x3 + omega_Y*x4 - x25*x62 - x26*x62), x6*(omega_Z*x0 + omega_Z*x1 + omega_Z*x3 + omega_Z*x4 + self.planetodetics.omega_p*x0 - self.planetodetics.omega_p*x1 - self.planetodetics.omega_p*x3 + self.planetodetics.omega_p*x4), -v_x*x63 - v_y*x22 + v_z*x16 + x22*x41 - x45*x63, -v_x*x11 + v_y*x12 - x11*x45 - x12*x41, -v_x*x31 - v_y*x24 - v_z*x20 + x24*x41 - x31*x45, W_N, W_E, W_D]))
+
+def inertial_to_body_dcm(q_0, q_1, q_2, q_3):
+    x0 = q_2**2
+    x1 = q_3**2
+    x2 = q_0**2
+    x3 = q_1**2
+    x4 = x2 + x3
+    x5 = 1/(x0 + x1 + x4)
+    x6 = -x0
+    x7 = -x1
+    x8 = q_0*q_3
+    x9 = q_1*q_2
+    x10 = 2*x5
+    x11 = q_1*q_3
+    x12 = q_0*q_2
+    x13 = x2 - x3
+    x14 = q_0*q_1
+    x15 = q_2*q_3
+    return (numpy.array([[x5*(x4 + x6 + x7), x10*(x8 + x9), x10*(x11 - x12)], [x10*(-x8 + x9), x5*(x0 + x13 + x7), x10*(x14 + x15)], [x10*(x11 + x12), x10*(-x14 + x15), x5*(x1 + x13 + x6)]]))

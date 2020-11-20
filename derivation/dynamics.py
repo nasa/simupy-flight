@@ -50,3 +50,13 @@ def dynamics_output_function(self, t, p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_
     x17 = -self.I_xx*x11 + self.I_xy*x10 - self.I_xz*x14 + self.I_xz*x8 - self.I_yz*x9 + self.I_zz*x11 + M_y
     x18 = self.I_xx*self.I_yz + self.I_xy*self.I_xz
     return (numpy.array([F_x*x0, F_y*x0, F_z*x0, -x6*(x12*(-x1 + x4) + x13*x15 + x16*x17), -x6*(x12*x16 + x15*x18 + x17*(self.I_xx*self.I_zz - x2)), -x6*(x12*x13 + x15*(self.I_xx*self.I_yy - x3) + x17*x18)]))
+
+def mrc_to_com_cpm(self):
+    return (numpy.array([[0, -self.z_com + self.z_mrc, self.y_com - self.y_mrc], [self.z_com - self.z_mrc, 0, -self.x_com + self.x_mrc], [-self.y_com + self.y_mrc, self.x_com - self.x_mrc, 0]]))
+
+def body_to_wind_dcm(alpha, beta):
+    x0 = numpy.cos(alpha)
+    x1 = numpy.cos(beta)
+    x2 = numpy.sin(beta)
+    x3 = numpy.sin(alpha)
+    return (numpy.array([[x0*x1, x2, x1*x3], [-x0*x2, x1, -x2*x3], [-x3, 0, x0]]))
