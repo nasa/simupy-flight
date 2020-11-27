@@ -67,7 +67,5 @@ planet.initial_condition = planet.ic_from_planetodetic(
 
 res = BD.simulate(30, integrator_options=int_opts)
 
-baseline_pds = []
-for fname in glob.glob(os.path.join(data_relative_path, 'Atmospheric_checkcases', 'Atmos_10_NorthwardCannonball', 'Atmos_10_sim_*.csv'),):
-    baseline_pds.append(pd.read_csv(fname, index_col=0))
-plot_nesc_comparisons(res, baseline_pds, '10')
+glob_path = os.path.join(data_relative_path, 'Atmospheric_checkcases', 'Atmos_10_NorthwardCannonball', 'Atmos_10_sim_*.csv')
+plot_nesc_comparisons(res, glob_path, '10')

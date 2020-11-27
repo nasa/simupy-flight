@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 from simupy.block_diagram import DEFAULT_INTEGRATOR_OPTIONS
 from scipy import interpolate
 from simupy_flight import Planet
+import glob
+import pandas as pd
+import argparse
+import sys
 
 int_opts = DEFAULT_INTEGRATOR_OPTIONS.copy()
 int_opts['max_step'] = 2**-4
@@ -12,12 +16,39 @@ data_relative_path = '..'
 ft_per_m = 3.28084
 kg_per_slug = 14.5939
 
-interactive_mode = True
-include_simupy_in_autoscale = True
+nesc_options = dict(
+    interactive_mode = True,
+    include_simupy_in_autoscale = True
+)
+
+nesc_colors = {'%02d' % (sim_idx+1) : 'C%d' % (sim_idx) for sim_idx in range(10) }
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--interactive", help="show plots in interactive mode rather than saving to disk",
+                    action="store_true")
+parser.add_argument("--simupy_scale", help="include simupy in plot autoscale or not",
+                    action="store_true")
+
+def do_argparse():
+    if not hasattr(sys, 'ps1'):
+        args = parser.parse_args()
+        if args.interactive:
+            nesc_options['interactive_mode'] = True
+        else:
+            nesc_options['interactive_mode'] = False
+        if args.simupy_scale:
+            nesc_options['include_simupy_in_autoscale'] = True
+        else:
+            nesc_options['include_simupy_in_autoscale'] = False
+
 
 frame_rate_for_differencing = 10
 
 def deg_diff(sim, baseline):
+    """
+    Compute the NESC angle difference, sim and baseline is a numpy array of angles, 
+    note that the difference is not symmetric
+    """
     beta = baseline*np.pi/180
     alpha = sim*np.pi/180
     
@@ -25,18 +56,33 @@ def deg_diff(sim, baseline):
     return diff_rad*180/np.pi
     
 
-def plot_cols(simupy_res, baseline_pds, sfvt_idxs, baseline_cols, labels):
+def plot_cols(simupy_res, baseline_pds, baseline_pd_labels, sfvt_idxs, baseline_cols, col_labels):
+    """
+    simupy_res is the simupy simulation result object
+    baseline_pds is an iterable of pandas dataframes of the baseline simulation results
+    baseline_pd_labels is an iterable of labels used in the figure legends 'SIM %s'
+    sfvt_idxs is an iterable of integers of the column index to compare
+    baseline_cols is the list of column names in the baseline pds to compare
+    col_labels are the y-axis labels for each subplot
+    """
+    include_simupy_in_autoscale = nesc_options['include_simupy_in_autoscale']
+
+    if len(sfvt_idxs) != len(baseline_cols) or len(sfvt_idxs) != len(col_labels):
+        raise ValueError("Mismatched column lengths")
+
+    num_plots = len(sfvt_idxs)
+
+    abs_fig, abs_axes = plt.subplots(num_plots, sharex=True, constrained_layout=True)
+    delta_fig, delta_axes = plt.subplots(num_plots, sharex=True, constrained_layout=True)
     
-    abs_fig, abs_axes = plt.subplots(3, sharex=True, constrained_layout=True)
-    delta_fig, delta_axes = plt.subplots(3, sharex=True, constrained_layout=True)
     
-    
-    tf = simupy_res.t[-1]
+    tf = 30.
+    # tf = simupy_res.t[-1]
     num_for_average = int(tf*frame_rate_for_differencing)
     times_for_average = np.arange(0, tf, 1/frame_rate_for_differencing)
     
     
-    for sfvt_idx, baseline_col, label, abs_ax, delta_ax in zip(sfvt_idxs, baseline_cols, labels, abs_axes, delta_axes):
+    for sfvt_idx, baseline_col, col_label, abs_ax, delta_ax in zip(sfvt_idxs, baseline_cols, col_labels, abs_axes, delta_axes):
         # collect and plot direct value of simupy result
         simupy_y = simupy_res.y[:, sfvt_idx]
         if 'deg' in baseline_col:
@@ -54,9 +100,9 @@ def plot_cols(simupy_res, baseline_pds, sfvt_idxs, baseline_cols, labels):
             try: # try to  collect the columnr esult
                 baseline_y = baseline_pd[baseline_col]
             except KeyError:
-                print("missing %s for sim %d" % (baseline_col, baseline_idx))
+                print("missing %s for SIM %s" % (baseline_col, baseline_pd_labels[baseline_idx]))
             else: # if available, plot and add to ensemble average
-                abs_ax.plot(baseline_pd.index, baseline_y, 'C%d'%baseline_idx, alpha=0.5, label='NESC %d' % (baseline_idx+1))
+                abs_ax.plot(baseline_pd.index, baseline_y, nesc_colors[baseline_pd_labels[baseline_idx]], alpha=0.5, label='NESC %s' % (baseline_pd_labels[baseline_idx]))
                 num_of_averages = num_of_averages + 1
                 to_interpolate = interpolate.make_interp_spline(baseline_pd.index, baseline_y)
                 average_value[:] = average_value[:] + to_interpolate(times_for_average)
@@ -97,8 +143,8 @@ def plot_cols(simupy_res, baseline_pds, sfvt_idxs, baseline_cols, labels):
         if not include_simupy_in_autoscale:
             delta_ax.set_ylim(*delta_ax_ylim)
         
-        abs_ax.set_ylabel(label)
-        delta_ax.set_ylabel('$\\Delta$ ' + label)
+        abs_ax.set_ylabel(col_label)
+        delta_ax.set_ylabel('$\\Delta$ ' + col_label)
         abs_ax.grid(True)
         delta_ax.grid(True)
         
@@ -112,8 +158,25 @@ def plot_cols(simupy_res, baseline_pds, sfvt_idxs, baseline_cols, labels):
     
     
 
-def plot_nesc_comparisons(simupy_res, baseline_pds, name=''):
-    abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds,
+def plot_nesc_comparisons(simupy_res, baseline_pd_glob, plot_name=''):
+    """
+    """
+    do_argparse()
+    
+    interactive_mode = nesc_options['interactive_mode']
+
+    baseline_pds = []
+    baseline_pd_labels = []
+
+    prefix, suffix = baseline_pd_glob.split('*')
+    for fname in sorted(glob.glob(baseline_pd_glob)):
+        if interactive_mode:
+            print(fname)
+        baseline_pds.append(pd.read_csv(fname, index_col=0))
+        baseline_pd_labels.append(fname.replace(prefix, '').replace(suffix, ''))
+
+
+    abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds, baseline_pd_labels,
     [Planet.lamda_D_idx, Planet.phi_D_idx, Planet.h_D_idx],
     ['longitude_deg', 'latitude_deg', 'altitudeMsl_ft'],
     ['longitude, deg', 'latitude, deg', 'altitude, ft'],
@@ -122,10 +185,10 @@ def plot_nesc_comparisons(simupy_res, baseline_pds, name=''):
         abs_fig.set_size_inches(4, 6)
         delta_fig.set_size_inches(4, 6)
 
-        abs_fig.savefig(name + 'geodetic_pos.pdf')
-        delta_fig.savefig(name + 'geodetic_pos_delta.pdf')
+        abs_fig.savefig(plot_name + '_geodetic_pos.pdf')
+        delta_fig.savefig(plot_name + '_geodetic_pos_delta.pdf')
     
-    abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds,
+    abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds, baseline_pd_labels,
     [Planet.psi_idx, Planet.theta_idx, Planet.phi_idx],
     ['eulerAngle_deg_Yaw', 'eulerAngle_deg_Pitch', 'eulerAngle_deg_Roll'],
     #['yaw, deg', 'pitch, deg', 'roll, deg'],
@@ -136,10 +199,10 @@ def plot_nesc_comparisons(simupy_res, baseline_pds, name=''):
         abs_fig.set_size_inches(4, 6)
         delta_fig.set_size_inches(4, 6)
 
-        abs_fig.savefig(name + 'eulerangle.pdf')
-        delta_fig.savefig(name + 'eulerangle_delta.pdf')
+        abs_fig.savefig(plot_name + '_eulerangle.pdf')
+        delta_fig.savefig(plot_name + '_eulerangle_delta.pdf')
     
-    abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds,
+    abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds, baseline_pd_labels,
     # [Planet.p_B_idx, Planet.q_B_idx, Planet.r_B_idx],
     [Planet.omega_X_idx, Planet.omega_Y_idx, Planet.omega_Z_idx],
     ['bodyAngularRateWrtEi_deg_s_Roll', 'bodyAngularRateWrtEi_deg_s_Pitch', 'bodyAngularRateWrtEi_deg_s_Yaw'],
@@ -150,10 +213,10 @@ def plot_nesc_comparisons(simupy_res, baseline_pds, name=''):
         abs_fig.set_size_inches(4, 6)
         delta_fig.set_size_inches(4, 6)
 
-        abs_fig.savefig(name + 'body_rates.pdf')
-        delta_fig.savefig(name + 'body_rates_delta.pdf')
+        abs_fig.savefig(plot_name + '_body_rates.pdf')
+        delta_fig.savefig(plot_name + '_body_rates_delta.pdf')
     
-    abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds,
+    abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds, baseline_pd_labels,
     [Planet.p_x_idx, Planet.p_y_idx, Planet.p_z_idx],
     ['eiPosition_ft_X', 'eiPosition_ft_Y', 'eiPosition_ft_Z'],
     ['inertial $x$, ft', 'inertial $y$, ft', 'inertial $z$, ft']
@@ -163,10 +226,10 @@ def plot_nesc_comparisons(simupy_res, baseline_pds, name=''):
         abs_fig.set_size_inches(4, 6)
         delta_fig.set_size_inches(4, 6)
 
-        abs_fig.savefig(name + 'inertial_pos.pdf')
-        delta_fig.savefig(name + 'inertial_pos_delta.pdf')
+        abs_fig.savefig(plot_name + '_inertial_pos.pdf')
+        delta_fig.savefig(plot_name + '_inertial_pos_delta.pdf')
     
-    abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds,
+    abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds, baseline_pd_labels,
     [Planet.V_N_idx, Planet.V_E_idx, Planet.V_D_idx],
     ['feVelocity_ft_s_X', 'feVelocity_ft_s_Y', 'feVelocity_ft_s_Z'],
     ['relative velocity\nN, ft/s', 'relative velocity\nE, ft/s', 'relative velocity\nD, ft/s']
@@ -176,8 +239,8 @@ def plot_nesc_comparisons(simupy_res, baseline_pds, name=''):
         abs_fig.set_size_inches(4, 6)
         delta_fig.set_size_inches(4, 6)
 
-        abs_fig.savefig(name + 'velocity_NED.pdf')
-        delta_fig.savefig(name + 'velocity_NED_delta.pdf')
+        abs_fig.savefig(plot_name + '_velocity_NED.pdf')
+        delta_fig.savefig(plot_name + '_velocity_NED_delta.pdf')
     
     if interactive_mode:
         plt.show()
