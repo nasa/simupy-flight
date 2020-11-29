@@ -10,7 +10,7 @@ earth_J2_constant = 0.00108262982
 earth_rotation_rate_deg = 0.004178073
 earth_rotation_rate = earth_rotation_rate_deg*np.pi/180
 earth_equitorial_radius = 6378137.0
-earth_mean_radius = 6371007.2
+earth_mean_radius = 6371007.1809
 
 # kinematic functions
 def get_nonflat_pc2pd(a, f):
@@ -56,6 +56,7 @@ def atmosphere_1976(t,ap_x,ap_y,ap_z):
     return np.array([atmo.rho, atmo.v_sonic, atmo.mu])
 
 # gravity functions
+# these are "gravitation" functions according to WGS-84 notation
 def get_spherical_gravity(gravitational_constant):
     def gravity_function(px, py, pz):
         pos_vec = np.array([px, py, pz])
