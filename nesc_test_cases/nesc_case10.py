@@ -64,6 +64,7 @@ planet.initial_condition = planet.ic_from_planetodetic(
     psi=psi_ic, theta=theta_ic, phi=phi_ic,
     p_B=p_b_ic, q_B=q_b_ic, r_B=r_b_ic,)
 # planet.initial_condition[-3:] = omega_X_ic, omega_Y_ic, omega_Z_ic
+planet.initial_condition[-2] = 0.
 
 res = BD.simulate(30, integrator_options=int_opts)
 
