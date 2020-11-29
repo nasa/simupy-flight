@@ -28,6 +28,8 @@ parser.add_argument("--interactive", help="show plots in interactive mode rather
                     action="store_true")
 parser.add_argument("--simupy_scale", help="include simupy in plot autoscale or not",
                     action="store_true")
+parser.add_argument("--baseline05", help="Use SIM 05 as the baseline rather than the ensemble (total) average",
+                    action="store_true")
 
 def do_argparse():
     if not hasattr(sys, 'ps1'):
@@ -40,6 +42,11 @@ def do_argparse():
             nesc_options['include_simupy_in_autoscale'] = True
         else:
             nesc_options['include_simupy_in_autoscale'] = False
+        
+        if args.baseline05:
+            nesc_options['only_baseline05'] = True
+        else:
+            nesc_options['only_baseline05'] = False
 
 
 frame_rate_for_differencing = 10
@@ -103,9 +110,10 @@ def plot_cols(simupy_res, baseline_pds, baseline_pd_labels, sfvt_idxs, baseline_
                 print("missing %s for SIM %s" % (baseline_col, baseline_pd_labels[baseline_idx]))
             else: # if available, plot and add to ensemble average
                 abs_ax.plot(baseline_pd.index, baseline_y, nesc_colors[baseline_pd_labels[baseline_idx]], alpha=0.5, label='NESC %s' % (baseline_pd_labels[baseline_idx]))
-                num_of_averages = num_of_averages + 1
                 to_interpolate = interpolate.make_interp_spline(baseline_pd.index, baseline_y)
-                average_value[:] = average_value[:] + to_interpolate(times_for_average)
+                if (not nesc_options['only_baseline05']) or (baseline_pd_labels[baseline_idx] == '05'):
+                    num_of_averages = num_of_averages + 1
+                    average_value[:] = average_value[:] + to_interpolate(times_for_average)
 
         abs_ax_ylim = abs_ax.get_ylim()
         abs_ax.plot(simupy_res.t, simupy_y, 'k--', label='SimuPy')
@@ -136,7 +144,7 @@ def plot_cols(simupy_res, baseline_pds, baseline_pd_labels, sfvt_idxs, baseline_
                     baseline_y = deg_diff(baseline_y, average_value)
                 else:
                     baseline_y = baseline_y - average_value
-                delta_ax.plot(times_for_average, baseline_y, 'C%d'%baseline_idx, alpha=0.5, label='NESC %d' % (baseline_idx+1))
+                delta_ax.plot(times_for_average, baseline_y, nesc_colors[baseline_pd_labels[baseline_idx]], alpha=0.5, label='NESC %d' % (baseline_idx+1))
         
         delta_ax_ylim = delta_ax.get_ylim()
         delta_ax.plot(times_for_average, simupy_y, 'k--', label='SimuPy')

@@ -10,7 +10,7 @@ planet = simupy_flight.Planet(
     gravity=simupy_flight.earth_J2_gravity,
     winds=simupy_flight.get_constant_winds(),
     atmosphere=simupy_flight.get_constant_atmosphere(),
-    planetodetics = simupy_flight.Planetodetic(a = simupy_flight.earth_equitorial_radius ,omega_p=simupy_flight.earth_rotation_rate,f=simupy_flight.earth_f),
+    planetodetics = simupy_flight.Planetodetic(a=simupy_flight.earth_equitorial_radius, omega_p=simupy_flight.earth_rotation_rate, f=simupy_flight.earth_f),
 )
 
 BD = BlockDiagram(planet)

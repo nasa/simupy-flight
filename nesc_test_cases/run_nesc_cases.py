@@ -12,6 +12,8 @@ if args.interactive:
     extra_flags.append('--interactive')
 if args.simupy_scale:
     extra_flags.append('--simupy_scale')
+if args.baseline05:
+    extra_flags.append('--baseline05')
 
 print("\n\n")
 cases_to_run = ["%02d" % num for num in range(1,11)]
