@@ -378,32 +378,33 @@ class Vehicle(object):
             ):
         
         self.dim_input = Vehicle.dim_input + dim_additional_input
-        # TODO: Should these be name-spaced into an aero and inertia namespace?
+
+        if callable(base_aero_coeffs):
+            pass
+        else:
+            base_aero_coeff_vals = np.array(base_aero_coeffs, dtype=np.float_).reshape(-1)
+            if base_aero_coeff_vals.size == 1:
+                base_aero_coeff_vals = np.tile(base_aero_coeff_vals, 9)
+            base_aero_coeffs = get_constant_aero(*base_aero_coeff_vals)
         self.base_aero_coeffs = base_aero_coeffs
 
-        if input_aero_coeffs is None: 
+        if callable(input_aero_coeffs):
             pass
         else:
-            if callable(input_aero_coeffs):
-                pass
-            else:
-                input_aero_coeff_vals = np.array(input_aero_coeffs, dtype=np.float_).reshape(-1)
-                if input_aero_coeff_vals.size == 1:
-                    input_aero_coeff_vals = np.tile(input_aero_coeff_vals, 9)
-                input_aero_coeffs = get_constant_aero(*input_aero_coeff_vals)
-            self.input_aero_coeffs = input_aero_coeffs
+            input_aero_coeff_vals = np.array(input_aero_coeffs, dtype=np.float_).reshape(-1)
+            if input_aero_coeff_vals.size == 1:
+                input_aero_coeff_vals = np.tile(input_aero_coeff_vals, 9)
+            input_aero_coeffs = get_constant_aero(*input_aero_coeff_vals)
+        self.input_aero_coeffs = input_aero_coeffs
 
-        if input_force_moment is None: 
+        if callable(input_force_moment):
             pass
         else:
-            if callable(input_force_moment):
-                pass
-            else:
-                input_force_moment_vals = np.array(input_force_moment, dtype=np.float_).reshape(-1)
-                if input_force_moment_vals.size == 1:
-                    input_force_moment_vals = np.tile(input_force_moment_vals, 6)
-                input_force_moment = get_constant_force_moments(*input_force_moment_vals)
-            self.input_force_moment = input_force_moment
+            input_force_moment_vals = np.array(input_force_moment, dtype=np.float_).reshape(-1)
+            if input_force_moment_vals.size == 1:
+                input_force_moment_vals = np.tile(input_force_moment_vals, 6)
+            input_force_moment = get_constant_force_moments(*input_force_moment_vals)
+        self.input_force_moment = input_force_moment
         
         if input_aero_coeffs_idx is None:
             input_aero_coeffs_idx = np.arange(self.dim_input - Vehicle.dim_input)
