@@ -7,11 +7,11 @@ import glob
 import pandas as pd
 import argparse
 import sys
+import os
 
 int_opts = DEFAULT_INTEGRATOR_OPTIONS.copy()
 int_opts['max_step'] = 2**-4
 
-data_relative_path = '..'
 
 ft_per_m = 3.28084
 kg_per_slug = 14.5939
@@ -20,6 +20,8 @@ nesc_options = dict(
     interactive_mode = True,
     include_simupy_in_autoscale = True,
     only_baseline05 = False,
+    data_relative_path = '..'
+    save_relative_path = 'plots/'
 )
 
 nesc_colors = {'%02d' % (sim_idx+1) : 'C%d' % (sim_idx) for sim_idx in range(10) }
@@ -27,10 +29,12 @@ nesc_colors = {'%02d' % (sim_idx+1) : 'C%d' % (sim_idx) for sim_idx in range(10)
 parser = argparse.ArgumentParser()
 parser.add_argument("--interactive", help="show plots in interactive mode rather than saving to disk",
                     action="store_true")
-parser.add_argument("--simupy_scale", help="include simupy in plot autoscale or not",
+parser.add_argument("--simupy-scale", help="include simupy in plot autoscale or not",
                     action="store_true")
 parser.add_argument("--baseline05", help="Use SIM 05 as the baseline rather than the ensemble (total) average",
                     action="store_true")
+parser.add_argument("--output-path", help="Path to save plot outputs")
+parser.add_argument("--nesc-data-path", help="Path to parent directory of Atmospheric_checkcases data folder")
 
 def do_argparse():
     if not hasattr(sys, 'ps1'):
@@ -83,11 +87,14 @@ def plot_cols(simupy_res, baseline_pds, baseline_pd_labels, sfvt_idxs, baseline_
     num_plots = len(sfvt_idxs)
 
     abs_fig, abs_axes = plt.subplots(num_plots, sharex=True, constrained_layout=True)
-    delta_fig, delta_axes = plt.subplots(num_plots, sharex=True, constrained_layout=True)
+    if len(baseline_pds) > 0:
+        delta_fig, delta_axes = plt.subplots(num_plots, sharex=True, constrained_layout=True)
+    else:
+        delta_axes = abs_axes
 
     tf = simupy_res.t[-1]
-    num_for_average = int(tf*frame_rate_for_differencing)
-    times_for_average = np.arange(0, tf, 1/frame_rate_for_differencing)
+    num_for_average = int(tf*frame_rate_for_differencing)+1
+    times_for_average = np.arange(num_for_average)/frame_rate_for_differencing
 
     for sfvt_idx, baseline_col, col_label, abs_ax, delta_ax in zip(sfvt_idxs, baseline_cols, col_labels, abs_axes, delta_axes):
         # collect and plot direct value of simupy result
@@ -108,7 +115,9 @@ def plot_cols(simupy_res, baseline_pds, baseline_pd_labels, sfvt_idxs, baseline_
             except KeyError:
                 print("missing %s for SIM %s" % (baseline_col, baseline_pd_labels[baseline_idx]))
             else: # if available, plot and add to ensemble average
-                abs_ax.plot(baseline_pd.index, baseline_y, nesc_colors[baseline_pd_labels[baseline_idx]], alpha=0.5, label='NESC %s' % (baseline_pd_labels[baseline_idx]))
+                plot_baseline_sel = baseline_pd.index<=tf
+                baseline_t = baseline_pd.index[plot_baseline_sel]
+                abs_ax.plot(baseline_t, baseline_y[plot_baseline_sel], nesc_colors[baseline_pd_labels[baseline_idx]], alpha=0.5, label='NESC %s' % (baseline_pd_labels[baseline_idx]))
                 to_interpolate = interpolate.make_interp_spline(baseline_pd.index, baseline_y)
                 if (not nesc_options['only_baseline05']) or (baseline_pd_labels[baseline_idx] == '05'):
                     num_of_averages = num_of_averages + 1
@@ -120,7 +129,8 @@ def plot_cols(simupy_res, baseline_pds, baseline_pd_labels, sfvt_idxs, baseline_
             abs_ax.set_ylim(*abs_ax_ylim)
 
         # compute average
-        average_value[:] = average_value[:]/num_of_averages
+        if num_of_averages > 0:
+            average_value[:] = average_value[:]/num_of_averages
 
         # compute difference of simupy result from average
         to_interpolate = interpolate.make_interp_spline(simupy_res.t, simupy_y)
@@ -143,34 +153,32 @@ def plot_cols(simupy_res, baseline_pds, baseline_pd_labels, sfvt_idxs, baseline_
                 else:
                     baseline_y = baseline_y - average_value
                 delta_ax.plot(times_for_average, baseline_y, nesc_colors[baseline_pd_labels[baseline_idx]], alpha=0.5, label='NESC %d' % (baseline_idx+1))
-
-        delta_ax_ylim = delta_ax.get_ylim()
-        delta_ax.plot(times_for_average, simupy_y, 'k--', label='SimuPy')
-        if not include_simupy_in_autoscale:
-            delta_ax.set_ylim(*delta_ax_ylim)
-
+        
+        if len(baseline_pds) > 0:
+            delta_ax_ylim = delta_ax.get_ylim()
+            delta_ax.plot(times_for_average, simupy_y, 'k--', label='SimuPy')
+            if not include_simupy_in_autoscale:
+                delta_ax.set_ylim(*delta_ax_ylim)
+            delta_ax.set_ylabel('$\\Delta$ ' + col_label)
+            delta_ax.grid(True)
+    
         abs_ax.set_ylabel(col_label)
-        delta_ax.set_ylabel('$\\Delta$ ' + col_label)
+        
         abs_ax.grid(True)
-        delta_ax.grid(True)
 
-    abs_axes[0].legend(ncol=3)
 
+    abs_axes[0].legend(ncol=2)
     abs_axes[-1].set_xlabel('time, s')
-    delta_axes[-1].set_xlabel('time, s')
-
-    return abs_fig, delta_fig
-
     
+    if len(baseline_pds) > 0:
+        delta_axes[-1].set_xlabel('time, s')
+        return abs_fig, delta_fig
     
+    return abs_fig, None
 
-def plot_nesc_comparisons(simupy_res, baseline_pd_glob, plot_name=''):
-    """
-    """
-    do_argparse()
-
+def get_baselines(baseline_pd_glob):
     interactive_mode = nesc_options['interactive_mode']
-
+    
     baseline_pds = []
     baseline_pd_labels = []
 
@@ -180,7 +188,18 @@ def plot_nesc_comparisons(simupy_res, baseline_pd_glob, plot_name=''):
             print(fname)
         baseline_pds.append(pd.read_csv(fname, index_col=0))
         baseline_pd_labels.append(fname.replace(prefix, '').replace(suffix, ''))
+    
+    return baseline_pds, baseline_pd_labels
+    
 
+def plot_nesc_comparisons(simupy_res, baseline_pd_glob, plot_name=''):
+    """
+    """
+    do_argparse()
+
+    interactive_mode = nesc_options['interactive_mode']
+
+    baseline_pds, baseline_pd_labels = get_baselines(baseline_pd_glob)
 
     abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds, baseline_pd_labels,
     [Planet.lamda_D_idx, Planet.phi_D_idx, Planet.h_D_idx],
@@ -189,10 +208,11 @@ def plot_nesc_comparisons(simupy_res, baseline_pd_glob, plot_name=''):
     )
     if not interactive_mode:
         abs_fig.set_size_inches(4, 6)
-        delta_fig.set_size_inches(4, 6)
+        abs_fig.savefig(os.path.join(save_relative_path, plot_name + '_geodetic_pos.pdf'))
 
-        abs_fig.savefig(plot_name + '_geodetic_pos.pdf')
-        delta_fig.savefig(plot_name + '_geodetic_pos_delta.pdf')
+        if delta_fig is not None:
+            delta_fig.set_size_inches(4, 6)
+            delta_fig.savefig(os.path.join(save_relative_path, plot_name + '_geodetic_pos_delta.pdf'))
 
     abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds, baseline_pd_labels,
     [Planet.psi_idx, Planet.theta_idx, Planet.phi_idx],
@@ -203,10 +223,11 @@ def plot_nesc_comparisons(simupy_res, baseline_pd_glob, plot_name=''):
 
     if not interactive_mode:
         abs_fig.set_size_inches(4, 6)
-        delta_fig.set_size_inches(4, 6)
+        abs_fig.savefig(os.path.join(save_relative_path, plot_name + '_eulerangle.pdf'))
 
-        abs_fig.savefig(plot_name + '_eulerangle.pdf')
-        delta_fig.savefig(plot_name + '_eulerangle_delta.pdf')
+        if delta_fig is not None:
+            delta_fig.set_size_inches(4, 6)
+            delta_fig.savefig(os.path.join(save_relative_path, plot_name + '_eulerangle_delta.pdf'))
 
     abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds, baseline_pd_labels,
     [Planet.omega_X_idx, Planet.omega_Y_idx, Planet.omega_Z_idx],
@@ -216,10 +237,11 @@ def plot_nesc_comparisons(simupy_res, baseline_pd_glob, plot_name=''):
 
     if not interactive_mode:
         abs_fig.set_size_inches(4, 6)
-        delta_fig.set_size_inches(4, 6)
+        abs_fig.savefig(os.path.join(save_relative_path, plot_name + '_body_rates.pdf'))
 
-        abs_fig.savefig(plot_name + '_body_rates.pdf')
-        delta_fig.savefig(plot_name + '_body_rates_delta.pdf')
+        if delta_fig is not None:
+            delta_fig.set_size_inches(4, 6)
+            delta_fig.savefig(os.path.join(save_relative_path, plot_name + '_body_rates_delta.pdf'))
 
     abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds, baseline_pd_labels,
     [Planet.p_x_idx, Planet.p_y_idx, Planet.p_z_idx],
@@ -229,10 +251,11 @@ def plot_nesc_comparisons(simupy_res, baseline_pd_glob, plot_name=''):
 
     if not interactive_mode:
         abs_fig.set_size_inches(4, 6)
-        delta_fig.set_size_inches(4, 6)
+        abs_fig.savefig(os.path.join(save_relative_path, plot_name + '_inertial_pos.pdf'))
 
-        abs_fig.savefig(plot_name + '_inertial_pos.pdf')
-        delta_fig.savefig(plot_name + '_inertial_pos_delta.pdf')
+        if delta_fig is not None:
+            delta_fig.set_size_inches(4, 6)
+            delta_fig.savefig(os.path.join(save_relative_path, plot_name + '_inertial_pos_delta.pdf'))
 
     abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds, baseline_pd_labels,
     [Planet.V_N_idx, Planet.V_E_idx, Planet.V_D_idx],
@@ -242,10 +265,35 @@ def plot_nesc_comparisons(simupy_res, baseline_pd_glob, plot_name=''):
 
     if not interactive_mode:
         abs_fig.set_size_inches(4, 6)
-        delta_fig.set_size_inches(4, 6)
+        abs_fig.savefig(os.path.join(save_relative_path, plot_name + '_velocity_NED.pdf'))
 
-        abs_fig.savefig(plot_name + '_velocity_NED.pdf')
-        delta_fig.savefig(plot_name + '_velocity_NED_delta.pdf')
+        if delta_fig is not None:
+            delta_fig.set_size_inches(4, 6)
+            delta_fig.savefig(os.path.join(save_relative_path, plot_name + '_velocity_NED_delta.pdf'))
+
+    if interactive_mode:
+        plt.show()
+        
+def plot_F16_controls(simupy_res, plot_name='', y_idx_offset=-4):
+    """
+    """
+    do_argparse()
+
+    interactive_mode = nesc_options['interactive_mode']
+    
+    abs_fig, delta_fig = plot_cols(simupy_res, [], [],
+    np.array([-4, -3, -2, -1])+y_idx_offset,
+    ['',]*4, # no NESC test cases provide the control output!
+    ['elevator, deg', 'aileron, deg', 'rudder, deg', 'throttle, %'],
+    )
+    
+    # for ax, lims in zip(abs_fig.axes, ((-26, 26), (-25, 25), (-31, 31),(-5, 105))):
+    #     ax.set_ylim(*lims)
+        
+    
+    if not interactive_mode:
+        abs_fig.set_size_inches(4, 6)
+        abs_fig.savefig(os.path.join(save_relative_path, plot_name + '_controls.pdf'))
 
     if interactive_mode:
         plt.show()

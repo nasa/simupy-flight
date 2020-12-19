@@ -1,14 +1,17 @@
 from simupy.block_diagram import BlockDiagram
 from simupy import systems
 import simupy_flight
-import pandas as pd
 import numpy as np
 import os
 import glob
 from scipy import optimize
-from nesc_testcase_helper import plot_nesc_comparisons, data_relative_path, int_opts, ft_per_m, kg_per_slug
-from F16_model import F16_vehicle
+from nesc_testcase_helper import plot_nesc_comparisons, nesc_options, int_opts, ft_per_m, kg_per_slug
+import F16_model
+import F16_model_00
 from F16_control import F16_control
+
+
+F16_vehicle = F16_model.F16_vehicle
 
 
 spec_ic_args = dict(
@@ -114,7 +117,7 @@ def run_trimmer(flight_ic_args, throttle_ic=0., longStk_ic=0., allow_roll=False)
         return theta, phi, longStk, throttle
     
     weighting_matrix = np.eye(6)
-    
+        
     aileron, rudder = 0.0, 0.0
     
     def trim_opt_func(x):
@@ -167,7 +170,6 @@ latOffsetBlock = systems.DynamicalSystem(state_equation_function=latOffsetStateE
 
 baseChiCmdOutput = np.array([spec_ic_args['psi']*180/np.pi])
 baseChiCmdBlock = systems.SystemFromCallable(lambda *args: baseChiCmdOutput, 0, 1)
-
     
 BD = BlockDiagram(planet, F16_vehicle, controller_block, keasCmdBlock, altCmdBlock, latOffsetBlock, baseChiCmdBlock)
 BD.connect(planet, F16_vehicle, inputs=np.arange(planet.dim_output))
@@ -184,7 +186,12 @@ BD.connect(baseChiCmdBlock, controller_block, inputs=[dim_feedback+3])
 if __name__ == '__main__':
     
 
+    import time
+    tstart = time.time()
     res = BD.simulate(180, integrator_options=int_opts)
+    tend = time.time()
+    tdelta = tend - tstart
+    print("time to simulate: %f    eval time to run time: %f" % (tdelta, res.t[-1]/tdelta))
     glob_path = os.path.join(data_relative_path, 'Atmospheric_checkcases', 'Atmos_11_TrimCheckSubsonicF16', 'Atmos_11_sim_*.csv')
     plot_nesc_comparisons(res, glob_path, '11')
 

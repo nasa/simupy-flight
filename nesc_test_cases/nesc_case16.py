@@ -2,8 +2,8 @@ from simupy import systems
 import os
 import numpy as np
 from scipy import interpolate
-from nesc_testcase_helper import get_baselines, plot_nesc_comparisons, plot_F16_controls, data_relative_path, ft_per_m, nesc_colors
-
+from nesc_testcase_helper import get_baselines, nesc_options, plot_nesc_comparisons, plot_F16_controls, nesc_options, save_relative_path, ft_per_m, nesc_colors
+import matplotlib.pyplot as plt
 from F16_model import F16_vehicle
 from F16_gnc import F16_gnc, trimmedKEAS
 from simupy.block_diagram import BlockDiagram
@@ -49,7 +49,12 @@ BD.connect(gnc_block, F16_vehicle, inputs=np.arange(planet.dim_output, planet.di
 BD.connect(planet, gnc_block, outputs=planet_output_for_gnc_select)
 
 
+import time
+tstart = time.time()
 res = BD.simulate(180, integrator_options=int_opts)
+tend = time.time()
+tdelta = tend - tstart
+print("time to simulate: %f    eval time to run time: %f" % (tdelta, res.t[-1]/tdelta))
 
 
 
@@ -58,9 +63,8 @@ glob_path = os.path.join(data_relative_path, 'Atmospheric_checkcases', 'Atmos_16
 
 
 plot_nesc_comparisons(res, glob_path, '16')
-plot_F16_controls(res, '16')
-##
-import matplotlib.pyplot as plt
+plot_F16_controls(res, '16', y_idx_offset=0)
+
 
 plt.subplots(constrained_layout=True)
 plt.axis('equal')
@@ -86,4 +90,8 @@ plt.plot(sim_long[-1], sim_lat[-1], 'x', alpha=0.5, markerfacecolor="None", mark
 plt.xlabel('longitude, deg')
 plt.ylabel('latitude, deg')
 plt.grid(True)
-plt.show()
+
+if nesc_options['interactive_mode']:
+    plt.show()
+else:
+    plt.savefig(os.path.join(save_relative_path, '16_groundtrack.pdf'))

@@ -12,7 +12,12 @@ baseChiCmdBlock = systems.SystemFromCallable(interpolate.make_interp_spline([0, 
     
 BD.systems[-1] = baseChiCmdBlock
 BD.systems[2] = systems.SystemFromCallable(get_controller_function(*opt_ctrl, sasOn=True, apOn=True), dim_feedback + 4, 4)
+import time
+tstart = time.time()
 res = BD.simulate(30, integrator_options=int_opts)
+tend = time.time()
+tdelta = tend - tstart
+print("time to simulate: %f    eval time to run time: %f" % (tdelta, res.t[-1]/tdelta))
 
 plot_nesc_comparisons(res, glob_path, '13p3')
 plot_F16_controls(res, '13p3')

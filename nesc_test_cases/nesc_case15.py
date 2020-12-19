@@ -2,7 +2,8 @@ from simupy import systems
 import os
 import numpy as np
 from scipy import interpolate
-from nesc_testcase_helper import get_baselines, plot_nesc_comparisons, plot_F16_controls, data_relative_path, ft_per_m, nesc_colors
+import matplotlib.pyplot as plt
+from nesc_testcase_helper import get_baselines, plot_nesc_comparisons, plot_F16_controls, nesc_options, save_relative_path, ft_per_m, nesc_colors, nesc_options
 from nesc_case11 import int_opts, get_controller_function, BD, planet, rho_0, eval_trim, run_trimmer, knots_per_mps
 from F16_model import F16_vehicle
 from F16_gnc import F16_gnc, trimmedKEAS
@@ -84,7 +85,12 @@ if __name__ == '__main__':
     BD.connect(planet, gnc_block, outputs=planet_output_for_gnc_select)
     
     
+    import time
+    tstart = time.time()
     res = BD.simulate(180, integrator_options=int_opts)
+    tend = time.time()
+    tdelta = tend - tstart
+    print("time to simulate: %f    eval time to run time: %f" % (tdelta, res.t[-1]/tdelta))
     
 
 
@@ -93,9 +99,7 @@ if __name__ == '__main__':
 
     
     plot_nesc_comparisons(res, glob_path, '15')
-    plot_F16_controls(res, '15')
-##
-    import matplotlib.pyplot as plt
+    plot_F16_controls(res, '15', y_idx_offset=0)
     
     def xy_for_north_pole_ground_track(lat, long):
         xx = (90-lat*180/np.pi)*np.cos(long)
@@ -132,6 +136,10 @@ if __name__ == '__main__':
         plt.plot(*xy_for_north_pole_ground_track(*(baseline_pd[['latitude_deg','longitude_deg']].iloc[0]*np.pi/180).values.T), 'o', alpha=0.5, markerfacecolor="None", markeredgecolor=nesc_colors[baseline_pd_labels[baseline_idx]])
         plt.plot(*xy_for_north_pole_ground_track(*(baseline_pd[['latitude_deg','longitude_deg']].iloc[-1]*np.pi/180).values.T), 'x', alpha=0.5, markerfacecolor="None", markeredgecolor=nesc_colors[baseline_pd_labels[baseline_idx]])
     
-    
     plt.legend()
-    plt.show()
+    
+    if nesc_options['interactive_mode']:
+        plt.show()
+    else:
+        plt.savefig(os.path.join(save_relative_path, '15_groundtrack.pdf'))
+    

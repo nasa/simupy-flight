@@ -1,10 +1,9 @@
 from simupy.block_diagram import BlockDiagram
 import simupy_flight
-import pandas as pd
 import numpy as np
 import os
 import glob
-from nesc_testcase_helper import plot_nesc_comparisons, data_relative_path, int_opts, ft_per_m, kg_per_slug
+from nesc_testcase_helper import plot_nesc_comparisons, nesc_options, int_opts, ft_per_m, kg_per_slug
 
 
 
@@ -66,7 +65,12 @@ planet.initial_condition = planet.ic_from_planetodetic(
 # planet.initial_condition[-3:] = omega_X_ic, omega_Y_ic, omega_Z_ic
 planet.initial_condition[-2] = 0.
 
+import time
+tstart = time.time()
 res = BD.simulate(30, integrator_options=int_opts)
+tend = time.time()
+tdelta = tend - tstart
+print("time to simulate: %f    eval time to run time: %f" % (tdelta, res.t[-1]/tdelta))
 
 glob_path = os.path.join(data_relative_path, 'Atmospheric_checkcases', 'Atmos_10_NorthwardCannonball', 'Atmos_10_sim_*.csv')
 plot_nesc_comparisons(res, glob_path, '10')
