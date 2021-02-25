@@ -1,4 +1,4 @@
-SimuPy Flight Vehicle Toolbox
+SimuPy Flight Vehicle Toolkit
 =============================
 
 Vehicle flight simulation is an important part of the innovation of aerospace vehicle technology. The NASA Engineering Safety Center (NESC) has identified and addressed the need to verify flight vehicle simulations through their work on the `“Six degree-of-freedom (6-DOF) Flight Simulation Test Cases.” <https://nescacademy.nasa.gov/flightsim/>`_ The author was prompted to develop tools that would allow for the rapid implementation of simulations for novel vehicle concepts including hypersonic re-entry vehicles and urban air mobility vehicles.
