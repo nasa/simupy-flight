@@ -28,8 +28,9 @@ def ic_from_planetodetic(self, lamda_D, phi_D, h_D, V_N, V_E, V_D, psi, theta, p
     navigation_1 = phi_D
     navigation_2 = -(1 - navigation_0)*numpy.sin(navigation_1)**2 + 1
     navigation_3 = h_D
-    phidot_D = V_N/(self.planetodetics.a*navigation_0/navigation_2**(3/2) + navigation_3)
-    lamdadot_D = V_E/((self.planetodetics.a/numpy.sqrt(navigation_2) + navigation_3)*numpy.cos(navigation_1))
+    navigation_4 = numpy.greater(self.planetodetics.a, 0)
+    phidot_D = numpy.select([navigation_4], [V_N/(self.planetodetics.a*navigation_0/navigation_2**(3/2) + navigation_3)], default=0.0)
+    lamdadot_D = numpy.select([navigation_4], [V_E/((self.planetodetics.a/numpy.sqrt(navigation_2) + navigation_3)*numpy.cos(navigation_1))], default=0.0)
     hdot_D = -V_D
     x0 = numpy.cos(phi)
     x1 = numpy.cos(lamda_D)
@@ -130,8 +131,9 @@ def kinematics_output_function(self, t, p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, 
     navigation_1 = phi_D
     navigation_2 = -(1 - navigation_0)*numpy.sin(navigation_1)**2 + 1
     navigation_3 = h_D
-    phidot_D = V_N/(self.planetodetics.a*navigation_0/navigation_2**(3/2) + navigation_3)
-    lamdadot_D = V_E/((self.planetodetics.a/numpy.sqrt(navigation_2) + navigation_3)*numpy.cos(navigation_1))
+    navigation_4 = numpy.greater(self.planetodetics.a, 0)
+    phidot_D = numpy.select([navigation_4], [V_N/(self.planetodetics.a*navigation_0/navigation_2**(3/2) + navigation_3)], default=0.0)
+    lamdadot_D = numpy.select([navigation_4], [V_E/((self.planetodetics.a/numpy.sqrt(navigation_2) + navigation_3)*numpy.cos(navigation_1))], default=0.0)
     hdot_D = -V_D
     x0 = q_2**2
     x1 = q_3**2
@@ -233,8 +235,9 @@ def local_translational_trim_residual(self, p_x, p_y, p_z, q_0, q_1, q_2, q_3, v
     navigation_1 = phi_D
     navigation_2 = -(1 - navigation_0)*numpy.sin(navigation_1)**2 + 1
     navigation_3 = h_D
-    phidot_D = V_N/(self.planetodetics.a*navigation_0/navigation_2**(3/2) + navigation_3)
-    lamdadot_D = V_E/((self.planetodetics.a/numpy.sqrt(navigation_2) + navigation_3)*numpy.cos(navigation_1))
+    navigation_4 = numpy.greater(self.planetodetics.a, 0)
+    phidot_D = numpy.select([navigation_4], [V_N/(self.planetodetics.a*navigation_0/navigation_2**(3/2) + navigation_3)], default=0.0)
+    lamdadot_D = numpy.select([navigation_4], [V_E/((self.planetodetics.a/numpy.sqrt(navigation_2) + navigation_3)*numpy.cos(navigation_1))], default=0.0)
     hdot_D = -V_D
     x0 = q_0**2
     x1 = q_1**2
