@@ -21,7 +21,7 @@ setup(
     author_email='benjamin.margolis@nasa.gov',
     license="BSD 2-clause \"Simplified\" License",
     python_requires='>=3',
-    install_requires=['numpy>=1.11.3', 'scipy>=0.18.1', 'simupy>=1.0.0', 'pyerfa', ],
+    install_requires=['numpy>=1.11.3', 'scipy>=0.18.1', 'simupy>=1.0.0', 'pyerfa', 'fluids'],
     extras_require={
         'derivation': ['sympy==1.4', 'jupyter-lab'],
     },
