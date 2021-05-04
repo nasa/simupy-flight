@@ -20,8 +20,8 @@ nesc_options = dict(
     interactive_mode = True,
     include_simupy_in_autoscale = True,
     only_baseline05 = False,
-    data_relative_path = '..'
-    save_relative_path = 'plots/'
+    data_relative_path = '..',
+    save_relative_path = 'plots/',
 )
 
 nesc_colors = {'%02d' % (sim_idx+1) : 'C%d' % (sim_idx) for sim_idx in range(10) }

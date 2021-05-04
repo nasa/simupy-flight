@@ -3,7 +3,7 @@ import simupy_flight
 import numpy as np
 import os
 import glob
-from nesc_testcase_helper import plot_nesc_comparisons, nesc_options, int_opts, ft_per_m, kg_per_slug
+from nesc_testcase_helper import plot_nesc_comparisons, data_relative_path, int_opts, ft_per_m, kg_per_slug
 
 
 

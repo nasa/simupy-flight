@@ -100,6 +100,14 @@ def get_ic_args_from_baseline(idx):
 rho_0 = planet.atmosphere(0, 0, 0, 0)[0]
 knots_per_mps = 1.94384
 
+controller_feedback_indices = np.array([
+    planet.h_D_idx, planet.V_T_idx, planet.alpha_idx, planet.beta_idx, 
+    planet.psi_idx, planet.theta_idx, planet.phi_idx, 
+    planet.p_B_idx, planet.q_B_idx, planet.r_B_idx, 
+    planet.rho_idx])
+
+dim_feedback = len(controller_feedback_indices)
+
 def get_controller_function(throttleTrim, longStkTrim, 
 throttle=0., longStk=0., latStk=0., pedal=0., 
 keasCmd=trimmedKEAS, altCmd=10_013, latOffset=0.0, baseChiCmd=45.0, 
@@ -228,17 +236,17 @@ opt_args, opt_ctrl = run_trimmer(get_ic_args_from_spec(), throttle_ic=13.9, elev
 int_opts['nsteps'] = 5_000
 # int_opts['max_step'] = 2**-5
 
+controller_block = systems.SystemFromCallable(get_controller_function(opt_ctrl[-1]/100., opt_ctrl[0]/-25.), dim_feedback, 4)
+
 flight_condition = planet.ic_from_planetodetic(**opt_args)
 
 planet.initial_condition = flight_condition
 
-trim_ctrl_func = lambda t: opt_ctrl
-trim_ctrl_block = systems.SystemFromCallable(trim_ctrl_func, 0, 4)
 
-BD = BlockDiagram(planet, F16_vehicle, trim_ctrl_block)
+BD = BlockDiagram(planet, F16_vehicle, controller_block)
 BD.connect(planet, F16_vehicle, inputs=np.arange(planet.dim_output))
 BD.connect(F16_vehicle, planet, inputs=np.arange(F16_vehicle.dim_output))
-BD.connect(trim_ctrl_block, F16_vehicle, inputs=np.arange(planet.dim_output, planet.dim_output+4))
+BD.connect(controller_block, F16_vehicle, inputs=np.arange(planet.dim_output, planet.dim_output+4))
 
 import cProfile
 cProfile.run('res = BD.simulate(180, integrator_options=int_opts)')

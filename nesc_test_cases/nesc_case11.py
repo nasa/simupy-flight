@@ -11,8 +11,8 @@ import F16_model_00
 from F16_control import F16_control
 
 
-F16_vehicle = F16_model.F16_vehicle
-
+# F16_vehicle = F16_model.F16_vehicle
+F16_vehicle = F16_model_00.F16_vehicle
 
 spec_ic_args = dict(
     phi_E = 36.01916667*np.pi/180,  # latitude
@@ -44,13 +44,13 @@ planet = simupy_flight.Planet(
 
 rho_0 = planet.atmosphere(0, 0, 0, 0)[0]
 
-planet_output_for_controller_select = np.array([
+controller_feedback_indices = np.array([
     planet.h_D_idx, planet.V_T_idx, planet.alpha_idx, planet.beta_idx, 
     planet.psi_idx, planet.theta_idx, planet.phi_idx, 
     planet.p_B_idx, planet.q_B_idx, planet.r_B_idx, 
     planet.rho_idx])
 
-dim_feedback = len(planet_output_for_controller_select)
+dim_feedback = len(controller_feedback_indices)
 
 
 
@@ -175,7 +175,7 @@ BD = BlockDiagram(planet, F16_vehicle, controller_block, keasCmdBlock, altCmdBlo
 BD.connect(planet, F16_vehicle, inputs=np.arange(planet.dim_output))
 BD.connect(F16_vehicle, planet, inputs=np.arange(F16_vehicle.dim_output))
 BD.connect(controller_block, F16_vehicle, inputs=np.arange(planet.dim_output, planet.dim_output+4))
-BD.connect(planet, controller_block, outputs=planet_output_for_controller_select, inputs=np.arange(dim_feedback))
+BD.connect(planet, controller_block, outputs=controller_feedback_indices, inputs=np.arange(dim_feedback))
 
 BD.connect(keasCmdBlock, controller_block, inputs=[dim_feedback+0])
 BD.connect(altCmdBlock, controller_block, inputs=[dim_feedback+1])
@@ -192,6 +192,7 @@ if __name__ == '__main__':
     tend = time.time()
     tdelta = tend - tstart
     print("time to simulate: %f    eval time to run time: %f" % (tdelta, res.t[-1]/tdelta))
+    data_relative_path = nesc_options['data_relative_path']
     glob_path = os.path.join(data_relative_path, 'Atmospheric_checkcases', 'Atmos_11_TrimCheckSubsonicF16', 'Atmos_11_sim_*.csv')
     plot_nesc_comparisons(res, glob_path, '11')
 

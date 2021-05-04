@@ -1,7 +1,7 @@
 from simupy import systems
 import os
 from scipy import interpolate
-from nesc_testcase_helper import plot_nesc_comparisons, plot_F16_controls, nesc_options, ft_per_m
+from nesc_testcase_helper import plot_nesc_comparisons, plot_F16_controls, data_relative_path, ft_per_m
 from nesc_case11 import int_opts, get_controller_function, BD, spec_ic_args, opt_ctrl, dim_feedback
 
 int_opts['max_step'] = 0.0 #2**-4

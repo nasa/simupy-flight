@@ -2,7 +2,7 @@ from simupy import systems
 import os
 import numpy as np
 from scipy import interpolate
-from nesc_testcase_helper import get_baselines, nesc_options, plot_nesc_comparisons, plot_F16_controls, nesc_options, save_relative_path, ft_per_m, nesc_colors
+from nesc_testcase_helper import get_baselines, nesc_options, plot_nesc_comparisons, plot_F16_controls, data_relative_path, save_relative_path, ft_per_m, nesc_colors
 import matplotlib.pyplot as plt
 from F16_model import F16_vehicle
 from F16_gnc import F16_gnc, trimmedKEAS
