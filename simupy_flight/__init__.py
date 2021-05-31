@@ -20,7 +20,7 @@ def get_nonflat_pc2pd(a, f):
 
 def get_flat_pc2pd():
     def pcf2pd(px, py, pz):
-        return np.array([0.0, np.pi/2, pz])
+        return np.array([0.0, -np.pi/2, pz])
     return pcf2pd
 
 def get_nonflat_pd2pc(a, f):
