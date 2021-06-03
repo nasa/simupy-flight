@@ -1,0 +1,2182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.8" />
+<title>F-16 Subsonic aircraft aero inertial, and autopilot models</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+.monospaced, code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+  padding: 0;
+  margin: 0;
+}
+
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="article">
+<div id="header">
+<h1>F-16 Subsonic aircraft aero inertial, and autopilot models</h1>
+<span id="author">Bruce Jackson</span><br />
+<span id="email"><code>&lt;<a href="mailto:bruce.jackson@nasa.gov">bruce.jackson@nasa.gov</a>&gt;</code></span><br />
+<span id="revnumber">version 6,</span>
+<span id="revdate">2013-10-22</span>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_goal">Goal</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Provide flight dynamic aero, propulsion, mass properties, guidance,
+stability and control subsystems for a maneuvering F-16 subsonic
+vehicle in order to generate flight simulation verification time
+history data.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_acronyms">Acronyms</h2>
+<div class="sectionbody">
+<div class="dlist"><dl>
+<dt class="hdlist1">
+ANL
+</dt>
+<dd>
+<p>
+Aircraft nose left
+</p>
+</dd>
+<dt class="hdlist1">
+ANR
+</dt>
+<dd>
+<p>
+Aircraft nose right
+</p>
+</dd>
+<dt class="hdlist1">
+ANU
+</dt>
+<dd>
+<p>
+Aircraft nose up
+</p>
+</dd>
+<dt class="hdlist1">
+AP
+</dt>
+<dd>
+<p>
+Autopilot
+</p>
+</dd>
+<dt class="hdlist1">
+CCW
+</dt>
+<dd>
+<p>
+Counter-clockwise
+</p>
+</dd>
+<dt class="hdlist1">
+CM
+</dt>
+<dd>
+<p>
+Center-of-mass
+</p>
+</dd>
+<dt class="hdlist1">
+CWFN
+</dt>
+<dd>
+<p>
+Clockwise from North
+</p>
+</dd>
+<dt class="hdlist1">
+DOF
+</dt>
+<dd>
+<p>
+Degrees of freedom
+</p>
+</dd>
+<dt class="hdlist1">
+FORTRAN
+</dt>
+<dd>
+<p>
+FORMula TRANslator
+</p>
+</dd>
+<dt class="hdlist1">
+KEAS
+</dt>
+<dd>
+<p>
+Knots equivalent airspeed
+</p>
+</dd>
+<dt class="hdlist1">
+IDL
+</dt>
+<dd>
+<p>
+International Date Line
+</p>
+</dd>
+<dt class="hdlist1">
+LWD
+</dt>
+<dd>
+<p>
+Left wing down
+</p>
+</dd>
+<dt class="hdlist1">
+nm
+</dt>
+<dd>
+<p>
+nautical mile
+</p>
+</dd>
+<dt class="hdlist1">
+MAC
+</dt>
+<dd>
+<p>
+Mean aerodynamic chord
+</p>
+</dd>
+<dt class="hdlist1">
+RWD
+</dt>
+<dd>
+<p>
+Right wing down
+</p>
+</dd>
+<dt class="hdlist1">
+SAS
+</dt>
+<dd>
+<p>
+Stability Augmentation System
+</p>
+</dd>
+<dt class="hdlist1">
+TED
+</dt>
+<dd>
+<p>
+Trailing edge down
+</p>
+</dd>
+<dt class="hdlist1">
+TEL
+</dt>
+<dd>
+<p>
+Trailing edge left
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_assumptions_and_limitations">Assumptions and Limitations</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The various models are specified in accordance with AIAA S-119 <a href="#S119">[S119]</a>, also known as DAVE-ML. See
+<a href="http://daveml.org">http://daveml.org</a> for more information.</p></div>
+<div class="paragraph"><p>Flight envelope is limited to the vicinity of 10,000 ft MSL and 287.8 knots equivalent airspeed
+(around Mach 0.5).</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scope_of_effort">Scope of effort</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>A representative but unclassified and open-source flight vehicle model is provided for use in
+generating or comparing subsonic maneuvering in atmospheric flight, in a non-proprietary format that
+is both human- and text-readable.</p></div>
+<div class="paragraph"><p>The S-119 format is designed for unambiguous representation of flight dynamic models in an
+archivable format.</p></div>
+<div class="paragraph"><p>To this end, separate system models of a single-engine fighter plane are provided in the following
+files:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<em>F16_aero.dml</em>, mod O, dated 2013-09-11:: Subsonic aerodynamics model
+</p>
+</li>
+<li>
+<p>
+<em>F16_prop.dml</em>, dated 2012-08-07:: Simple propulsion model
+</p>
+</li>
+<li>
+<p>
+<em>F16_inertia.dml</em>, dated 2012-08-07:: Mass properties model
+</p>
+</li>
+<li>
+<p>
+<em>F16_control.dml</em>, rev E, dated 2013-09-12:: SAS and three-axis
+        autopilot model
+</p>
+</li>
+<li>
+<p>
+<em>F16_gnc.dml</em>, rev B, dated 2013-09-12:: Maneuver generating autopilot
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>It is intended that either the <em>F16_control.dml</em> or <em>F16_gnc.dml</em> models be used, depending on the
+requirements for trajectory generation. The aerodynamic, propulsion and inertia models should always
+be included.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_components">Components</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Each component model is described in detail below.</p></div>
+<div class="sect2">
+<h3 id="_em_f16_aero_dml_em"><em>F16_aero.dml</em></h3>
+<div class="paragraph"><p>This model is based on <a href="#TM212145">[TM212145]</a> by Garza and Morelli, which implements aero data published in
+<a href="#TP1538">[TP1538]</a> by Nguyen. The Garza model was written in Matlab&#174;, a proprietary model format from The
+Mathworks, Inc. that has been re-written to avoid proprietary formats.  It encodes a non-linear
+subsonic flight vehicle model with data table aero coefficients and is representative of a
+moderate-fidelity engineering or flight training simulation model.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 1. Input Signals - <em>F16_aero.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                  </th>
+<th align="center" valign="top"> Units   </th>
+<th align="center" valign="top"> Sign     </th>
+<th align="left" valign="top">Description [nominal FTV value]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>trueAirspeed</code></p></td>
+<td align="center" valign="top"><p class="table">ft/s</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">True airspeed, ft per second</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>angleOfAttack</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+ANU</p></td>
+<td align="left" valign="top"><p class="table">Angle of attack</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>angleOfSideslip</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+ANL</p></td>
+<td align="left" valign="top"><p class="table">Angle of sideslip</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyAngularRate_Roll</code></p></td>
+<td align="center" valign="top"><p class="table">rad/s</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Body roll rate</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyAngularRate_Pitch</code></p></td>
+<td align="center" valign="top"><p class="table">rad/s</p></td>
+<td align="center" valign="top"><p class="table">+ANU</p></td>
+<td align="left" valign="top"><p class="table">Body pitch rate</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyAngularRate_Yaw</code></p></td>
+<td align="center" valign="top"><p class="table">rad/s</p></td>
+<td align="center" valign="top"><p class="table">+ANR</p></td>
+<td align="left" valign="top"><p class="table">Body yaw rate</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>elevatorDeflection</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+TED</p></td>
+<td align="left" valign="top"><p class="table">Elevator deflection</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>aileronDeflection</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+LWD</p></td>
+<td align="left" valign="top"><p class="table">Aileron deflection (right - left)/2</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>rudderDeflection</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+TEL</p></td>
+<td align="left" valign="top"><p class="table">Rudder deflection</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 2. Output Signals - <em>F16_aero.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                            </th>
+<th align="center" valign="top"> Units </th>
+<th align="center" valign="top"> Sign    </th>
+<th align="left" valign="top"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>referenceWingChord</code></p></td>
+<td align="center" valign="top"><p class="table">ft</p></td>
+<td align="center" valign="top"><p class="table">const.</p></td>
+<td align="left" valign="top"><p class="table">Longitudinal reference length</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>referenceWingSpan</code></p></td>
+<td align="center" valign="top"><p class="table">ft</p></td>
+<td align="center" valign="top"><p class="table">const.</p></td>
+<td align="left" valign="top"><p class="table">Lateral reference length</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>referenceWingArea</code></p></td>
+<td align="center" valign="top"><p class="table">ft^2</p></td>
+<td align="center" valign="top"><p class="table">const.</p></td>
+<td align="left" valign="top"><p class="table">Reference area</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>aeroBodyForceCoefficient_X</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">+fwd</p></td>
+<td align="left" valign="top"><p class="table">Total coefficient of force along the body
+                                                     X-axis acting about the moment reference center</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>aeroBodyForceCoefficient_Y</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">+right</p></td>
+<td align="left" valign="top"><p class="table">Total coefficient of force along the body
+                                                     Y-axis acting about the moment reference center</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>aeroBodyForceCoefficient_Z</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">+down</p></td>
+<td align="left" valign="top"><p class="table">Total coefficient of force along the body
+                                                     Z-axis acting about the moment reference center</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>aeroBodyMomentCoefficient_Roll</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Total coefficient of moment around the moment
+                                                     reference center in the body X-axis (rolling moment)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>aeroBodyMomentCoefficient_Pitch</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">+ANU</p></td>
+<td align="left" valign="top"><p class="table">Total coefficient of moment around the moment
+                                                     reference center in body Y-axis (pitching moment)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>aeroBodyMomentCoefficient_Yaw</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">+ANR</p></td>
+<td align="left" valign="top"><p class="table">Total coefficient of moment around the moment
+                                                     reference center in the body Z-axis (yawing moment)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_em_f16_prop_dml_em"><em>F16_prop.dml</em></h3>
+<div class="paragraph"><p>This model contains data tables and equations found in <a href="#Stevens03">[Stevens03]</a> that were originally realized
+in FORTRAN. It models thrust as a function of Mach, altitude, and power lever angle; if the
+commanded power lever angle is greater than 50, augmented (afterburner) thrust is included.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 3. Input Signals - <em>F16_prop.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                  </th>
+<th align="center" valign="top"> Units   </th>
+<th align="center" valign="top"> Sign     </th>
+<th align="left" valign="top">Description [nominal FTV value]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>powerLeverAngle</code></p></td>
+<td align="center" valign="top"><p class="table">pct</p></td>
+<td align="center" valign="top"><p class="table">0-100</p></td>
+<td align="left" valign="top"><p class="table">Throttle (power lever angle), 0 - 100. 50 is MIL (max dry) thrust; 100 is MAX (burner)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>altitudeMSL</code></p></td>
+<td align="center" valign="top"><p class="table">ft</p></td>
+<td align="center" valign="top"><p class="table">+up</p></td>
+<td align="left" valign="top"><p class="table">Geometric altitude above reference geoid</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>mach</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Flight Mach number</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 4. Output Signals - <em>F16_prop.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                            </th>
+<th align="center" valign="top"> Units </th>
+<th align="center" valign="top"> Sign    </th>
+<th align="left" valign="top"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>thrustBodyForce_X</code></p></td>
+<td align="center" valign="top"><p class="table">lbf</p></td>
+<td align="center" valign="top"><p class="table">+fwd</p></td>
+<td align="left" valign="top"><p class="table">Steady-state thrust of engine for given inputs in body X axis</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>thrustBodyForce_Y</code></p></td>
+<td align="center" valign="top"><p class="table">lbf</p></td>
+<td align="center" valign="top"><p class="table">+right</p></td>
+<td align="left" valign="top"><p class="table">Steady-state thrust of engine for given inputs in body Y axis (always 0)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>thrustBodyForce_Z</code></p></td>
+<td align="center" valign="top"><p class="table">lbf</p></td>
+<td align="center" valign="top"><p class="table">+down</p></td>
+<td align="left" valign="top"><p class="table">Steady-state thrust of engine for given inputs in body Z axis (always 0)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>thrustBodyMoment_Roll</code></p></td>
+<td align="center" valign="top"><p class="table">ft-lbf</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Steady-state moment of engine for given inputs about the body X axis (always 0)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>thrustBodyMoment_Pitch</code></p></td>
+<td align="center" valign="top"><p class="table">ft-lbf</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Steady-state moment of engine for given inputs about the body Y axis (always 0)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>thrustBodyMoment_Roll</code></p></td>
+<td align="center" valign="top"><p class="table">ft-lbf</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Steady-state moment of engine for given inputs about the body Z axis (always 0)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_em_f16_inertia_dml_em"><em>F16_inertia.dml</em></h3>
+<div class="paragraph"><p>This models a simple constant-mass condition with fixed values for products and cross-products of inertia, from
+<a href="#Stevens03">[Stevens03]</a>. For this test, the input value for the CG position should be 25% (a floating point value of 25.0, as the
+input is in percent).</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 5. Input Signals - <em>F16_inertia.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                  </th>
+<th align="center" valign="top"> Units   </th>
+<th align="center" valign="top"> Sign     </th>
+<th align="left" valign="top">Description [nominal FTV value]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>vrsPositionOfCM</code></p></td>
+<td align="center" valign="top"><p class="table">pct</p></td>
+<td align="center" valign="top"><p class="table">+aft</p></td>
+<td align="left" valign="top"><p class="table">Longitudinal location of the center of mass in percent of MAC. Input value
+                                             (CG location) for these tests should be 25%.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 6. Output Signals - <em>F16_inertia.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                            </th>
+<th align="center" valign="top"> Units    </th>
+<th align="center" valign="top"> Sign    </th>
+<th align="left" valign="top"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyMomentOfInertia_Roll</code></p></td>
+<td align="center" valign="top"><p class="table">slug-ft^2</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Rolling moment of inertia about the body X axis</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyMomentOfInertia_Pitch</code></p></td>
+<td align="center" valign="top"><p class="table">slug-ft^2</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Pitching moment of inertia about the body Y axis</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyMomentOfInertia_Yaw</code></p></td>
+<td align="center" valign="top"><p class="table">slug-ft^2</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Yawing moment of inertia about the body Z axis</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyProductOfInertia_ZX</code></p></td>
+<td align="center" valign="top"><p class="table">slug-ft^2</p></td>
+<td align="center" valign="top"><p class="table">normal</p></td>
+<td align="left" valign="top"><p class="table">Cross-product of inertia in the body X-Z plane (no sign reversal)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyProductOfInertia_XY</code></p></td>
+<td align="center" valign="top"><p class="table">slug-ft^2</p></td>
+<td align="center" valign="top"><p class="table">normal</p></td>
+<td align="left" valign="top"><p class="table">Cross-product of inertia in the body X-Y plane (no sign reversal)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyProductOfInertia_YZ</code></p></td>
+<td align="center" valign="top"><p class="table">slug-ft^2</p></td>
+<td align="center" valign="top"><p class="table">normal</p></td>
+<td align="left" valign="top"><p class="table">Cross-product of inertia in the body Y-Z plane (no sign reversal)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>totalMass</code></p></td>
+<td align="center" valign="top"><p class="table">slug</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Total mass of the vehicle (20,500 lbm)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyPositionOfCmWrtMrc_X</code></p></td>
+<td align="center" valign="top"><p class="table">ft</p></td>
+<td align="center" valign="top"><p class="table">+fwd</p></td>
+<td align="left" valign="top"><p class="table">Longitudinal location of the center of mass relative to moment reference point</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyPositionOfCmWrtMrc_Y</code></p></td>
+<td align="center" valign="top"><p class="table">ft</p></td>
+<td align="center" valign="top"><p class="table">+right</p></td>
+<td align="left" valign="top"><p class="table">Lateral location of the center of mass relative to moment reference point</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyPositionOfCmWrtMrc_Z</code></p></td>
+<td align="center" valign="top"><p class="table">ft</p></td>
+<td align="center" valign="top"><p class="table">+down</p></td>
+<td align="left" valign="top"><p class="table">Vertical location of the center of mass relative to moment reference point</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="F16_control"><em>F16_control.dml</em></h3>
+<div class="paragraph"><p>This model contains optional stability augmentation for piloted flight as well as a one, two, or
+three-axis autopilot with course capture-and-track capability. It is the basis for the more
+specialized <em>F16_gnc.dml</em> that follows, but can be used as-is for arbitrary maneuvering.</p></div>
+<div class="paragraph"><p>Stability augmentation is provided by two separate linear quadratic regulator, full-state-feedback
+gain matrices developed by the author that are optimized for flight at 10,000 ft and 287
+KEAS. Flight at other speed/altitude combinations may be sub-optimal or even unstable.</p></div>
+<div class="paragraph"><p>Pilot inputs are converted to surface and power lever angle commands. If
+<code>stabilityAugmentationOn_disc</code> is <em>true</em>, the vehicle&#8217;s dynamics will be stabilized. If
+<code>autopilotOn_disc</code> is <em>true,</em> stability augmentation will be engaged and the vehicle will respond to
+airspeed, altitude, and heading commands (<code>equivalentAirspeedCommand</code>, <code>altitudeMslCommand</code> and
+<code>trueBaseCourseCommand</code> which acts as a desired heading input). If <code>lateralDeviationError</code> is
+non-zero, the vehicle will attempt to intercept and track a desired course along the direction
+supplied in <code>trueBaseCourseCommand</code>.</p></div>
+<div class="paragraph"><p>While trimming the F-16 model to an equilibrium state, <code>stabilityAugmentationOn_disc</code> and
+<code>autopilotOn_disc</code> should both be set to <em>false</em>. It is recommended that the simulation&#8217;s trim
+feature manipulate <code>trimmedPilotControl_throttle</code> and <code>trimmedPilotControl_long</code> to trim the
+longitudinal state of the vehicle. If the simulation&#8217;s trim feature is designed to manipulate
+<code>pilotControl_throttle</code> and <code>pilotControl_long</code>, then the simulation should set
+<code>trimmedPilotControl_throttle</code> and <code>trimmedPilotControl_long</code> to zero. (The <em>F16_control.dml</em> file
+specifies a non-zero initial condition for these two trim variables that is near their trim values
+for straight and level flight at 10,000 ft MSL and Mach 0.5.)</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 7. Input Signals - <em>F16_control.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                         </th>
+<th align="center" valign="top"> Units    </th>
+<th align="center" valign="top"> Sign   </th>
+<th align="left" valign="top"> Description [nominal FTV value]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>pilotControl_throttle</code></p></td>
+<td align="center" valign="top"><p class="table">0 &#8594; +1</p></td>
+<td align="center" valign="top"><p class="table">+incr</p></td>
+<td align="left" valign="top"><p class="table">Pilot throttle control position</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>pilotControl_long</code></p></td>
+<td align="center" valign="top"><p class="table">-1 &#8594; +1</p></td>
+<td align="center" valign="top"><p class="table">+aft</p></td>
+<td align="left" valign="top"><p class="table">Pilot longitudinal control position</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>pilotControl_lat</code></p></td>
+<td align="center" valign="top"><p class="table">-1 &#8594; +1</p></td>
+<td align="center" valign="top"><p class="table">+right</p></td>
+<td align="left" valign="top"><p class="table">Pilot lateral control position</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>pilotControl_yaw</code></p></td>
+<td align="center" valign="top"><p class="table">-1 &#8594; +1</p></td>
+<td align="center" valign="top"><p class="table">+right</p></td>
+<td align="left" valign="top"><p class="table">Pilot rudder pedal position</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>trimmedPilotControl_throttle</code></p></td>
+<td align="center" valign="top"><p class="table">0 &#8594; +1</p></td>
+<td align="center" valign="top"><p class="table">+incr</p></td>
+<td align="left" valign="top"><p class="table">Trimmed position of throttle</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>trimmedPilotControl_long</code></p></td>
+<td align="center" valign="top"><p class="table">-1 &#8594; +1</p></td>
+<td align="center" valign="top"><p class="table">+aft</p></td>
+<td align="left" valign="top"><p class="table">Trimmed position of pitch control</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>stabilityAugmentationOn_disc</code></p></td>
+<td align="center" valign="top"><p class="table">0, 1</p></td>
+<td align="center" valign="top"><p class="table">+true</p></td>
+<td align="left" valign="top"><p class="table">Stability augmentation engage flag (discrete)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>autopilotOn_disc</code></p></td>
+<td align="center" valign="top"><p class="table">0, 1</p></td>
+<td align="center" valign="top"><p class="table">+true</p></td>
+<td align="left" valign="top"><p class="table">Autopilot engage flag (discrete)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>equivalentAirspeedCommand</code></p></td>
+<td align="center" valign="top"><p class="table">KEAS</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Desired equivalent airspeed (autopilot input)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>altitudeMslCommand</code></p></td>
+<td align="center" valign="top"><p class="table">ft</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Desired absolute altitude (autopilot input)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>lateralDeviationError</code></p></td>
+<td align="center" valign="top"><p class="table">ft</p></td>
+<td align="center" valign="top"><p class="table">+right</p></td>
+<td align="left" valign="top"><p class="table">Lateral deviation error from desired course for autopilot</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>trueBaseCourseCommand</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+CWFN</p></td>
+<td align="left" valign="top"><p class="table">True heading of desired ground track (autopilot input)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>altitudeMsl</code></p></td>
+<td align="center" valign="top"><p class="table">ft</p></td>
+<td align="center" valign="top"><p class="table">+up</p></td>
+<td align="left" valign="top"><p class="table">Geometric altitude above mean sea level (SAS and autopilot feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>equivalentAirspeed</code></p></td>
+<td align="center" valign="top"><p class="table">KEAS</p></td>
+<td align="center" valign="top"><p class="table">+up</p></td>
+<td align="left" valign="top"><p class="table">Equivalent airspeed (SAS and autopilot feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>angleOfAttack</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+ANU</p></td>
+<td align="left" valign="top"><p class="table">Angle of attack (SAS feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>angleOfSideslip</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+ANL</p></td>
+<td align="left" valign="top"><p class="table">Angle of sideslip (SAS feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>eulerAngle_Roll</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Roll angle (SAS feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>eulerAngle_Pitch</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+ANU</p></td>
+<td align="left" valign="top"><p class="table">Pitch angle (SAS feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>eulerAngle_Yaw</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+CWFN</p></td>
+<td align="left" valign="top"><p class="table">Heading angle (autopilot feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyAngularRate_Roll</code></p></td>
+<td align="center" valign="top"><p class="table">rad/s</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Body roll rate (SAS feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyAngularRate_Pitch</code></p></td>
+<td align="center" valign="top"><p class="table">rad/s</p></td>
+<td align="center" valign="top"><p class="table">+ANU</p></td>
+<td align="left" valign="top"><p class="table">Body pitch rate (SAS feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyAngularRate_Yaw</code></p></td>
+<td align="center" valign="top"><p class="table">rad/s</p></td>
+<td align="center" valign="top"><p class="table">+ANR</p></td>
+<td align="left" valign="top"><p class="table">Body yaw rate (SAS feedback)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 8. Output Signals - <em>F16_control.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                  </th>
+<th align="center" valign="top"> Units   </th>
+<th align="center" valign="top"> Sign    </th>
+<th align="left" valign="top"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>elevatorDeflection</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+TED</p></td>
+<td align="left" valign="top"><p class="table">Elevator command</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>aileronDeflection</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+LWD</p></td>
+<td align="left" valign="top"><p class="table">Aileron deflection (right - left)/2</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>rudderDeflection</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+TEL</p></td>
+<td align="left" valign="top"><p class="table">Rudder deflection</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>powerLeverAngle</code></p></td>
+<td align="center" valign="top"><p class="table">pct</p></td>
+<td align="center" valign="top"><p class="table">0-100</p></td>
+<td align="left" valign="top"><p class="table">Throttle (power lever angle), 0 - 100. 50 is MIL (max dry) thrust; 100 is MAX (burner)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_em_f16_gnc_dml_em"><em>F16_gnc.dml</em></h3>
+<div class="paragraph"><p>This model can be used as a replacement for the control law described in <em>F16_control.dml</em> and is
+designed to perform a 3-nm CCW circular orbit around one of two spots on the Earth: the North Pole
+or around the equator/international data line intersection, for the purposes of simulation checkout
+and verification.</p></div>
+<div class="paragraph"><p>The primary difference between <em>F16_gnc.dml</em> and <em>F16_control.dml</em> is the GNC version has no
+<code>trueBaseCourseCommand</code>; the behavior of the vehicle when <code>autopilotOn_disc</code> is <em>true</em> depends on
+the value of <em>selectCircumnavigator_disc</em>: if 0, the vehicle will fly to and circle around the
+equator/international date line intersection; if 1, the vehicle will fly to and circle the North
+Pole at a distance of 3 nautical miles at the specified altitude and speed.</p></div>
+<div class="paragraph"><p>These circles take approximately 3.5 minutes at 10,000 ft and 287 KEAS.</p></div>
+<div class="paragraph"><p>See the description of <a href="#F16_control"><em>F16_control.dml</em></a> for notes on manipulating the control
+system to trim the F-16 model.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 9. Input Signals - <em>F16_gnc.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                         </th>
+<th align="center" valign="top"> Units    </th>
+<th align="center" valign="top"> Sign   </th>
+<th align="left" valign="top"> Description [nominal FTV value]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>pilotControl_throttle</code></p></td>
+<td align="center" valign="top"><p class="table">0 &#8594; +1</p></td>
+<td align="center" valign="top"><p class="table">+incr</p></td>
+<td align="left" valign="top"><p class="table">Pilot throttle control position</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>pilotControl_long</code></p></td>
+<td align="center" valign="top"><p class="table">-1 &#8594; +1</p></td>
+<td align="center" valign="top"><p class="table">+aft</p></td>
+<td align="left" valign="top"><p class="table">Pilot longitudinal control position</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>pilotControl_lat</code></p></td>
+<td align="center" valign="top"><p class="table">-1 &#8594; +1</p></td>
+<td align="center" valign="top"><p class="table">+right</p></td>
+<td align="left" valign="top"><p class="table">Pilot lateral control position</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>pilotControl_yaw</code></p></td>
+<td align="center" valign="top"><p class="table">-1 &#8594; +1</p></td>
+<td align="center" valign="top"><p class="table">+right</p></td>
+<td align="left" valign="top"><p class="table">Pilot rudder pedal position</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>trimmedPilotControl_throttle</code></p></td>
+<td align="center" valign="top"><p class="table">0 &#8594; +1</p></td>
+<td align="center" valign="top"><p class="table">+incr</p></td>
+<td align="left" valign="top"><p class="table">Trimmed position of throttle</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>trimmedPilotControl_long</code></p></td>
+<td align="center" valign="top"><p class="table">-1 &#8594; +1</p></td>
+<td align="center" valign="top"><p class="table">+aft</p></td>
+<td align="left" valign="top"><p class="table">Trimmed position of pitch control</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>stabilityAugmentationOn_disc</code></p></td>
+<td align="center" valign="top"><p class="table">0, 1</p></td>
+<td align="center" valign="top"><p class="table">+true</p></td>
+<td align="left" valign="top"><p class="table">Stability augmentation engage flag (discrete)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>autopilotOn_disc</code></p></td>
+<td align="center" valign="top"><p class="table">0, 1</p></td>
+<td align="center" valign="top"><p class="table">+true</p></td>
+<td align="left" valign="top"><p class="table">Autopilot engage flag (discrete)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>selectCircumnavigator_disc</code></p></td>
+<td align="center" valign="top"><p class="table">0, 1</p></td>
+<td align="center" valign="top"><p class="table">+Npole</p></td>
+<td align="left" valign="top"><p class="table">Selects point to circle; 0 = equator/IDL, 1 = North Pole</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>geLatitude</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+north</p></td>
+<td align="left" valign="top"><p class="table">Geodetic latitude of vehicle&#8217;s center of mass (nav feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>geLongitude</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+east</p></td>
+<td align="left" valign="top"><p class="table">Geodetic longitude of vehicle&#8217;s center of mass east of PM (nav feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>equivalentAirspeedCommand</code></p></td>
+<td align="center" valign="top"><p class="table">KEAS</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Autopilot commanded equivalent airspeed (autopilot input)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>altitudeMslCommand</code></p></td>
+<td align="center" valign="top"><p class="table">ft</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Autopilot commanded absolute altitude (autopilot input)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>altitudeMsl</code></p></td>
+<td align="center" valign="top"><p class="table">ft</p></td>
+<td align="center" valign="top"><p class="table">+up</p></td>
+<td align="left" valign="top"><p class="table">Geometric altitude above mean sea level (SAS and autopilot feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>equivalentAirspeed</code></p></td>
+<td align="center" valign="top"><p class="table">KEAS</p></td>
+<td align="center" valign="top"><p class="table">+up</p></td>
+<td align="left" valign="top"><p class="table">Equivalent airspeed (SAS and autopilot feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>angleOfAttack</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+ANU</p></td>
+<td align="left" valign="top"><p class="table">Angle of attack (SAS feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>angleOfSideslip</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+ANL</p></td>
+<td align="left" valign="top"><p class="table">Angle of sideslip (SAS feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>eulerAngle_Roll</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Roll angle (SAS feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>eulerAngle_Pitch</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+ANU</p></td>
+<td align="left" valign="top"><p class="table">Pitch angle (SAS feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>eulerAngle_Yaw</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+CWFN</p></td>
+<td align="left" valign="top"><p class="table">Heading angle (autopilot feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyAngularRate_Roll</code></p></td>
+<td align="center" valign="top"><p class="table">rad/s</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Body roll rate (SAS feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyAngularRate_Pitch</code></p></td>
+<td align="center" valign="top"><p class="table">rad/s</p></td>
+<td align="center" valign="top"><p class="table">+ANU</p></td>
+<td align="left" valign="top"><p class="table">Body pitch rate (SAS feedback)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyAngularRate_Yaw</code></p></td>
+<td align="center" valign="top"><p class="table">rad/s</p></td>
+<td align="center" valign="top"><p class="table">+ANR</p></td>
+<td align="left" valign="top"><p class="table">Body yaw rate (SAS feedback)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 10. Output Signals - <em>F16_gnc.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                  </th>
+<th align="center" valign="top"> Units   </th>
+<th align="center" valign="top"> Sign    </th>
+<th align="left" valign="top"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>elevatorDeflection</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+TED</p></td>
+<td align="left" valign="top"><p class="table">Elevator command</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>aileronDeflection</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+LWD</p></td>
+<td align="left" valign="top"><p class="table">Aileron deflection (right - left)/2</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>rudderDeflection</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+TEL</p></td>
+<td align="left" valign="top"><p class="table">Rudder deflection</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>powerLeverAngle</code></p></td>
+<td align="center" valign="top"><p class="table">pct</p></td>
+<td align="center" valign="top"><p class="table">0-100</p></td>
+<td align="left" valign="top"><p class="table">Throttle (power lever angle), 0 - 100. 50 is MIL (max dry) thrust; 100 is MAX (burner)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_implementation">Implementation</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The AIAA S-119 standard is an XML-based encoding scheme that provides both human- and
+machine-readable algorithm and data table specifications in an unambiguous way, suitable for
+exchange over distance and, for archival purposes, time. While specifying models in this fashion may
+initially present a challenge to the implementer, investment in automated scripts or parsers should
+greatly simplify future exchange of models. The nature of XML should make these models
+understandable even without reference to the formal grammar definition document (available from
+<a href="http://daveml.org">http://daveml.org</a>).</p></div>
+<div class="paragraph"><p>The grammar is simple enough that equivalent source code can be implemented by hand in most
+cases. If preferred, several parsers are available, some open and some by request. See the Tools
+section of <a href="http://daveml.org">http://daveml.org</a> for a current list.</p></div>
+<div class="paragraph"><p>These parsers are intended either for use at run-time (an interpreting parser) or at compile-time (a
+translating parser that emits C, Simulink&#174;, FORTRAN or other programming source code). A parser
+that can do both is also available.</p></div>
+<div class="paragraph"><p>S-119 models may also contain their own self-verification check-cases that will help ensure proper
+implementation of the model by the chosen parser. At present, the aero (<em>F16_aero.dml</em>) and
+propulsion (<em>F16_prop.dml</em>) models contain verification checkcase definitions and data.</p></div>
+<div class="paragraph"><p>Variable names used by these various models, where appropriate, reflect the suggested naming
+convention described in <a href="#S119">[S119]</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results">Results</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Using the models cited above, a six-DOF non-linear aircraft simulation was realized in a popular
+dynamic simulation and control design tool with an oblate rotating spheroidal Earth with a constant
+32.174 ft/s^2 gravity field and a tabular US 1976 Standard Atmosphere model. The center of mass was
+set at 25% (the single input to the inertia model) and the aircraft was trimmed for level flight,
+and then various modes of autopilot were engaged and recorded; these results are given below for the
+convenience of other implementers.</p></div>
+<div class="sect2">
+<h3 id="_trimmed_flight_conditions">Trimmed flight conditions</h3>
+<div class="paragraph"><p>It is important to note that for proper trim, the summed aero and propulsion forces and moments
+obtained from the aero (<em>F16_aero.dml</em>) and engine (<em>F16_prop.dml</em>) models must be transferred from
+the moment reference center (35% of MAC behind the wing leading edge) to the center of mass obtained
+from the mass properties model (<em>F16_inertia.dml</em>).</p></div>
+<div class="paragraph"><p>The trim scheme employed was for the values given below were obtained by trimming for wings-level,
+horizontal, un-accelerated flight using elevator,
+throttle, and pitch attitude/angle of attack (since flight path angle is zero).</p></div>
+<div class="tableblock">
+<table rules="all"
+width="80%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 11. Trimmed level flight conditions</caption>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                              </th>
+<th align="left" valign="top"> Value    </th>
+<th align="left" valign="top"> Units</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">Altitude</p></td>
+<td align="left" valign="top"><p class="table">10,013</p></td>
+<td align="left" valign="top"><p class="table">ft MSL</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">True airspeed</p></td>
+<td align="left" valign="top"><p class="table">565.6854</p></td>
+<td align="left" valign="top"><p class="table">ft/s</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">C.M. position</p></td>
+<td align="left" valign="top"><p class="table">25.0</p></td>
+<td align="left" valign="top"><p class="table">percent</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Pitch attitude</p></td>
+<td align="left" valign="top"><p class="table">2.6538</p></td>
+<td align="left" valign="top"><p class="table">deg +ANU</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Longitudinal pilot stick position</p></td>
+<td align="left" valign="top"><p class="table">12.96</p></td>
+<td align="left" valign="top"><p class="table">percent +AFT</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Horizontal tail position</p></td>
+<td align="left" valign="top"><p class="table">-3.2410</p></td>
+<td align="left" valign="top"><p class="table">deg +TED</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Pilot throttle setting</p></td>
+<td align="left" valign="top"><p class="table">13.9019</p></td>
+<td align="left" valign="top"><p class="table">percent max</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Power Lever Angle</p></td>
+<td align="left" valign="top"><p class="table">13.9019</p></td>
+<td align="left" valign="top"><p class="table">percent max</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="paragraph"><p>The <a href="#F16_trim">F-16 Trim Conditions - Case 11</a> drawing shows the pitch trim solution graphically.</p></div>
+<div class="paragraph" id="F16_trim"><div class="title">Graphical depiction of subsonic F-16 trim solution</div><p><span class="image">
+<a class="image" href="Figures/trim_soln_subsonic.png">
+<img src="Figures/trim_soln_subsonic.png" alt="Figures/trim_soln_subsonic.png" width="500" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>(click on the image for a higher-resolution one)</p></div>
+</div>
+<div class="sect2">
+<h3 id="_a_note_on_initial_closed_loop_responses">A note on initial closed-loop responses</h3>
+<div class="paragraph"><p>Several comments should preface the results.</p></div>
+<div class="paragraph"><p>In the examples that follow, the basic F-16 is under control of two Linear, Quadratic Regulator
+(LQR) autopilots, one for pitch and one for roll/yaw. These two LQR autopilots are at the heart of
+both the simple altitude, velocity, heading and course autopilot (<em>F16_control.dml</em>) and the
+navigating autopilot (<em>F16_gnc.dml</em>). To simplify this autopilot implementation, perfect state
+feedback is assumed (no state estimator model is used), and the control system has no integrated
+states. This results in:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+large excursions in control inputs to changes in sharp commands that tend to saturate the control
+  surfaces
+</p>
+</li>
+<li>
+<p>
+Type 0 response, which implies no integral error feedback. The commanded altitude, airspeed,
+  course, etc. are not tracked exactly; there is usually a small steady offset once steady-state
+  behavior is achieved a few seconds after the sim is initiated. This is exacerbated due to small
+  differences in trim conditions from truly steady-state. This is most apparent in the shorter
+  duration step inputs where these small biases in, say, heading angle take a few seconds to damp
+  out.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_standard_autopilot_em_f16_control_em">Standard autopilot - <em>F16_control</em></h3>
+<div class="paragraph"><p>The <em>F16_control.dml</em> model can be used to follow simple altitude, velocity, heading and ground
+track commands. The <em>F16_control</em> model has two inputs that serve to engage successive levels to
+augmentation: if <code>stabilityAugmentationOn_disc</code> is on (i.e. greater than 0.5), the control law will
+provide damping through the LQR controllers; if this is off (i.e. less than 0.5) changes in the
+pilot inputs (<code>pilotControl_throttle</code>, <code>pilotControl_long</code>, <code>pilotControl_lat</code>, and
+<code>pilotControl_yaw</code>) result is <em>bare</em> F-16 dynamics.</p></div>
+<div class="paragraph"><p>If <code>autopilotOn_disc</code> is on, the pilot inputs are ignored, stability augmentation is forced on, and
+the vehicle tracks commands from <code>altitudeMslCommand</code>, <code>equivalentAirspeedCommand</code>,
+<code>trueBaseCourseCommand</code> and <code>lateralDeviationError</code> inputs.  The first two inputs should be
+self-explanatory, but the last two need some explanation.</p></div>
+<div class="paragraph"><p>The autopilot will point the aircraft heading to match <code>trueBaseCourseCommand</code> as long as
+<code>lateralDeviationError</code> is zero. This is similar behavior to a heading-hold function on a small
+single-engine airplane. If however a course deviation is fed back from some sensor into the
+<code>lateralDeviationError</code> input, the autopilot&#8217;s behavior is modified so that it modifies the
+vehicle&#8217;s heading from the initial <code>trueBaseCourseCommand</code> in order to reduce
+<code>lateralDeviationError</code>. This is similar to a <em>NAV</em> mode on an aircraft equipped with radio or
+satellite navigation receivers.</p></div>
+<div class="paragraph"><p>The four examples given below show the behavior of the <em>F16_control</em> model in an example 6DOF
+simulation model of the F-16 subsonic vehicle. These maneuvers all begin from the trimmed condition
+given previously.</p></div>
+<div class="sect3">
+<h4 id="_altitude_command_step_change_response">Altitude command step change response</h4>
+<div class="paragraph"><p>The <a href="#alt_step_strip">Altitude change</a> plot below shows the response of the vehicle with
+the <em>F16_control</em> autopilot in operation, for the case with <code>autopilotOn_disc</code> on, and a step change
+of 100 ft in the commanded altitude is inserted at 5 seconds after the simulation starts.</p></div>
+<div class="paragraph" id="alt_step_strip"><div class="title">Altitude change time history</div><p><span class="image">
+<a class="image" href="Figures/alt_step_strip.png">
+<img src="Figures/alt_step_strip.png" alt="Figures/alt_step_strip.png" width="500" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>(click on the image for a higher-resolution one)</p></div>
+</div>
+<div class="sect3">
+<h4 id="_velocity_command_step_change_response">Velocity command step change response</h4>
+<div class="paragraph"><p>The <a href="#keas_step_strip">Velocity change</a> plot below shows the response of the vehicle with
+the <em>F16_control</em> autopilot in operation, for the case with <code>autopilotOn_disc</code> on, and with a speed reduction
+of 10 knots equivalent airspeed inserted at 5 seconds after the simulation starts.</p></div>
+<div class="paragraph" id="keas_step_strip"><div class="title">Velocity change time history</div><p><span class="image">
+<a class="image" href="Figures/keas_step_strip.png">
+<img src="Figures/keas_step_strip.png" alt="Figures/keas_step_strip.png" width="500" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>(click on the image for a higher-resolution one)</p></div>
+</div>
+<div class="sect3">
+<h4 id="_heading_command_step_change_response">Heading command step change response</h4>
+<div class="paragraph"><p>The <a href="#heading_step_strip">Heading change strip chart</a> and <a href="#heading_step_track">Heading change track</a> plots below show the response of the vehicle with the <em>F16_control</em> autopilot in operation,
+for the case with <code>autopilotOn_disc</code> on, and with a heading change of 15 degrees to the right of the
+original course,  at 15 seconds after the simulation starts. In this case, the
+<code>lateralDeviationError</code> signal is kept at zero throughout the maneuver, so this is just a change in
+heading but is not a tracking task.</p></div>
+<div class="paragraph" id="heading_step_strip"><div class="title">Heading change time history</div><p><span class="image">
+<a class="image" href="Figures/hdg_step_strip.png">
+<img src="Figures/hdg_step_strip.png" alt="Figures/hdg_step_strip.png" width="500" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>(click on the image for a higher-resolution one)</p></div>
+<div class="paragraph" id="heading_step_track"><div class="title">Heading change ground track</div><p><span class="image">
+<a class="image" href="Figures/hdg_step_track.png">
+<img src="Figures/hdg_step_track.png" alt="Figures/hdg_step_track.png" width="500" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>(click on the image for a higher-resolution one)</p></div>
+</div>
+<div class="sect3">
+<h4 id="_lateral_offset_error_step_response">Lateral offset error step response</h4>
+<div class="paragraph"><p>The <a href="#trk_offset_step_strip">Lateral Course Offset change strip chart</a> and <a href="#trk_offset_step_track">Lateral Course Offset change track</a> plots below show the response of the vehicle with the
+<em>F16_control</em> autopilot in operation, for the case with <code>autopilotOn_disc</code> on, and with a course offset
+change of 2,000 ft to the left of the original course, at 20 seconds after the simulation
+starts. In this case, the <code>lateralDeviationError</code> signal is driven by the step (initially in the
+amount -2,000 ft or left of course) while <code>trueBaseCourseCommand</code> is kept steady at 90 deg (true
+East).</p></div>
+<div class="paragraph"><p>It can be seen that the vehicle banks right to a new intercept heading, then gradually returns to
+the original heading to follow the new ground track, 2,000 to the right of and parallel with the
+original one.</p></div>
+<div class="paragraph" id="trk_offset_step_strip"><div class="title">Lateral Course Offset change time history</div><p><span class="image">
+<a class="image" href="Figures/trk_offset_step_strip.png">
+<img src="Figures/trk_offset_step_strip.png" alt="Figures/trk_offset_step_strip.png" width="500" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>(click on the image for a higher-resolution one)</p></div>
+<div class="paragraph" id="trk_offset_step_track"><div class="title">Lateral Course Offset change ground track</div><p><span class="image">
+<a class="image" href="Figures/trk_offset_step_track.png">
+<img src="Figures/trk_offset_step_track.png" alt="Figures/trk_offset_step_track.png" width="500" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>(click on the image for a higher-resolution one)</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_advanced_autopilot_em_f16_gnc_em">Advanced autopilot - <em>F16_gnc</em></h3>
+<div class="paragraph"><p>The autopilot logic provided in <em>F16_gnc.dml</em> provides two pre-planned operational modes: one is to
+fly to and circle the North pole; the other is to fly to and circle the equator/International Date
+Line (IDL) intersection. These maneuvers were chosen to exercise the difficulty in dealing with flight
+near the poles, as longitude nears a singularity, and in circling the IDL when both latitude and
+longitude change sign.</p></div>
+<div class="paragraph"><p>The <em>F16_gnc</em> model has three inputs that serve as switches to affect this behavior. For either
+circling navigators to be engaged, both the <code>stabilityAugmentationOn_disc</code> and <code>autopilotOn_disc</code>
+inputs need to be turned on (by setting them to floating-point values of 1.0). [Off is implied with
+a value of 0.0 provided].</p></div>
+<div class="sect3">
+<h4 id="_circling_the_equator_international_date_line">Circling the equator - International Date Line</h4>
+<div class="paragraph"><p>With the <em>F16_gnc</em> autopilot input <code>circumnavigatorSelectPolar</code> set to 0.0, the autopilot will
+attempt to intercept and intercept a 3-nm counter-clockwise circle around the equator/IDL
+intersection.</p></div>
+<div class="paragraph"><p>Using the example simulation, the F-16 model was initialized at the trimmed flight conditions from a
+point located at 0 latitude, -179.95 degrees (west) longitude, heading northeast (45 deg true) A
+plot of the resulting ground track <a href="#Equator-IDL_track">Equator-IDL circumnavigation ground track</a>
+of a 360 second run, plotted in latitude/longitude below, indicates the vehicle makes a left turn at
+the 30 degree bank limit until on a heading to intercept the circle in the northwest quadrant, then
+intercepts and turns left again to track the circle around the intersection.  It continues to
+maintain approximately 10,013 feet and 585.6 ft/s while doing so as shown in the strip chart image
+<a href="#Equator-IDL_strip">Equator-IDL circumnavigation time history</a>.</p></div>
+<div class="paragraph" id="Equator-IDL_track"><div class="title">Equator-IDL circumnavigation ground track</div><p><span class="image">
+<a class="image" href="Figures/idl_track.png">
+<img src="Figures/idl_track.png" alt="Figures/idl_track.png" width="500" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>(click on the image for a higher-resolution one)</p></div>
+<div class="paragraph" id="Equator-IDL_strip"><div class="title">Equator-IDL circumnavigation time history</div><p><span class="image">
+<a class="image" href="Figures/idl_strip.png">
+<img src="Figures/idl_strip.png" alt="Figures/idl_strip.png" width="500" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>(click on the image for a higher-resolution one)</p></div>
+</div>
+<div class="sect3">
+<h4 id="_circling_the_north_pole">Circling the North Pole</h4>
+<div class="paragraph"><p>Similarly, with the <em>F16_gnc</em> autopilot input <code>circumnavigatorSelectPolar</code> set to 1.0, the
+autopilot will attempt to intercept and intercept a 3-nm counter-clockwise circle around the
+North Pole.</p></div>
+<div class="paragraph"><p>The F-16 example simulation was initialized at the same trimmed flight conditions from a point
+located at 89,95 geodetic latitude, 0 degrees longitude, heading ESE (100 deg true). A plot of the
+resulting ground track of a 360 second run, plotted in latitude/longitude <a href="#npole_track">North pole circumnavigation ground track</a>, indicates the vehicle makes a left turn at the 30 degree bank limit
+until on a heading to intercept the circle in the northeast quadrant, then intercepts and turns left
+again to track the circle around the intersection.  It continues to maintain approximately 10,013
+feet and 585.6 ft/s while doing so <a href="#npole_strip">North pole circumnavigation time history</a>.</p></div>
+<div class="paragraph" id="npole_track"><div class="title">North pole circumnavigation ground track</div><p><span class="image">
+<a class="image" href="Figures/npole_track.png">
+<img src="Figures/npole_track.png" alt="Figures/npole_track.png" width="500" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>(click on the image for a higher-resolution one)</p></div>
+<div class="paragraph" id="npole_strip"><div class="title">North pole circumnavigation time history</div><p><span class="image">
+<a class="image" href="Figures/npole_strip.png">
+<img src="Figures/npole_strip.png" alt="Figures/npole_strip.png" width="500" />
+</a>
+</span></p></div>
+<div class="paragraph"><p>(click on the image for a higher-resolution one)</p></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_change_history">Change history</h2>
+<div class="sectionbody">
+<div class="tableblock">
+<table rules="all"
+width="50%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 12. Revisions to this file</caption>
+<col width="33%" />
+<col width="11%" />
+<col width="55%" />
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">2013-05-03</p></td>
+<td align="left" valign="top"><p class="table">v1</p></td>
+<td align="left" valign="top"><p class="table">Original version</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">2013-05-29</p></td>
+<td align="left" valign="top"><p class="table">v2</p></td>
+<td align="left" valign="top"><p class="table">Corrected units on angular rate inputs</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">2013-06-06</p></td>
+<td align="left" valign="top"><p class="table">v3</p></td>
+<td align="left" valign="top"><p class="table">Added trimmed control values as inputs per Michael Madden</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">2013-09-19</p></td>
+<td align="left" valign="top"><p class="table">v4</p></td>
+<td align="left" valign="top"><p class="table">Updated rev numbers; updated I/O lists; added trimmed values; added plots</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">2013-10-22</p></td>
+<td align="left" valign="top"><p class="table">v5</p></td>
+<td align="left" valign="top"><p class="table">Added notes in a couple places that the CM position input to inertial model should be 25% for all tests.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">2013-10-22</p></td>
+<td align="left" valign="top"><p class="table">v6</p></td>
+<td align="left" valign="top"><p class="table">Emphasized that stab aug is forced on if any autopilot function is requested in either controller</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_references">References</h2>
+<div class="sectionbody">
+<div class="ulist bibliography"><ul>
+<li>
+<p>
+<a id="S119"></a>[S119] Anon.: "Flight Dynamics Model Exchange Standard."
+  American National Standard ANSI/AIAA S-119-2011, American Institute
+  of Aeronautics and Astronautic, Washington, DC, March 2011. Available from <a href="http://arc.aiaa.org/doi/book/10.2514/4.867965">http://arc.aiaa.org/doi/book/10.2514/4.867965</a>
+  (as of May 2013)
+</p>
+</li>
+<li>
+<p>
+<a id="TM212145"></a>[TM212145] Garza, Fredrico R. and Morelli, Eugene A.: "A
+  Collection of Nonlinear Aircraft Simulations in MATLAB." NASA
+  TM-2003-212145, National Aeronautics and Space Administration,
+  Hampton, VA, 2003
+</p>
+</li>
+<li>
+<p>
+<a id="TP1538"></a>[TP1538] Nguyen, Luat T., et al.: "Simulator Study of
+  Stall/Post-Stall Characteristics of a Fighter Airplane with Relaxed
+  Longitudinal Static Stability." NASA TP-1538, National Aeronautics
+  and Space Administration, Hampton, VA, 1979
+</p>
+</li>
+<li>
+<p>
+<a id="Stevens03"></a>[Stevens03] Stevens, Brian L. and Lewis, Frank L.:
+   "Aircraft Control and Simulation, second edition." John Wiley &amp;
+   Sons, Hoboken, NJ, 2003
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Version 6<br />
+Last updated 2013-10-22 15:42:02 EDT
+</div>
+</div>
+</body>
+</html>

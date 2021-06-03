@@ -1,0 +1,1410 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE DAVEfunc 
+      PUBLIC "-//AIAA//DTD for Flight Dynamic Models - Functions 2.0//EN" 
+          "http://www.daveml.org/DTDs/2p0/DAVEfunc.dtd">
+<DAVEfunc xmlns="http://daveml.org/2010/DAVEML">
+  <fileHeader name="Example F-16 guidance, navigation and control system">
+    <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov"/>
+    <creationDate date="2013-01-26"/>
+
+    <fileVersion>Revision C, 2013-10-22</fileVersion>
+
+    <description> 
+      
+      Guidance, navigation and control system for DAVE-ML example F-16 aircraft model. Includes LQR inner-loop
+      and loop-closure outerloop autopilot to follow altitude, courseline, and airspeed commands. The
+      gains are set for a nominal flight condition of 10,013 ft MSL at Mach 0.525 (565.7 ft/s true
+      airspeed or 287.8 kt equivalent) which correspond with atmospheric scenarios 11, 13, 15 and 16
+      of reference 1.   Inputs are pilot primary flight controls, autopilot settings, mode selection 
+      flags, and feedback of various flight condition parameters. Outputs are control surface deflection
+      commands for the F-16 described in reference 2.
+      
+      This is a modified version of Rev E of the F16_control.dml file, with two
+      selectable navigators to circle either the North Pole or the intersection of the equator and
+      the International Date Line at a distance of 3 nautical miles.
+      
+    </description>
+
+    <reference refID="REF01" author="Jackson, E. Bruce; Shelton, Robert O.; et al." 
+      title="Development of Verification Data for Flight Simulations" date="2013-08-00">
+      <description> 
+        A planned AIAA report describing the efforts to generate checkcase data for
+        flight simulations of simple aerospacecraft for use in gaining confidence in other flight
+        simulation tools. To be presented at the 2013 AIAA Modeling and Simulation Conference in
+        Boston, MA, August 2013. 
+      </description>
+    </reference>
+
+    <reference
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xlink:href="http://techreports.larc.nasa.gov/ltrs/PDF/2003/tm/NASA-2003-tm212145.pdf"
+      refID="REF02" author="Garza, Fredrico R.; and Morelli, Eugene A."
+      title="A Collection of Nonlinear Aircraft Simulations in MATLAB"
+      accession="NASA TM-2003-212145" date="2003-01"/>
+    
+    <modificationRecord modID="A" date="2013-06-06">
+      <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov"/>
+      <description>
+	At the suggestion of Michael Madden, changed trimmedPilotControl_throttle and
+	trimmedPilotControl_long variables into inputs. While their trimmed values are given for my
+	Simulink sim, small difference in atmosphere and gravitation models may require slightly
+	different values in other implementations.
+      </description>
+    </modificationRecord>    
+
+    <modificationRecord modID="B" date="2013-09-12">
+      <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov"/>
+      <description>
+	After finding an error in the implementation of the subsonic aero database, new trim values
+	for stick and throttle were generated and place here in the longStkTrim and throttleTrim
+	constants. Also updated LQR gain matrices.
+      </description>
+    </modificationRecord>    
+
+    <modificationRecord modID="C" date="2013-10-22">
+      <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov"/>
+      <description>
+	Incorporated OR function to ensure stability augmentation is on if autopilot function has been selected.
+      </description>
+    </modificationRecord>    
+
+  </fileHeader>
+
+  <!-- ================== -->
+  <!--  Input variables   -->
+  <!-- ================== -->
+
+  <variableDef name="pilotControl_throttle" varID="throttle" units="frac" minValue="0.0"
+    maxValue="1.0">
+    <description>Pilot throttle control position</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="pilotControl_long" varID="longStk" units="frac" sign="+AFT" minValue="-1.0"
+    maxValue="1.0">
+    <description>Longitudinal (pitch) control position</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="pilotControl_lat" varID="latStk" units="frac" sign="+RWD" minValue="-1.0"
+    maxValue="1.0">
+    <description>Lateral (roll) control position</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="pilotControl_yaw" varID="pedal" units="frac" sign="+ANR" minValue="-1.0"
+    maxValue="1.0">
+    <description>Directional (yaw) control position</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+  
+  <variableDef name="stabilityAugmentationOn_disc" varID="sasOn" units="nd">
+    <description>Stability augmentation engage flag (discrete); 1 = SAS engaged, 0 = SAS
+      off</description>
+    <isInput/>
+  </variableDef>
+
+  <variableDef name="autopilotOn_disc" varID="apOn" units="nd">
+    <description>Autopilot engage flag (discrete); 1 = AP engaged, 0 = AP off (forces SAS
+      on)</description>
+    <isInput/>
+  </variableDef>
+  
+  <variableDef name="selectCircumnavigator_disc" varID="circlePoleSW" units="nd">
+    <description>Selects which navigator to use: 1 = circle N pole; 0 = circle equator/Int'l date line intersection</description>
+    <isInput/>
+  </variableDef>
+  
+  <!-- navigator inputs -->
+  
+  <variableDef name="geLatitude" varID="ownshipN_deg" units="deg" sign="+N">
+    <description>Geodetic latitude of vehicle CM, +north of equator</description>
+    <isInput/>
+  </variableDef>
+  
+  <variableDef name="geLongitude" varID="ownshipE_deg" units="deg" sign="+E">
+    <description>Geodetic longitude of vehicle CM, +east of prime meridian</description>
+    <isInput/>
+  </variableDef>
+
+  <!-- autopilot command inputs -->
+
+  <variableDef name="equivalentAirspeedCommand" varID="keasCmd" units="nmi_h">
+    <description>Equivalent airspeed command (kt) to autospeed logic</description>
+    <isInput/>
+  </variableDef>
+
+  <variableDef name="altitudeMslCommand" varID="altCmd" units="ft">
+    <description>Commanded altitude above sea level (ft) for autopilot</description>
+    <isInput/>
+  </variableDef>
+  
+  <!-- sensor feedbacks for SAS and AP -->
+
+  <variableDef name="altitudeMsl" varID="altMsl" units="ft">
+    <description>Geometric altitude above mean sea level (ft)</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="equivalentAirspeed" varID="Vequiv" units="nmi_h">
+    <description>Equivalent airspeed (kt)</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="angleOfAttack" varID="alpha" units="deg">
+    <description>Angle of attack (deg)</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="angleOfSideslip" varID="beta" units="deg" sign="+RT">
+    <description>Angle of sideslipe (deg), +wind in the pilot's right ear</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="eulerAngle_Roll" varID="phi" units="deg" sign="+RWD">
+    <description>Roll angle of vehicle relative to local level (deg), +right wing down</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="eulerAngle_Pitch" varID="theta" units="deg" sign="+ANU">
+    <description>Pitch angle of vehicle relative to local level (deg), +nose up</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="eulerAngle_Yaw" varID="psi" units="deg" sign="+CWFN">
+    <description>Yaw angle of vehicle relative to true North (deg), +clockwise</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+  
+  <variableDef name="bodyAngularRate_Roll" varID="pb" units="rad_s" sign="+RWD">
+    <description>Vehicle body-axis roll rate (rad/s), +right wing down</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyAngularRate_Pitch" varID="qb" units="rad_s" sign="+ANU">
+    <description>Vehicle body-axis pitch rate (rad/s), +aircraft nose up</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyAngularRate_Yaw" varID="rb" units="rad_s" sign="+ANR">
+    <description>Vehicle body-axis yaw rate (rad/s) +aircraft nose right</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <!-- Trimmed values of longitudinal controls -->
+
+  <variableDef name="trimmedPilotControl_throttle" varID="throttleTrim" units="frac" initialValue="0.1390191130965607">
+    <description>Trimmed position of throttle</description>
+    <isInput/>
+  </variableDef>
+  
+  <variableDef name="trimmedPilotControl_long" varID="longStkTrim" units="frac" sign="+AFT" initialValue="0.1296382327486013">
+    <description>Trimmed position of pitch control</description>
+    <isInput/>
+  </variableDef>
+  
+  <!-- ================== -->
+  <!--  Local variables   -->
+  <!-- ================== -->
+  
+  <!-- Force SAS on if AP on -->
+
+  <variableDef name="forceStabAugOn_disc" varID="fsasOn" units="nd">
+    <description>
+      This flag is on ( > 0.5) if either stability augmentation or autopilot functions have been
+      selected on to ensure stability if autopilot has been requested; 1 = SAS engaged, 0 = SAS off
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <plus/>
+	  <ci>sasOn</ci>
+	  <ci>apOn</ci>
+	</apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <!-- Altitude compensator (autopilot function) -->
+  
+  <variableDef name="autopilotAltErrorFeedbackGain" varID="thetaCmdAltErrGain" 
+    units="deg_ft" initialValue="-0.05">
+    <description>
+      Gain in altitude compensator to vary pitch angle from trimmed based on
+      altitude error; positive altitude error (meaning above reference altitude)
+      results in a reduction of commanded pitch angle.
+    </description>
+  </variableDef>
+  
+  <variableDef name="autopilotAltitudeError" varID="altErr" units="ft" sign="+HI">
+    <description>
+      Error between commanded and actual altitude (ft). Positive if above commanded altitude.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <ci>altMsl</ci>
+          <ci>altCmd</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="autopilotDeltaPitchCmd" varID="deltaThetaCmd" units="deg" sign="+ANU" 
+    minValue="-5" maxValue="5">
+    <description>
+      Calculates change in pitch attitude from trimmed value to correct an error 
+      in altitude.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>altErr</ci>
+          <ci>thetaCmdAltErrGain</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="autopilotPitchCmd" varID="thetaCmd" units="deg" sign="+ANU">
+    <description>
+      Captures and tracks commanded altitude by varying pitch attitude from trimmed
+      value based on altitude error.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>deltaThetaCmd</ci>
+          <ci>trimmedTheta</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <!-- Navigator constants -->
+
+  <variableDef name="deg_to_ft" varID="deg_to_ft" units="ft_d">
+    <description>Conversion factor from degrees of latitude/longitude to ft holds for latitude
+      always; holds for longitude near equator </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <cn>60.0</cn>     <!-- n.m. per deg -->
+          <cn>6076.12</cn>  <!-- ft per n.m. -->
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="circleRadius_ft" varID="circleRadius_ft" units="ft">
+    <description>Distance to circle from target (3 nm)</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <cn>3.0</cn>      <!-- desired n.m. -->
+          <cn>6076.12</cn>  <!-- ft per n.m. -->
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <!-- North pole navigator -->
+  
+  <variableDef name="lateralDeviationErrorPolar" varID="latOffsetPolar" units="ft" sign="+RT">
+    <description>Lateral deviation from desired courseline (ft, +right of course) for CCW circle
+      around N. pole</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <apply>
+            <times/>
+            <ci>deg_to_ft</ci>
+            <apply>
+              <minus/>
+              <cn>90.0</cn>
+              <ci>ownshipN_deg</ci>
+            </apply>
+          </apply>
+          <ci>circleRadius_ft</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="trueBaseCourseCommandPolar" varID="baseChiCmdPolar" units="deg" sign="+CCFN" initialValue="90.0">
+    <description>True heading of desired ground track (deg, +clockwise from north) for CCW circle around N. pole</description>
+  </variableDef>
+  
+  <!-- Equator / International Date Line navigator -->
+  
+  <variableDef name="degEFromTgt" varID="degEFromTgt" units="deg" sign="+E">
+    <description>Must convert longitude, defined as +E and -W of prime meridian, to number of
+      degrees east (+) or west (-) of international date line</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>  <!-- if longitude > 0, then subtract 180 to get neg deg (w) of IDL -->
+              <apply>
+                <minus/>
+                <ci>ownshipE_deg</ci>
+                <cn>180.0</cn>
+              </apply>
+              <apply>
+                <gt/>
+                <ci>ownshipE_deg</ci>
+                <cn>0.</cn>
+              </apply>
+            </piece>
+            <otherwise> <!-- otherwise add 180 to (neg) longitude to get pos deg E of IDL -->
+              <apply>
+                <plus/>
+                <ci>ownshipE_deg</ci>
+                <cn>180.0</cn>
+              </apply>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="ftNFromTgt" varID="ownshipN_ft" units="ft" sign="+N">
+    <description>Convert latitude in deg to ft</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>ownshipN_deg</ci>
+          <ci>deg_to_ft</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="ftEFromTgt" varID="ownshipE_ft" units="ft" sign="+E">
+    <description>Convert degrees of longitude from target to feet (+E) with correction to scaling
+      for latitude</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>degEFromTgt</ci>
+          <ci>deg_to_ft</ci>
+          <apply>
+            <cos/>
+            <apply>
+              <times/>
+              <ci>ownshipN_deg</ci>
+              <apply>
+                <divide/>
+                <cn>3.14159265</cn>
+                <cn>180.0</cn>
+              </apply>                                  <!-- pi/180  -->
+            </apply>                       <!-- ownshipN_deg*pi/180  -->
+          </apply>                     <!-- cos(ownshipN_deg*pi/180) -->
+        </apply> <!-- degEFromTgt*deg_to_ft*cos(ownshipN_deg*pi/180) -->
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="radiusFromTgt" varID="ftFromTgt" units="ft">
+    <description>distance from turn point in ft</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <power/>
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci>ownshipE_ft</ci>
+              <ci>ownshipE_ft</ci>
+            </apply>          <!-- E^2 -->
+            <apply>
+              <times/>
+              <ci>ownshipN_ft</ci>
+              <ci>ownshipN_ft</ci>
+            </apply>                <!-- N^2 -->
+          </apply>            <!-- E^2 + N^2   -->
+          <cn>0.5</cn>  <!-- sqrt( E^2 + N^2 ) -->
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="trueBaseCourseCommandEquatorIDL" varID="baseChiCmdEquatorIDL" units="deg" sign="+CCFN" initialValue="90.0">
+    <description>True heading of desired ground track (deg, +clockwise from north) for CCW circle
+      around equator/international date line intersection</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <apply>
+              <csymbol definitionURL="http://daveml.org/function_spaces.html#atan2" encoding="text">atan2</csymbol>
+              <ci>ownshipN_ft</ci>
+              <ci>ownshipE_ft</ci>
+            </apply>         <!-- atan2(E, N)        -->
+            <cn>-180.0</cn>
+          </apply>     <!--  -1.0*atan2(E, N)*180    -->
+          <cn>3.14159265</cn>
+        </apply>     <!--    -1.0*atan2(E, N)*180/pi -->
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="lateralDeviationErrorEquatorIDL" varID="latOffsetEquatorIDL" units="ft" sign="+RT">
+    <description>Lateral deviation from desired courseline (ft, +right of course) for CCW circle
+      around equator/international date line intersection</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <ci>ftFromTgt</ci>
+          <ci>circleRadius_ft</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <!-- autopilot input selector switches -->
+  
+  <variableDef name="lateralDeviation" varID="latOffset" units="ft" sign="+RT">
+    <description>Selected lateral deviation to use from one of two included circumnavigators</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>latOffsetPolar</ci>
+              <apply>
+                <gt/>
+                <ci>circlePoleSW</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <ci>latOffsetEquatorIDL</ci>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="trueBaseCourseCommand" varID="baseChiCmd" units="deg" sign="+CWFN">
+    <description>Selected base course to use from one of two included circumnavigators</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>baseChiCmdPolar</ci>
+              <apply>
+                <gt/>
+                <ci>circlePoleSW</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <ci>baseChiCmdEquatorIDL</ci>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <!-- lateral offset / track autopilot -->
+  
+  <variableDef name="trackAngleEst" varID="chiEst" units="deg" sign="+CWFN">
+    <description>
+      A quick-and-dirty estimate of vehicle track angle (course angle); reasonable for 
+      small pitch and roll angles.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>beta</ci>
+          <ci>psi</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="autopilotLatOffsetErrorFeedbackGain" varID="chiCmdYErrGain" 
+    units="deg_ft" initialValue="-0.01">
+    <description>
+      Gain in lateral autopilot to vary true heading angle from base course based on
+      lateral offset error; positive lateral offset error (meaning right of courseline)
+      results in a reduction of commanded heading angle.
+    </description>
+  </variableDef>
+  
+  <variableDef name="autopilotTrackErrorFeedbackGain" varID="phiCmdChiErrGain" 
+    units="deg_deg" initialValue="-10">
+    <description>
+      Gain in lateral autopilot to set commanded bank angle based on
+      track angle error; positive track angle error (meaning heading more clockwise
+      from desired track angle) results in a negative bank angle command.
+    </description>
+  </variableDef>
+  
+  <variableDef name="autopilotCourseCorrection" varID="deltaChiCmd" units="deg" 
+    minValue="-30" maxValue="30" sign="+CW">
+    <description>
+      Commanded track angle adjustment from base course to intercept and/or track 
+      desired course; limited to a specified range.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>chiCmdYErrGain</ci>
+          <ci>latOffset</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="autopilotCourseCommand" varID="chiCmd" units="deg" sign="+CWFN">
+    <description>
+      Commanded true track angle to intercept and/or track desired course.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>deltaChiCmd</ci>
+          <ci>baseChiCmd</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="autopilotTrackError" varID="chiErrUnwrapped" units="deg" 
+    sign="+CW">
+    <description>
+      The difference between commanded and actual true track angle; positive indicates
+      actual track is more clockwise (yawed right) than commanded. This value is not 
+      limited to +/- 180 deg.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <ci>chiEst</ci>
+          <ci>chiCmd</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="autopilotTrackErrorWrapped" varID="chiErr" units="deg">
+    <description>
+      This is the track angle error resolved into a range of +/- 180 deg.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>  <!-- this path is chosen if |input| > 180 -->
+              <apply>
+                <piecewise>
+                  <piece> <!-- this path taken if input > 180 -->
+                    <apply>
+                      <minus/> <!-- subtract 360 to get inside +/- 180 range -->
+                      <ci>chiErrUnwrapped</ci>
+                      <cn>360.0</cn>
+                    </apply>
+                    <apply>  <!-- test to see if input > 0 (> 180) -->
+                      <gt/>
+                      <ci>chiErrUnwrapped</ci>
+                      <cn>0.</cn>
+                    </apply>
+                  </piece>
+                  <otherwise> <!-- here if input <= -180 -->
+                    <apply>
+                      <plus/> <!-- add 360 to get inside +/- 180 range -->
+                      <ci>chiErrUnwrapped</ci>
+                      <cn>360.0</cn>
+                    </apply>
+                  </otherwise>
+                </piecewise>
+              </apply>
+              <apply>  <!-- test to see if |input| > 180 -->
+                <gt/>
+                <apply>
+                  <abs/>
+                  <ci>chiErrUnwrapped</ci>
+                </apply>
+                <cn>180.0</cn>
+              </apply>
+            </piece>
+            <otherwise> <!-- here if |input| < 180; no need to adjust -->
+              <ci>chiErrUnwrapped</ci>  <!-- just pass input through -->
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="autopilotCommandedBankAngle" varID="phiCmd" units="deg" sign="+RWD"
+    minValue="-30" maxValue="30">
+    <description>
+      Generate bank angle command to move back on-course
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>phiCmdChiErrGain</ci>
+          <ci>chiErr</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <!-- trim condition values (for LQR SAS) -->
+
+  <variableDef name="designAngleOfAttack" varID="trimmedAlpha" units="deg" initialValue="2.653813535191715">
+    <description>Flight control system design angle of attack (deg)</description>
+  </variableDef>
+
+  <variableDef name="designEulerAngle_Pitch" varID="trimmedTheta" units="deg" sign="+ANU"
+    initialValue="2.653813535191715">
+    <description>Flight control system design pitch angle of vehicle relative to local level (deg),
+      +nose up</description>
+  </variableDef>
+  
+  <variableDef name="designEquivalentAirspeed" varID="trimmedKEAS" units="nim_h"
+    initialValue="2.878088596053291e+02">
+    <description>Flight control system design equivalent airspeed (kt)</description>
+  </variableDef>
+  
+  <!-- use commanded V, theta, phi if autopilot is selected, or use trimmed values -->
+  
+  <variableDef name="switchedKEAScmd" varID="keasCmdSw" units="nmi_h">
+    <description>
+      Velocity reference used to calculate velocity disturbance to feed into LQR
+      SAS. If the autopilot select flag is on, use the commanded airspeed as the
+      reference value; if not, use the trimmed airspeed as the reference value.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>keasCmd</ci>
+              <apply>
+                <gt/>
+                <ci>apOn</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <ci>trimmedKEAS</ci>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="switchedThetaCmd" varID="thetaCmdSw" units="deg">
+    <description>
+      Pitch attitude reference used to calculate pitch angle disturbance to feed into LQR
+      SAS. If the autopilot select flag is on, use the commanded pitch attitude as the
+      reference value; if not, use the trimmed pitch attitude as the reference value.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>thetaCmd</ci>
+              <apply>
+                <gt/>
+                <ci>apOn</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <ci>trimmedTheta</ci>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="switchedPhiCmd" varID="phiCmdSw" units="deg">
+    <description>
+      Roll attitude reference used to calculate roll angle disturbance to feed into LQR
+      SAS. If the autopilot select flag is on, use the commanded roll attitude as the
+      reference value; if not, use 0 as the reference value.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>phiCmd</ci>
+              <apply>
+                <gt/>
+                <ci>apOn</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn>0.</cn>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <!-- LQR gains -->
+
+  <!-- longitudinal gain set: states are V, alpha, q, theta; outputs are delta long stick and throttle -->
+  <!-- this will be a LOT easier with matrix support -->
+
+  <variableDef name="longLQR_gain_matrix_11" varID="longLQR11" units="h_nmi"
+    initialValue="-0.063009074230494">
+    <description>Change to stick with change in airspeed (per kt)</description>
+  </variableDef>
+
+  <variableDef name="longLQR_gain_matrix_12" varID="longLQR12" units="_deg"
+    initialValue="0.113230403179271">
+    <description>Change to stick with change in angle of attack (per deg)</description>
+  </variableDef>
+
+  <variableDef name="longLQR_gain_matrix_13" varID="longLQR13" units="s_r"
+    initialValue="10.113432224566077">
+    <description>Change to stick with change in pitch rate (per rad/s)</description>
+  </variableDef>
+
+  <variableDef name="longLQR_gain_matrix_14" varID="longLQR14" units="_deg"
+    initialValue="3.154983341632913">
+    <description>Change to stick with change in pitch angle (per deg)</description>
+  </variableDef>
+
+  <variableDef name="longLQR_gain_matrix_21" varID="longLQR21" units="h_nmi"
+    initialValue="0.997260602961658">
+    <description>Change to throttle fraction with change in airspeed</description>
+  </variableDef>
+
+  <variableDef name="longLQR_gain_matrix_22" varID="longLQR22" units="_deg"
+    initialValue="-0.025467711176391">
+    <description>Change to throttle fraction with change in angle of attack (per deg)</description>
+  </variableDef>
+
+  <variableDef name="longLQR_gain_matrix_23" varID="longLQR23" units="s_r"
+    initialValue="1.213308488207827">
+    <description>Change to throttle fraction with change in pitch rate (per rad/s)</description>
+  </variableDef>
+
+  <variableDef name="longLQR_gain_matrix_24" varID="longLQR24" units="_deg"
+    initialValue="0.208744369535208">
+    <description>Change to throttle fraction with change in pitch angle (per deg)</description>
+  </variableDef>
+
+  <!-- lateral/directional gain set: states are phi, beta, p, r; outputs are delta lat stick and pedal fractions -->
+
+  <variableDef name="latdLQR_gain_matrix_11" varID="latdLQR11" units="_deg"
+    initialValue="3.078043941515770">
+    <description>Change to lat stick with change in roll angle (per deg)</description>
+  </variableDef>
+
+  <variableDef name="latdLQR_gain_matrix_12" varID="latdLQR12" units="_deg"
+    initialValue="0.032365863044163">
+    <description>Change to lat stick with change in sideslip angle (per deg)</description>
+  </variableDef>
+
+  <variableDef name="latdLQR_gain_matrix_13" varID="latdLQR13" units="s_r"
+    initialValue="4.557858908828332">
+    <description>Change to lat stick with change in roll rate (per rad/s)</description>
+  </variableDef>
+
+  <variableDef name="latdLQR_gain_matrix_14" varID="latdLQR14" units="s_r"
+    initialValue="0.589443156647647">
+    <description>Change to lat stick with change in yaw rate (per rad/s)</description>
+  </variableDef>
+
+  <variableDef name="latdLQR_gain_matrix_21" varID="latdLQR21" units="_deg"
+    initialValue="-0.705817452754520">
+    <description>Change to rudder pedal input with change in roll angle (per deg)</description>
+  </variableDef>
+
+  <variableDef name="latdLQR_gain_matrix_22" varID="latdLQR22" units="_deg"
+    initialValue="-0.256362860634868">
+    <description>Change to rudder pedal input with change in sideslip angle (per deg)</description>
+  </variableDef>
+
+  <variableDef name="latdLQR_gain_matrix_23" varID="latdLQR23" units="s_r"
+    initialValue="-1.073666149713151">
+    <description>Change to rudder pedal input with change in roll rate (per rad/s)</description>
+  </variableDef>
+
+  <variableDef name="latdLQR_gain_matrix_24" varID="latdLQR24" units="s_r"
+    initialValue="0.822114635953878">
+    <description>Change to rudder pedal input with change in yaw rate (per rad/s)</description>
+  </variableDef>
+
+  <!-- LQR calculations -->
+
+  <!-- disturbance in vehicle states -->
+
+  <variableDef name="disturbedEquivalentAirspeed" varID="deltaVequiv" units="nmi_h">
+    <description>Disturbance away from commanded equivalent airspeed (kt)</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <ci>Vequiv</ci>
+          <ci>keasCmdSw</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="disturbedAngleOfAttack" varID="deltaAlpha" units="deg">
+    <description>Disturbance away from design angle of attack (deg)</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <ci>alpha</ci>
+          <ci>trimmedAlpha</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="disturbedEulerAngle_roll" varID="deltaPhi" units="deg">
+    <description>Disturbance away from commanded bank angle (deg)</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <ci>phi</ci>
+          <ci>phiCmdSw</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="disturbedEulerAngle_pitch" varID="deltaTheta" units="deg">
+    <description>Disturbance away from commanded pitch angle (deg)</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <ci>theta</ci>
+          <ci>thetaCmdSw</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <!-- Longitudinal LQR stability augmentation -->
+
+  <variableDef name="deltaLongLQR" varID="longLQR" units="frac">
+    <description>Longitudinal control output from LQR gain matrix; negated to stabilize plant</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci>longLQR11</ci>
+              <ci>deltaVequiv</ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci>longLQR12</ci>
+              <ci>deltaAlpha</ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci>longLQR13</ci>
+              <ci>qb</ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci>longLQR14</ci>
+              <ci>deltaTheta</ci>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="deltaThrottleLQR" varID="throttleLQR" units="frac">
+    <description>Throttle fraction output from LQR gain matrix; negated to stabilize plant</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci>longLQR21</ci>
+              <ci>deltaVequiv</ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci>longLQR22</ci>
+              <ci>deltaAlpha</ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci>longLQR23</ci>
+              <ci>qb</ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci>longLQR24</ci>
+              <ci>deltaTheta</ci>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <!-- Lateral/directional LQR stability augmentation -->
+
+  <variableDef name="deltaLatLQR" varID="latLQR" units="frac">
+    <description>Lateral stick output from LQR control system</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci>latdLQR11</ci>
+              <ci>deltaPhi</ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci>latdLQR12</ci>
+              <ci>beta</ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci>latdLQR13</ci>
+              <ci>pb</ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci>latdLQR14</ci>
+              <ci>rb</ci>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="deltaDirLQR" varID="dirLQR" units="frac">
+    <description>Directional control output from LQR control system</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <minus/>
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci>latdLQR21</ci>
+              <ci>deltaPhi</ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci>latdLQR22</ci>
+              <ci>beta</ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci>latdLQR23</ci>
+              <ci>pb</ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci>latdLQR24</ci>
+              <ci>rb</ci>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <!-- defeat SAS if necessary -->
+  
+  <variableDef name="switchedDeltaLongLQR" varID="longLQRsw" units="frac">
+    <description>Switched longitudinal output from LQR so SAS can be disabled</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>longLQR</ci>
+              <apply>
+                <gt/>
+                <ci>fsasOn</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn>0</cn>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="switchedDeltaThrottleLQR" varID="throttleLQRsw" units="frac">
+    <description>Switched throttle output from LQR so SAS can be disabled</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>throttleLQR</ci>
+              <apply>
+                <gt/>
+                <ci>fsasOn</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn>0</cn>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="switchedDeltaLatLQR" varID="latLQRsw" units="frac">
+    <description>Switched lateral command output from LQR so SAS can be disabled</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>latLQR</ci>
+              <apply>
+                <gt/>
+                <ci>fsasOn</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn>0</cn>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="switchedDeltaDirLQR" varID="dirLQRsw" units="frac">
+    <description>Switched directional command output from LQR so SAS can be disabled</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>dirLQR</ci>
+              <apply>
+                <gt/>
+                <ci>fsasOn</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn>0</cn>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <!-- if autopilot selected, defeat pilot inputs -->
+  
+  <variableDef name="switchedPilotControl_long" varID="longStkSw" units="frac">
+    <description>Ignore longitudinal input from pilot if autopilot selected</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>longStk</ci>
+              <apply>
+                <lt/>
+                <ci>apOn</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn>0</cn>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="switchedPilotControl_throttle" varID="throttleSw" units="frac">
+    <description>Ignore throttle input from pilot if autopilot selected</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>throttle</ci>
+              <apply>
+                <lt/>
+                <ci>apOn</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn>0</cn>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="switchedPilotControl_lat" varID="latStkSw" units="frac">
+    <description>Ignore lateral input from pilot if autopilot selected</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>latStk</ci>
+              <apply>
+                <lt/>
+                <ci>apOn</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn>0</cn>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="switchedPilotControl_yaw" varID="pedalSw" units="frac">
+    <description>Ignore directional input from pilot if autopilot selected</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <ci>pedal</ci>
+              <apply>
+                <lt/>
+                <ci>apOn</ci>
+                <cn>0.5</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn>0</cn>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <!-- Sum inputs to mixer -->
+
+  <variableDef name="totalLongCmd" varID="totLongStk" units="frac" minValue="-1.0"
+    maxValue="1.0">
+    <description>
+      Longitudinal input command to surface mixer. Combines trimmed position, pilot input (if AP off),
+      and stabization (and possibly autopilot) commands (if SAS on).
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>longStkTrim</ci>
+          <ci>longStkSw</ci>
+          <ci>longLQRsw</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="totalLatCmd" varID="totLatStk" units="frac" minValue="-1.0"
+    maxValue="1.0">
+    <description>
+      Lateral input command to surface mixer. Combines pilot input (if AP off) with
+      stabilization (and possibly autopilot) commands (if SAS on).
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>latStkSw</ci>
+          <ci>latLQRsw</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="totalDirCmd" varID="totPedal" units="frac" minValue="-1.0"
+    maxValue="1.0">
+    <description>
+      Directional input command to surface mixer. Combines pilot input (if AP off) with
+      stabilization (and possibly autopilot) commands (if SAS on).
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>pedalSw</ci>
+          <ci>dirLQRsw</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <variableDef name="totalThrottle" varID="totThrottle" units="frac" minValue="0.0"
+    maxValue="1.0">
+    <description>
+      Throttle command to power lever output. Combines trimmed throttle position, 
+      pilot input (if AP off) with stabilization (and possibly autopilot) commands 
+      (if SAS on).
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>throttleTrim</ci>
+          <ci>throttleSw</ci>
+          <ci>throttleLQRsw</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+  
+  <!-- ================== -->
+  <!--  Output variables  -->
+  <!-- ================== -->
+
+  <variableDef name="elevatorDeflection" varID="el" units="deg" sign="trailing edge down"
+    symbol="&#x3B4;e">
+    <description> Elevator deflection angle, in degrees (+TED) </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <cn>-25.</cn>
+          <ci>totLongStk</ci>
+        </apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aileronDeflection" varID="ail" units="deg" sign="left roll" symbol="&#x3B4;a">
+    <description> Aileron deflection angle, in degrees (+LWD) </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <cn>-21.5</cn>
+          <ci>totLatStk</ci>
+        </apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="rudderDeflection" varID="rdr" units="deg" sign="TEL" symbol="&#x3B4;r">
+    <description> Rudder deflection angle, in degrees (+TEL); includes aileron-to-rudder gain </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <apply>
+            <times/>
+            <cn>-30.</cn>
+            <ci>totPedal</ci>
+          </apply>
+          <apply>
+            <times/>
+            <cn>0.008</cn>
+            <ci>ail</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="powerLeverAngle" varID="PWR" units="pct" sign="+INCR" initialValue="0.0">
+    <description> Throttle (power lever angle), 0 - 100. 50 is MIL (max dry) thrust; 100 is MAX
+      (burner) </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <cn>100.</cn>
+          <ci>totThrottle</ci>
+        </apply>
+      </math>
+    </calculation>
+    <isOutput/>
+  </variableDef>
+
+
+</DAVEfunc>

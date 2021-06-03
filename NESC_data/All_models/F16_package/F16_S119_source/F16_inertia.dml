@@ -1,0 +1,164 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE DAVEfunc PUBLIC "-//AIAA//DTD for Flight Dynamic Models - Functions 2.0//EN"  
+          "http://www.daveml.org/DTDs/2p0/DAVEfunc.dtd">
+<DAVEfunc xmlns="http://daveml.org/2010/DAVEML">
+
+  <!--                          =================                          -->
+  <!-- =========================   FILE HEADER   ========================= -->
+  <!--                          =================                          -->
+
+
+  <fileHeader name="F-16 inertia model (a la Stevens &amp; Lewis)">
+    <author name="Bruce Jackson" org="NASA Langley Research Center" 
+            email="bruce.jackson@nasa.gov">
+      <address>MS 132 NASA, Hampton, VA 23681</address>
+    </author>
+    <creationDate date="2012-08-07"/>
+
+    <fileVersion>Initial version</fileVersion>
+
+    <description>
+      A simple constant mass matrix for the F-16 Fighting Falcon, as described in Stevens &amp; Lewis [01].
+    </description>
+
+
+    <reference refID="REF01" 
+               author="Stevens, Brian L. and Lewis, Frank L."
+               title="Aircraft control and Simulation, 2nd Edition"
+               accession="ISBN 0-471-37145-9"
+               date="2003-01-01"
+               />
+
+  </fileHeader>
+
+
+  <!--                          ==========================                          -->
+  <!-- =========================   VARIABLE DEFINITIONS   ========================= -->
+  <!--                          ==========================                          -->
+
+
+  <!-- ================== -->
+  <!--  Input variables   -->
+  <!-- ================== -->
+
+  <variableDef name="vrsPositionOfCM" varID="CG_PCT_MAC" units="pct" sign="+AFT" initialValue="35.0">
+    <description>
+      Longitudinal location of the center of mass in percent of MAC. Reference location is 35%.
+    </description>
+    <isInput/>
+  </variableDef>
+
+
+  <!-- ================== -->
+  <!--      Constants     -->
+  <!-- ================== -->
+
+  <variableDef name="referenceWingChord" varID="CBAR" units="ft" initialValue="11.32">
+    <description>
+      Mean aerodynamic chord, needed for center-of-mass calculations
+    </description>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyMomentOfInertia_Roll" varID="XIXX" units="slugft2" initialValue="9496.0">
+    <description>
+      Rolling moment of inertia about the body X axis
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyMomentOfInertia_Pitch" varID="XIYY" units="slugft2" initialValue="55814.0">
+    <description>
+      Pitching moment of inertia about the body Y axis
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyMomentOfInertia_Yaw" varID="XIZZ" units="slugft2" initialValue="63100.0">
+    <description>
+      Yawing moment of inertia about the body Z axis
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyProductOfInertia_ZX" varID="XIZX" units="slugft2" initialValue="982.0">
+    <description>
+      Cross-product of inertia in the body X-Z plane
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyProductOfInertia_XY" varID="XIXY" units="slugft2" initialValue="0.0">
+    <description>
+      Cross-product of inertia in the body X-Y plane
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyProductOfInertia_YZ" varID="XIYZ" units="slugft2" initialValue="0.0">
+    <description>
+      Cross-product of inertia in the body Y-Z plane
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="totalMass" varID="XMASS" units="slug" initialValue="637.1595">
+    <description>
+      Total mass of vehicle (20,500 lbm)
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyPositionOfCmWrtMrc_Y" varID="DYCG" units="ft" sign="RT" initialValue="0">
+    <description>
+      Lateral location of the center of mass relative to the plane of symmetry (0 BL),
+      positive if the CM is right of the X-Z plane.
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyPositionOfCmWrtMrc_Z" varID="DZCG" units="ft" sign="DOWN" initialValue="0.">
+    <description>
+      Vertical location of the center of mass relative to the bottom of the flat part of the belly,
+      positive if the CM is below the waterline of the vehicle.
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <!-- ================== -->
+  <!-- Calculated Outputs -->
+  <!-- ================== -->
+
+  <variableDef name="bodyPositionOfCmWrtMrc_X" varID="DXCG" units="ft" sign="FWD">
+    <description>
+      Longitudinal location of the center of mass relative to the moment reference center (35% MAC),
+      positive if the CM is forward of the MRC. Calculated as (35 - CG_PCT_MAC)*CBAR/100.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <times/>
+	  <cn>0.01</cn>
+	  <ci>CBAR</ci>
+	  <apply>
+	    <minus/>
+	    <cn>35</cn>
+	    <ci>CG_PCT_MAC</ci>
+	  </apply>
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+</DAVEfunc>

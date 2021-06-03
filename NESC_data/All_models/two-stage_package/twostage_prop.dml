@@ -1,0 +1,262 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE DAVEfunc PUBLIC "-//AIAA//DTD for Flight Dynamic Models - Functions 2.0//EN"  
+          "http://www.daveml.org/DTDs/2p0/DAVEfunc.dtd">
+<DAVEfunc xmlns="http://daveml.org/2010/DAVEML">
+
+  <!--                          =================                          -->
+  <!-- =========================   FILE HEADER   ========================= -->
+  <!--                          =================                          -->
+
+
+  <fileHeader name="Two-stage to orbit rocket aero model">
+
+    <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov">
+      <address>MS 132 NASA, Hampton, VA 23681</address>
+    </author>
+
+    <author name="Eric Queen" org="NASA Langley Research Center"
+	    email="eric.m.queen@nasa.gov">
+      <address>MS 489 NASA, Hampton, VA 23681</address>
+    </author>
+
+    <creationDate date="2013-08-10"/>
+
+    <fileVersion>Rev A, 2014-Mar-27</fileVersion>
+
+    <description>
+      Eric Queen's two-stage-to-orbit conceptual model. 
+
+      Inputs to this propulsion model are flags indicating if either
+      stage is firing.
+      
+      Outputs are thrust and mass depletion rate.
+    </description>
+
+    <reference refID="REF_01" title="twostagetoorbit.pptx"
+	       date="2013-07-15" author="Queen, Eric M.">
+      <description>
+	Source document for data in this model
+      </description>
+    </reference>
+
+    <reference refID="REF_02"
+	       title="Use of MathML quotient to compute mass rate in two stage rocket propulsion model"
+	       date="2014-03-27" author="Michael Madden">
+      <description>
+	An email from Michael Madden caught a syntax error:
+
+	"I ran into a small obstacle today trying to run the DAVE-ML model of the two stage rocket.
+	The propulsion model (twostage_prop.dml) uses the MathML token 'quotient' to compute the
+	mass rate.  Our DAVE-ML translator does not handle the quotient token (though it is not too
+	difficult to add).  Nevertheless, I was wondering if there was a specific reason to use
+	quotient over divide.  The former would produce mass rates that are truncated whole numbers
+	of kg/s; the latter would, of course, allow mass rates with decimal fractions of kg/s."
+      </description>
+    </reference>
+
+    <modificationRecord modID="A" date="2014-03-27" refID="REF_02">
+      <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov"/>
+      <description> 
+	Changed from quotient to divide tag in calculation of
+	propulsion consumption rate, on a suggestion from Michael
+	Madden of LaRC.
+      </description>
+    </modificationRecord>  
+    
+  </fileHeader>
+
+
+  <!--                          ==========================                          -->
+  <!-- =========================   VARIABLE DEFINITIONS   ========================= -->
+  <!--                          ==========================                          -->
+
+
+  <!-- ================== -->
+  <!--        Inputs      -->
+  <!-- ================== -->
+
+  <variableDef name="stage1firing_flag" varID="stg1firing" units="nd">
+    <description>If greater than 0, indicates stage 1 is firing</description>
+    <isInput/>
+  </variableDef>
+
+  <variableDef name="stage2firing_flag" varID="stg2firing" units="nd">
+    <description>If greater than 0, indicates stage 2 is firing</description>
+    <isInput/>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--      Constants     -->
+  <!-- ================== -->
+
+  <variableDef name="stage1maxThrust" varID="stg1maxThrust" units="N" initialValue="17000000">
+    <description> Stage 1 max thrust </description>
+  </variableDef>
+
+  <variableDef name="stage2maxThrust" varID="stg2maxThrust" units="N" initialValue="5000000">
+    <description> Stage 2 max thrust </description>
+  </variableDef>
+
+  <variableDef name="stage1isp" varID="stg1isp" units="sec" initialValue="360">
+    <description> Stage 1 specific impulse </description>
+  </variableDef>
+
+  <variableDef name="stage2isp" varID="stg2isp" units="sec" initialValue="390">
+    <description> Stage 2 specific impulse </description>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--      Internal      -->
+  <!-- ================== -->
+
+  <variableDef name="isp" varID="isp" units="sec">
+    <description>
+      Current specific impulse for firing engine, if any
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <piecewise>
+	    <piece>
+	      <ci>stg1isp</ci>
+	      <apply>
+		<gt/>
+		<ci>stg1firing</ci>
+		<cn>0</cn>
+	      </apply>
+	    </piece>
+	    <piece>
+	      <ci>stg2isp</ci>
+	      <apply>
+		<gt/>
+		<ci>stg2firing</ci>
+		<cn>0</cn>
+	      </apply>
+	    </piece>
+	    <otherwise>
+	      <cn>0.001</cn>
+	    </otherwise>
+	  </piecewise>
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--       Outputs      -->
+  <!-- ================== -->
+
+
+  <variableDef name="bodyThrustForce_X" varID="thrust" units="N">
+    <description>
+      Total thrust
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <piecewise>
+	    <piece>
+	      <ci>stg1maxThrust</ci>
+	      <apply>
+		<gt/>
+		<ci>stg1firing</ci>
+		<cn>0</cn>
+	      </apply>
+	    </piece>
+	    <piece>
+	      <ci>stg2maxThrust</ci>
+	      <apply>
+		<gt/>
+		<ci>stg2firing</ci>
+		<cn>0</cn>
+	      </apply>
+	    </piece>
+	    <otherwise>
+	      <cn>0.</cn>
+	    </otherwise>
+	  </piecewise>
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="massDot" varID="mdot" units="kg_s">
+    <description>
+      Propellant consumption rate
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <piecewise>
+	    <piece>
+	      <apply>
+		<divide/>
+		<ci>thrust</ci>
+		<apply>
+		  <times/>
+		  <ci>isp</ci>
+		  <cn>9.8066</cn>
+		</apply>
+	      </apply>
+	      <apply>
+		<gt/>
+		<ci>thrust</ci>
+		<cn>0</cn>
+	      </apply>
+	    </piece>
+	    <otherwise>
+	      <cn>0.</cn>
+	    </otherwise>
+	  </piecewise>
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyThrustForce_Y" varID="thrustY" units="N" initialValue="0">
+    <description>
+      Sideforce
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyThrustForce_Z" varID="thrustZ" units="N" initialValue="0">
+    <description>
+      Downforce
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyThrustMoment_Roll" varID="thrustll" units="N" initialValue="0">
+    <description>
+      Rolling moment
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyThrustMoment_Pitch" varID="thrustlm" units="N" initialValue="0">
+    <description>
+      Pitching moment
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyThrustMoment_Yaw" varID="thrustln" units="N" initialValue="0">
+    <description>
+      Yawing moment
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+</DAVEfunc>

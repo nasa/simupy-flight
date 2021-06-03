@@ -1,0 +1,117 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE DAVEfunc 
+      PUBLIC "-//AIAA//DTD for Flight Dynamic Models - Functions 2.0//EN" 
+          "http://www.daveml.org/DTDs/2p0/DAVEfunc.dtd">
+<DAVEfunc xmlns="http://daveml.org/2010/DAVEML">
+
+  <!--                          =================                          -->
+  <!-- =========================   FILE HEADER   ========================= -->
+  <!--                          =================                          -->
+
+
+  <fileHeader name="Example cannonball aerodynamic model">
+    <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov">
+      <address>MS 132 NASA, Hampton, VA 23681</address>
+    </author>
+
+    <creationDate date="2012-10-04"/>
+
+    <fileVersion>Revision E, 2013-04-19</fileVersion>
+
+    <description>
+      A simple constant drag model for a 1-slug, 6" diameter cannonball
+    </description>
+
+
+    <modificationRecord modID="B">
+      <author name="Bruce Jackson" org="NASA Langley Research Center" 
+	      email="bruce.jackson@nasa.gov">
+	<address>MS 132 NASA, Hampton, VA 23681</address>
+      </author>
+      <description>
+	Immediately after releasing mod A, noticed the description was wrong
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="C">
+      <author name="Bruce Jackson" org="NASA Langley Research Center" 
+	      email="bruce.jackson@nasa.gov">
+	<address>MS 132 NASA, Hampton, VA 23681</address>
+      </author>
+      <description>
+	Added reference area output value
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="D">
+      <author name="Bruce Jackson" org="NASA Langley Research Center" 
+	      email="bruce.jackson@nasa.gov">
+	<address>MS 132 NASA, Hampton, VA 23681</address>
+      </author>
+      <description>
+	Corrected reference area output value, thanks to alert reader
+	Deleena Noble at DFRC
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="E">
+      <author name="Bruce Jackson" org="NASA Langley Research Center" 
+	      email="bruce.jackson@nasa.gov">
+	<address>MS 132 NASA, Hampton, VA 23681</address>
+      </author>
+      <description>
+	Corrected reference area output value again; was using surface
+	area equation! Also increased damping to make terminal
+	velocity realistic.
+      </description>
+    </modificationRecord>
+
+  </fileHeader>
+
+  <!-- ================== -->
+  <!--       Outputs      -->
+  <!-- ================== -->
+
+  <variableDef name="referenceWingArea" varID="SWING" units="ft2" initialValue="0.1963495">
+    <description>Reference area of cannonball (assumed radius is 3")</description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="totalCoefficientOfLift" varID="CL" units="nd" initialValue="0.0">
+    <description> Coefficient of Lift </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="totalCoefficientOfDrag" varID="CD" units="nd" initialValue="0.1">
+    <description> Coefficient of Drag </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aeroBodyForceCoefficient_Y" varID="CY" units="nd" initialValue="0.0">
+    <description> Coefficient of Sideforce </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+  
+  <variableDef name="aeroBodyMomentCoefficient_Roll" varID="Cl" units="nd" initialValue="0.0">
+    <description> Coefficient of Roll </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aeroBodyMomentCoefficient_Pitch" varID="Cm" units="nd" initialValue="0.0">
+    <description> Coefficient of Pitch </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aeroBodyMomentCoefficient_Yaw" varID="Cn" units="nd" initialValue="0.0">
+    <description> Coefficient of Yaw </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+</DAVEfunc>

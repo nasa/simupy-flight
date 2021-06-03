@@ -1,0 +1,276 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE DAVEfunc 
+      PUBLIC "-//AIAA//DTD for Flight Dynamic Models - Functions 2.0//EN" 
+          "http://www.daveml.org/DTDs/2p0/DAVEfunc.dtd">
+<DAVEfunc xmlns="http://daveml.org/2010/DAVEML">
+
+  <!--                          =================                          -->
+  <!-- =========================   FILE HEADER   ========================= -->
+  <!--                          =================                          -->
+
+
+  <fileHeader name="Example brick aerodynamic model">
+    <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov">
+      <address>MS 132 NASA, Hampton, VA 23681</address>
+    </author>
+
+    <creationDate date="2012-10-05"/>
+
+    <fileVersion>Mod C, 2013-04-19</fileVersion>
+
+    <description>
+      A simple, made-up aero model for a standard US face brick that provides rate damping but no
+      other force or moment reactions aside from constant drag for use in the 2012 NASA NESC EOM
+      verification data project.
+    </description>
+
+    <modificationRecord modID="A" date="2012-11-16">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+	Corrected name and calculation of PBO2V (had duplicate RB02V,
+	thanks to alert reader Deleena Noble of DFRC.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="B" date="2013-01-09">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+	Increased the damping values a hundred-fold to make damping
+	more apparent.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="C" date="2013-04-19">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+	Corrected pitch rate damping value.
+      </description>
+    </modificationRecord>
+
+  </fileHeader>
+
+  <!-- ================== -->
+  <!--     Constants      -->
+  <!-- ================== -->
+
+  <variableDef name="referenceWingArea" varID="SWING" units="ft2" initialValue="0.22222">
+    <description>Reference area of brick aero model (assumed area is 8" by 4")</description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="referenceWingSpan" varID="BSPAN" units="ft" initialValue="0.33333">
+    <description>Width of brick model (4"), used as reference lateral length</description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="referenceWingChord" varID="CBAR" units="ft" initialValue="0.66667">
+    <description>Length of brick model (8"), used as reference longitudinal length</description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="roll damping from roll rate" varID="CLP_DAMPING" units="_rad" initialValue="-1.0">
+    <description>Constant fake roll damping due to roll rate of brick test vehicle</description>
+  </variableDef>
+
+  <variableDef name="roll damping from yaw rate" varID="CLR_DAMPING" units="_rad" initialValue="0.0">
+    <description>Constant fake roll damping due to yaw rate of brick test vehicle</description>
+  </variableDef>
+
+  <variableDef name="pitch damping from pitch rate" varID="CMQ_DAMPING" units="_rad" initialValue="-1.0">
+    <description>Constant fake pitch damping of brick test vehicle</description>
+  </variableDef>
+
+  <variableDef name="yaw damping from roll rate" varID="CNP_DAMPING" units="_rad" initialValue="0.0">
+    <description>Constant fake yaw damping due to roll rate of brick test vehicle</description>
+  </variableDef>
+
+  <variableDef name="yaw damping from yaw rate" varID="CNR_DAMPING" units="_rad" initialValue="-1.0">
+    <description>Constant fake yaw damping due to yaw rate of brick test vehicle</description>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--       Inputs       -->
+  <!-- ================== -->
+
+  <variableDef name="trueAirspeed" varID="VRW" units="ft_s" minValue="0.5">
+    <description>Velocity of vehicle w.r.t. airmass, ft/sec (always +)</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyAngularRate_Roll" varID="PB" units="rad_s" sign="RWD">
+    <description>Body-axis roll rate, radians/sec (+right wing down)</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyAngularRate_Pitch" varID="QB" units="rad_s" sign="ANU">
+    <description>Body-axis pitch rate, radians/sec (+aircraft nose up)</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyAngularRate_Yaw" varID="RB" units="rad_s" sign="ANR">
+    <description>Body-axis yaw rate, radians/sec (+aircraft nose right)</description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <!-- ================== -->
+  <!-- Intermediate calcs -->
+  <!-- ================== -->
+
+  <variableDef name="PBO2V" varID="PBO2V" units="nd">
+    <description>Non-dimensionalized body roll rate w.r.t. airmass</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <ci>PB</ci>
+            <ci>BSPAN</ci>
+          </apply>
+          <apply>
+            <times/>
+            <cn>2.0</cn>
+            <ci>VRW</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+
+  <variableDef name="QCO2V" varID="QCO2V" units="nd">
+    <description>Non-dimensionalized body pitch rate w.r.t. airmass</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <ci>QB</ci>
+            <ci>CBAR</ci>
+          </apply>
+          <apply>
+            <times/>
+            <cn>2.0</cn>
+            <ci>VRW</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="RBO2V" varID="RBO2V" units="nd">
+    <description>Non-dimensionalized body yaw rate w.r.t. airmass</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <divide/>
+          <apply>
+            <times/>
+            <ci>RB</ci>
+            <ci>BSPAN</ci>
+          </apply>
+          <apply>
+            <times/>
+            <cn>2.0</cn>
+            <ci>VRW</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--       Outputs      -->
+  <!-- ================== -->
+
+  <variableDef name="totalCoefficientOfLift" varID="CL" units="nd" initialValue="0.0">
+    <description> Coefficient of Lift </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="totalCoefficientOfDrag" varID="CD" units="nd" initialValue="0.01">
+    <description> Fake coefficient of drag for a standard brick </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aeroBodyForceCoefficient_Y" varID="CY" units="nd" initialValue="0.0">
+    <description> Coefficient of Sideforce </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+  
+  <variableDef name="aeroBodyMomentCoefficient_Roll" varID="Cl" units="nd">
+    <description>Cl = Clp*pb/2V + Clr*rb/2V</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <apply>
+            <times/>
+            <ci>CLP_DAMPING</ci>
+            <ci>PBO2V</ci>
+          </apply>
+          <apply>
+            <times/>
+            <ci>CLR_DAMPING</ci>
+            <ci>RBO2V</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aeroBodyMomentCoefficient_Pitch" varID="Cm" units="nd">
+    <description>Cm = Cmq*qc/2V</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>CMQ_DAMPING</ci>
+          <ci>QCO2V</ci>
+        </apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aeroBodyMomentCoefficient_Yaw" varID="Cn" units="nd">
+    <description>Cn = Cnp*pb/2V + Cnr*rb/2V</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <apply>
+            <times/>
+            <ci>CNP_DAMPING</ci>
+            <ci>PBO2V</ci>
+          </apply>
+          <apply>
+            <times/>
+            <ci>CNR_DAMPING</ci>
+            <ci>RBO2V</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+</DAVEfunc>

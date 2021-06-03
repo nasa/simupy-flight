@@ -1,0 +1,123 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE DAVEfunc PUBLIC "-//AIAA//DTD for Flight Dynamic Models - Functions 2.0//EN"  
+          "http://www.daveml.org/DTDs/2p0/DAVEfunc.dtd">
+<DAVEfunc xmlns="http://daveml.org/2010/DAVEML">
+
+  <!--                          =================                          -->
+  <!-- =========================   FILE HEADER   ========================= -->
+  <!--                          =================                          -->
+
+
+  <fileHeader name="Example orbital cylinder inertia model">
+
+    <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov">
+      <address>MS 132 NASA, Hampton, VA 23681</address>
+    </author>
+
+    <creationDate date="2014-09-15"/>
+
+    <fileVersion>Initial version</fileVersion>
+
+    <description>
+      A simple constant mass matrix for a 1,000-kg cylindrical
+      satellite (rocket body).
+    </description>
+
+
+  </fileHeader>
+
+
+  <!--                          ==========================                          -->
+  <!-- =========================   VARIABLE DEFINITIONS   ========================= -->
+  <!--                          ==========================                          -->
+
+
+  <!-- ================== -->
+  <!--       Outputs      -->
+  <!-- ================== -->
+
+
+  <variableDef name="bodyMomentOfInertia_Roll" varID="XIXX" units="kgm" initialValue="500">
+    <description>
+      Rolling moment of inertia about the body X axis
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyMomentOfInertia_Pitch" varID="XIYY" units="kgm" initialValue="12250">
+    <description>
+      Pitching moment of inertia about the body Y axis
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyMomentOfInertia_Yaw" varID="XIZZ" units="kgm" initialValue="12250">
+    <description>
+      Yawing moment of inertia about the body Z axis
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyProductOfInertia_ZX" varID="XIZX" units="kgm" initialValue="0.0">
+    <description>
+      Cross-product of inertia in the body X-Z plane
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyProductOfInertia_XY" varID="XIXY" units="kgm" initialValue="0.0">
+    <description>
+      Cross-product of inertia in the body X-Y plane
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyProductOfInertia_YZ" varID="XIYZ" units="kgm" initialValue="0.0">
+    <description>
+      Cross-product of inertia in the body Y-Z plane
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="totalMass" varID="XMASS" units="kg" initialValue="1000">
+    <description>
+      Total mass of vehicle
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyPositionOfCmWrtMrc_X" varID="DXCG" units="m" sign="FWD" initialValue="6.0">
+    <description>
+      Longitudinal location of the center of mass relative to the geometric center of the cylinder,
+      positive if the CM is in front of the center
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyPositionOfCmWrtMrc_Y" varID="DYCG" units="m" sign="RT" initialValue="0.">
+    <description>
+      Lateral location of the center of mass relative to the geometric center of the cylinder,
+      positive if the CM is to the right of the center
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyPositionOfCmWrtMrc_Z" varID="DZCG" units="m" sign="DOWN" initialValue="0.">
+    <description>
+      Vertical location of the center of mass relative to the geometric center of the cylinder,
+      positive if the CM is below the center
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+</DAVEfunc>

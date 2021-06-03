@@ -1,0 +1,360 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE DAVEfunc PUBLIC "-//AIAA//DTD for Flight Dynamic Models - Functions 2.0//EN"  
+          "http://www.daveml.org/DTDs/2p0/DAVEfunc.dtd">
+<DAVEfunc xmlns="http://daveml.org/2010/DAVEML">
+
+  <!--                          =================                          -->
+  <!-- =========================   FILE HEADER   ========================= -->
+  <!--                          =================                          -->
+
+
+  <fileHeader name="Two-stage to orbit rocket aero model">
+
+    <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov">
+      <address>MS 132 NASA, Hampton, VA 23681</address>
+    </author>
+
+    <author name="Eric Queen" org="NASA Langley Research Center"
+	    email="eric.m.queen@nasa.gov">
+      <address>MS 489 NASA, Hampton, VA 23681</address>
+    </author>
+
+    <creationDate date="2013-08-09"/>
+
+    <fileVersion>Rev A, 2014-Mar-27</fileVersion>
+
+    <description>
+      Eric Queen's two-stage-to-orbit conceptual model. 
+
+      Inputs to this aero model are alpha and beta in degrees.
+      
+      Outputs are force and moment coefficients in Lift, Drag, Sideforce, and pitch and yaw
+      moments. Rolling moment is zero.
+
+      Moments are defined about the moment reference center, which is a function of vehicle
+      configuration (staged or not). The position of the moment reference center is an output of the
+      inertia properties model.
+
+      A slight modification has been made to make drag coefficient a function of total alpha instead
+      of just alpha.
+    </description>
+
+    <reference refID="REF01" title="twostagetoorbit.pptx"
+	       date="2013-07-15" author="Queen, Eric M.">
+      <description>
+	Source document for data in this model
+      </description>
+    </reference>
+
+    <reference refID="REF_02" title="twostage_refs_email.txt"
+	       date="2014-07-15" author="Queen, Eric M.">
+      <description>
+	Follow-up email answer to questions regarding aero reference lengths and area.
+      </description>
+    </reference>
+
+    <modificationRecord modID="A" date="2014-03-27" refID="REF_02">
+      <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov"/>
+      <description> 
+	Added values for reference lengths and areas based on the email from Eric Queen.
+      </description>
+    </modificationRecord>  
+    
+    <modificationRecord modID="B" date="2014-03-27">
+      <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov"/>
+      <description> 
+	Corrected syntax error in previous revision, which I unfortunately posted without
+	validating; thanks to alert user Michael Madden of LaRC.
+      </description>
+    </modificationRecord>  
+    
+
+  </fileHeader>
+
+
+  <!--                          ==========================                          -->
+  <!-- =========================   VARIABLE DEFINITIONS   ========================= -->
+  <!--                          ==========================                          -->
+
+
+  <!-- ================== -->
+  <!--        Inputs      -->
+  <!-- ================== -->
+
+  <variableDef name="angleOfAttack" varID="alpha" units="deg" symbol="&#x3B1;">
+    <description> Instantaneous true angle-of-attack, in degrees </description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="angleOfSideslip" varID="beta" units="deg" symbol="&#x3B2;"
+               sign="wind in right ear">
+    <description> Instantaneous true angle-of-sideslip, in degrees </description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--      Constants     -->
+  <!-- ================== -->
+
+      <!-- These reference values need to be defined -->
+
+  <variableDef name="longitudinalReferenceLength" varID="cbar" units="m" initialValue="3">
+    <description> Length of aerodynamic chord </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="lateralReferencelength" varID="bspan" units="m" initialValue="3">
+    <description> Length of aerodynamic span </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="referenceArea" varID="sref" units="m2" initialValue="7">
+    <description> Reference area of aerodynamic model </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--      Internal      -->
+  <!-- ================== -->
+
+  <variableDef name="totalAlpha" varID="alphaT" units="deg">
+    <description> Total aerodynamic angle of X-axis to V-vector </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <power/>
+	  <apply>
+	    <plus/>
+	    <apply>
+	      <power/>
+	      <ci>alpha</ci>
+	      <cn>2.</cn>
+	    </apply>
+	    <apply>
+	      <power/>
+	      <ci>beta</ci>
+	      <cn>2.</cn>
+	    </apply>
+	  </apply>
+	  <cn>0.5</cn>
+	</apply>
+      </math>
+    </calculation>
+  </variableDef>
+	    
+
+  <!-- ================== -->
+  <!--       Outputs      -->
+  <!-- ================== -->
+
+
+  <variableDef name="liftCoefficient" varID="totalCoefficientOfLift" units="nd">
+    <description>
+      Lift coefficient output from lookup table.
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="dragCoefficient" varID="totalCoefficientOfDrag" units="nd">
+    <description>
+      Drag coefficient output from lookup table.
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="sideforceCoefficient" varID="aeroBodyForceCoefficient_Y" units="nd">
+    <description>
+      Sideforce coefficient output from lookup table.
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="rollingMomentCoefficient" varID="aeroBodyMomentCoefficient_Roll" units="nd" initialValue="0.">
+    <description>
+      Rolling moment coefficient (hardwired to 0)
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="pitchingMomentCoefficient" varID="aeroBodyMomentCoefficient_Pitch" units="nd">
+    <description>
+      Pitching moment coefficient output from lookup table.
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="yawingMomentCoefficient" varID="aeroBodyMomentCoefficient_Yaw" units="nd">
+    <description>
+      Yawing moment coefficient output from lookup table.
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--  Breakpoint values -->
+  <!-- ================== -->
+
+  <breakpointDef name="alpha_bp_for_forces" bpID="ALPHA1" units="deg">
+    <description> Angle-of-attack breakpoints for aero force coefficient tables </description>
+    <bpVals> -10., -8., -6., -4., -2., 0., 2., 4., 6., 8., 10.</bpVals>
+  </breakpointDef>
+
+  <breakpointDef name="alpha_bp_for_moments" bpID="ALPHA2" units="deg">
+    <description> Angle-of-attack breakpoints for aero moment coefficient tables </description>
+    <bpVals> -20., 0., 20. </bpVals>
+  </breakpointDef>
+
+  <breakpointDef name="beta_bp_for_forces" bpID="BETA1" units="deg">
+    <description> Angle-of-sideslip breakpoints for aero force coeffcient tables </description>
+    <bpVals> -10., -8., -6., -4., -2., 0., 2., 4., 6., 8., 10.</bpVals>
+  </breakpointDef>
+
+  <breakpointDef name="beta_bp_for_moments" bpID="BETA2" units="deg">
+    <description> Angle-of-sideslip breakpoints for aero moment coefficient tables </description>
+    <bpVals> -20., 0., 20. </bpVals>
+  </breakpointDef>
+
+  <!-- ================== -->
+  <!--  Function Tables   -->
+  <!-- ================== -->
+
+  <function name="LiftCoefficient_fcn">
+    <description> Lift coefficient table as a function of angle of attack </description>
+    <provenance>
+      <author name="Eric Queen" org="NASA Langley Research Center"
+              email="eric.m.queen@nasa.gov"/>
+      <creationDate date="2013-08-09"/>
+      <documentRef refID="REF01"/>
+    </provenance>
+    <independentVarRef varID="alpha" min="-10.0" max="10.0" extrapolate="neither"/>
+    <dependentVarRef varID="totalCoefficientOfLift"/>
+
+    <functionDefn name="CL_fn">
+      <griddedTableDef name="CL_table" gtID="CL_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable>
+	  <!-- alpha values
+	  -10     -8     -6     -4     -2  0     2     4     6    8   10 -->
+	  -1.6, -1.0, -0.73, -0.49, -0.24, 0, 0.24, 0.49, 0.73, 1.0, 1.6
+	</dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+
+  <function name="DragCoefficient_fcn">
+    <description> Drag coefficient table as a function of total angle of attack </description>
+    <provenance>
+      <author name="Eric Queen" org="NASA Langley Research Center"
+              email="eric.m.queen@nasa.gov"/>
+      <creationDate date="2013-08-09"/>
+      <documentRef refID="REF01"/>
+    </provenance>
+    <independentVarRef varID="alphaT" min="-10.0" max="10.0" extrapolate="neither"/>
+    <dependentVarRef varID="totalCoefficientOfDrag"/>
+
+    <functionDefn name="CD_fn">
+      <griddedTableDef name="CD_table" gtID="CD_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable>
+	  <!-- alpha values
+	   -10    -8    -6    -4    -2     0     2     4     6     8    10 -->
+	  0.48, 0.38, 0.31, 0.25, 0.23, 0.21, 0.23, 0.25, 0.31, 0.38, 0.48
+	</dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="SideforceCoefficient_fcn">
+    <description> Sideforce coefficient table as a function of angle of sideslip </description>
+    <provenance>
+      <author name="Eric Queen" org="NASA Langley Research Center"
+              email="eric.m.queen@nasa.gov"/>
+      <creationDate date="2013-08-09"/>
+      <documentRef refID="REF01"/>
+    </provenance>
+    <independentVarRef varID="beta" min="-10.0" max="10.0" extrapolate="neither"/>
+    <dependentVarRef varID="aeroBodyForceCoefficient_Y"/>
+
+    <functionDefn name="CY_fn">
+      <griddedTableDef name="CYtable" gtID="CY_table_def">
+        <breakpointRefs>
+          <bpRef bpID="BETA1"/>
+        </breakpointRefs>
+        <dataTable>
+	  <!-- alpha values
+	  -10    -8    -6    -4    -2  0      2      4      6     8    10 -->
+	   1.6, 1.0, 0.73, 0.49, 0.24, 0, -0.24, -0.49, -0.73, -1.0, -1.6
+	</dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="PitchingMomentCoefficient_fcn">
+    <description> Pitching moment coefficient table as a function of angle of attack </description>
+    <provenance>
+      <author name="Eric Queen" org="NASA Langley Research Center"
+              email="eric.m.queen@nasa.gov"/>
+      <creationDate date="2013-08-09"/>
+      <documentRef refID="REF01"/>
+    </provenance>
+    <independentVarRef varID="alpha" min="-20.0" max="20.0" extrapolate="neither"/>
+    <dependentVarRef varID="aeroBodyMomentCoefficient_Pitch"/>
+
+    <functionDefn name="Cm_fn">
+      <griddedTableDef name="Cm_table" gtID="Cm_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA2"/>
+        </breakpointRefs>
+        <dataTable>
+	  <!-- alpha values
+	  -20    0    20   -->
+           0.6   0  -0.6
+	</dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="YawingMomentCoefficient_fcn">
+    <description> Yawing moment coefficient table as a function of angle of sideslip </description>
+    <provenance>
+      <author name="Eric Queen" org="NASA Langley Research Center"
+              email="eric.m.queen@nasa.gov"/>
+      <creationDate date="2013-08-09"/>
+      <documentRef refID="REF01"/>
+    </provenance>
+    <independentVarRef varID="beta" min="-20.0" max="20.0" extrapolate="neither"/>
+    <dependentVarRef varID="aeroBodyMomentCoefficient_Yaw"/>
+
+    <functionDefn name="Cn_fn">
+      <griddedTableDef name="Cn_table" gtID="Cn_table_def">
+        <breakpointRefs>
+          <bpRef bpID="BETA2"/>
+        </breakpointRefs>
+        <dataTable>
+	  <!-- alpha values
+	  -20    0   20   -->
+          -0.6   0  0.6
+	</dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+
+
+</DAVEfunc>

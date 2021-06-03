@@ -1,0 +1,122 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE DAVEfunc PUBLIC "-//AIAA//DTD for Flight Dynamic Models - Functions 2.0//EN"  
+          "http://www.daveml.org/DTDs/2p0/DAVEfunc.dtd">
+<DAVEfunc xmlns="http://daveml.org/2010/DAVEML">
+
+  <!--                          =================                          -->
+  <!-- =========================   FILE HEADER   ========================= -->
+  <!--                          =================                          -->
+
+
+  <fileHeader name="Example cannonball inertia model">
+
+    <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov">
+      <address>MS 132 NASA, Hampton, VA 23681</address>
+    </author>
+
+    <creationDate date="2012-10-04"/>
+
+    <fileVersion>Initial version</fileVersion>
+
+    <description>
+      A simple constant mass matrix for a 1-slug, 6" diameter cannonball
+    </description>
+
+
+  </fileHeader>
+
+
+  <!--                          ==========================                          -->
+  <!-- =========================   VARIABLE DEFINITIONS   ========================= -->
+  <!--                          ==========================                          -->
+
+
+  <!-- ================== -->
+  <!--       Outputs      -->
+  <!-- ================== -->
+
+
+  <variableDef name="bodyMomentOfInertia_Roll" varID="XIXX" units="slugft2" initialValue="3.6">
+    <description>
+      Rolling moment of inertia about the body X axis
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyMomentOfInertia_Pitch" varID="XIYY" units="slugft2" initialValue="3.6">
+    <description>
+      Pitching moment of inertia about the body Y axis
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyMomentOfInertia_Yaw" varID="XIZZ" units="slugft2" initialValue="3.6">
+    <description>
+      Yawing moment of inertia about the body Z axis
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyProductOfInertia_ZX" varID="XIZX" units="slugft2" initialValue="0.0">
+    <description>
+      Cross-product of inertia in the body X-Z plane
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyProductOfInertia_XY" varID="XIXY" units="slugft2" initialValue="0.0">
+    <description>
+      Cross-product of inertia in the body X-Y plane
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyProductOfInertia_YZ" varID="XIYZ" units="slugft2" initialValue="0.0">
+    <description>
+      Cross-product of inertia in the body Y-Z plane
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="totalMass" varID="XMASS" units="slug" initialValue="1.0">
+    <description>
+      Total mass of vehicle (32.174 lbm)
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyPositionOfCmWrtMrc_X" varID="DXCG" units="ft" sign="FWD" initialValue="0.0">
+    <description>
+      Longitudinal location of the center of mass relative to the geometric center of the cannonball,
+      positive if the CM is in front of the center
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyPositionOfCmWrtMrc_Y" varID="DYCG" units="ft" sign="RT" initialValue="0.">
+    <description>
+      Longitudinal location of the center of mass relative to the geometric center of the cannonball,
+      positive if the CM is to the right of the center
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyPositionOfCmWrtMrc_Z" varID="DZCG" units="ft" sign="DOWN" initialValue="0.">
+    <description>
+      Vertical location of the center of mass relative to the geometric center of the cannonball,
+      positive if the CM is below the center
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+</DAVEfunc>

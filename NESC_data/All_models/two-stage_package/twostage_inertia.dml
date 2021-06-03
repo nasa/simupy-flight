@@ -1,0 +1,602 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE DAVEfunc PUBLIC "-//AIAA//DTD for Flight Dynamic Models - Functions 2.0//EN"  
+          "http://www.daveml.org/DTDs/2p0/DAVEfunc.dtd">
+<DAVEfunc xmlns="http://daveml.org/2010/DAVEML">
+
+  <!--                          =================                          -->
+  <!-- =========================   FILE HEADER   ========================= -->
+  <!--                          =================                          -->
+
+
+  <fileHeader name="Two-stage to orbit rocket inertia model">
+
+    <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov">
+      <address>MS 132 NASA, Hampton, VA 23681</address>
+    </author>
+
+    <author name="Eric Queen" org="NASA Langley Research Center"
+	    email="eric.m.queen@nasa.gov">
+      <address>MS 489 NASA, Hampton, VA 23681</address>
+    </author>
+
+    <creationDate date="2013-08-09"/>
+
+    <fileVersion>Initial version</fileVersion>
+
+    <description>
+      Eric Queen's two-stage-to-orbit conceptual model. Inputs are
+      amount of fuel burned from stage 1 and stage 2 and a staged
+      flag.
+
+      Outputs are mass properties and location of current moment
+      reference center (in meters aft of the nose). Also the remaining
+      fraction of fuel remaining in each stage (to judge depletion).
+    </description>
+
+    <reference refID="REF01" title="twostagetoorbit.pptx"
+	       date="2013-07-15" author="Queen, Eric M.">
+      <description>
+	Source document for data in this model
+      </description>
+    </reference>
+
+
+  </fileHeader>
+
+
+  <!--                          ==========================                          -->
+  <!-- =========================   VARIABLE DEFINITIONS   ========================= -->
+  <!--                          ==========================                          -->
+
+
+  <!-- ================== -->
+  <!--        Inputs      -->
+  <!-- ================== -->
+
+  <variableDef name="rocketHasStaged" varID="stagedFlag" units="nd">
+    <description>
+      Indicates if staging has occurred, if greater than zero.
+    </description>
+  </variableDef>
+
+  <variableDef name="stage1fuelConsumed" varID="stg1fuelUsed" units="kg">
+    <description>
+      Indicates how much fuel has been expended from the first stage;
+      used only if stagedFlag == 0. Used to linearly interpolate
+      mass properties (CG, mass, moments of inertia) between full (0
+      fuel expended) and empty (all stage 1 fuel expended) reference
+      values for each of these outputs.
+    </description>
+  </variableDef>
+
+  <variableDef name="stage2fuelConsumed" varID="stg2fuelUsed" units="kg">
+    <description>
+      Indicates how much fuel has been expended from the second stage.
+      Used to linearly interpolate mass properties (CG, mass, moments
+      of inertia) between full (0 fuel expended) and empty (all stage
+      2 fuel expended) reference values for each of these outputs.
+
+      Using a value other than 0 while stagedFlag == 0 will result
+      in undefined results.
+    </description>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--      Constants     -->
+  <!-- ================== -->
+
+  <variableDef name="fullVehicleMomentReferenceCenter"
+	       varID="fullVehXref" units="m" initialValue="16.918790" sign="+AFT">
+    <description>
+      Location of the moment reference center for the full (two-stage)
+      vehicle, given in meters and measured from the nose of the
+      vehicle; positive aft.
+    </description>
+  </variableDef>
+
+  <variableDef name="secondStageMomentReferenceCenter"
+	       varID="stg2Xref" units="m" initialValue="4.797980" sign="+AFT">
+    <description>
+      Location of the moment reference center for the second-stage
+      only vehicle, given in meters and measured from the nose of the
+      vehicle; positive aft.
+    </description>
+  </variableDef>
+
+  <variableDef name="Liftoff_XCG"    varID="vrsStg1igniteXCG"  units="m"    initialValue="16.91879"/>
+  <variableDef name="S1Burnout_XCG"  varID="vrsStg1burnoutXCG" units="m"    initialValue="9.421642"/>
+  <variableDef name="S2Ignite_XCG"   varID="vrsStg2igniteXCG"  units="m"    initialValue="4.79798" /> 
+  <variableDef name="S2Burnout_XCG"  varID="vrsStg2burnoutXCG" units="m"    initialValue="3.947368"/>
+
+  <variableDef name="Liftoff_Mass"   varID="stg1igniteMass"    units="kg"   initialValue="314000"  />
+  <variableDef name="S1Burnout_Mass" varID="stg1burnoutMass"   units="kg"   initialValue="134000"  />
+  <variableDef name="S2Ignite_Mass"  varID="stg2igniteMass"    units="kg"   initialValue="99000"   />
+  <variableDef name="S2Burnout_Mass" varID="stg2burnoutMass"   units="kg"   initialValue="19000"   />
+
+  <variableDef name="Liftoff_Ixx"    varID="stg1igniteIxx"     units="kgm2" initialValue="353250"  />
+  <variableDef name="S1Burnout_Ixx"  varID="stg1burnoutIxx"    units="kgm2" initialValue="150750"  />
+  <variableDef name="S2Ignite_Ixx"   varID="stg2igniteIxx"     units="kgm2" initialValue="111375"  />
+  <variableDef name="S2Burnout_Ixx"  varID="stg2burnoutIxx"    units="kgm2" initialValue="21375"   />
+
+  <variableDef name="Liftoff_Iyy"    varID="stg1igniteIyy"     units="kgm2" initialValue="33501637.473461"/>
+  <variableDef name="S1Burnout_Iyy"  varID="stg1burnoutIyy"    units="kgm2" initialValue="10886636.572139"/>
+  <variableDef name="S2Ignite_Iyy"   varID="stg2igniteIyy"     units="kgm2" initialValue="941063.762626"  />
+  <variableDef name="S2Burnout_Iyy"  varID="stg2burnoutIyy"    units="kgm2" initialValue="212384.868421"  />
+
+  <!-- ================== -->
+  <!--      Internal      -->
+  <!-- ================== -->
+
+  <variableDef name="stage1XCGRange" varID="vrsStg1RangeOfCM_X" units="m">
+    <description>
+      Range of locations of center-of-mass of two-stage rocket prior to staging; determined by
+      subtracting S1Burnout_XCG from Liftoff_XCG values given in REF01
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <minus/>
+	  <ci>vrsStg1igniteXCG</ci>
+	  <ci>vrsStg1burnoutXCG</ci>
+	</apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="stage2XCGRange" varID="vrsStg2RangeOfCM_X" units="m">
+    <description>
+      Range of values of the center-of-mass of the second stage; determined by subtracting
+      S2Burnout_XCG from S2Ignite_XCG values given in REF01
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <minus/>
+	  <ci>vrsStg2igniteXCG</ci>
+	  <ci>vrsStg2burnoutXCG</ci>
+	</apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="stage1FuelCapacity" varID="stg1maxFuel" units="kg">
+    <description>
+      Fuel capacity of first stage; determined by subtracting S1Burnout_Mass
+      from Liftoff_Mass values given in REF01
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <minus/>
+	  <ci>stg1igniteMass</ci>
+	  <ci>stg1burnoutMass</ci>
+	</apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="stage2FuelCapacity" varID="stg2maxFuel" units="kg">
+    <description>
+      Fuel capacity of second stage; determined by subtracting S2Burnout_Mass
+      from S2Ignite_Mass values given in REF01
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <minus/>
+	  <ci>stg2igniteMass</ci>
+	  <ci>stg2burnoutMass</ci>
+	</apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="stage1IxxRange" varID="stg1IxxRange" units="kgm2">
+    <description>
+      Range of values of Ixx of first stage; determined by subtracting S1Burnout_Ixx
+      from Liftoff_Ixx values given in REF01
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <minus/>
+	  <ci>stg1igniteIxx</ci>
+	  <ci>stg1burnoutIxx</ci>
+	</apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="stage2IxxRange" varID="stg2IxxRange" units="kgm2">
+    <description>
+      Range of values of Ixx of second stage; determined by subtracting S2Burnout_Ixx
+      from S2Ignite_Ixx values given in REF01
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <minus/>
+	  <ci>stg2igniteIxx</ci>
+	  <ci>stg2burnoutIxx</ci>
+	</apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="stage1IyyRange" varID="stg1IyyRange" units="kgm2">
+    <description>
+      Range of values of Iyy and Izz of first stage; determined by subtracting S1Burnout_Iyy
+      from Liftoff_Iyy values given in REF01
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <minus/>
+	  <ci>stg1igniteIyy</ci>
+	  <ci>stg1burnoutIyy</ci>
+	</apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="stage2IyyRange" varID="stg2IyyRange" units="kgm2">
+    <description>
+      Range of values of Iyy and Izz of second stage; determined by subtracting S2Burnout_Iyy
+      from S2Ignite_Iyy values given in REF01
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <minus/>
+	  <ci>stg2igniteIyy</ci>
+	  <ci>stg2burnoutIyy</ci>
+	</apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+
+  <variableDef name="vrsPositionOfCM_X" varID="vrsPositionOfCM_X" units="m" sign="+AFT">
+    <description>
+      Position of the center of mass along the X-axis of the vehicle reference system (meters,
+      positive aft).
+
+      Determined by linearly interpolating either the two-stage rocket, or the just the second stage
+      if stagedFlag > 0, between full and empty fuel states, depending on the appropriate fuel
+      fraction value.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <piecewise>
+	    <piece>
+	      <apply>
+		<plus/>
+		<ci>vrsStg2burnoutXCG</ci>
+		<apply>
+		  <times/>
+		  <ci>vrsStg2RangeOfCM_X</ci>
+		  <ci>stg2fuelFrac</ci>
+		</apply>
+	      </apply>
+	      <apply>
+		<gt/>
+		<ci>stagedFlag</ci>
+		<cn>0</cn>
+	      </apply>
+	    </piece>
+	    <otherwise>
+	      <apply>
+		<plus/>
+		<ci>vrsStg1burnoutXCG</ci>
+		<apply>
+		  <times/>
+		  <ci>vrsStg1RangeOfCM_X</ci>
+		  <ci>stg1fuelFrac</ci>
+		</apply>
+	      </apply>
+	    </otherwise>
+	  </piecewise>
+	</apply>
+      </math>
+    </calculation>
+    <isStdAIAA/>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--       Outputs      -->
+  <!-- ================== -->
+
+
+  <variableDef name="stage1FuelRemainingFrac" varID="stg1fuelFrac"
+	       units="frac" minValue="0" maxValue="1">
+    <description>
+      Fraction of fuel remaining in stage 1, 0-1 (1 is full)
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <divide/>
+	  <apply>
+	    <minus/>
+	    <ci>stg1maxFuel</ci>
+	    <ci>stg1fuelUsed</ci>
+	  </apply>
+	  <ci>stg1maxFuel</ci>
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+  </variableDef>
+
+  <variableDef name="stage2FuelRemainingFrac" varID="stg2fuelFrac"
+	       units="frac" minValue="0" maxValue="1">
+    <description>
+      Fraction of fuel remaining in stage 2, 0-1 (1 is full)
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <divide/>
+	  <apply>
+	    <minus/>
+	    <ci>stg2maxFuel</ci>
+	    <ci>stg2fuelUsed</ci>
+	  </apply>
+	  <ci>stg2maxFuel</ci>
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+  </variableDef>
+
+  <variableDef name="bodyMomentOfInertia_Roll" varID="XIXX" units="kgm2">
+    <description>
+      Rolling moment of inertia about the body X axis.
+
+      Determined by linearly interpolating either the two-stage rocket, or the just the second stage
+      if stagedFlag > 0, between full and empty fuel states, depending on the appropriate fuel
+      fraction value.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <piecewise>
+	    <piece>
+	      <apply>
+		<plus/>
+		<ci>stg2burnoutIxx</ci>
+		<apply>
+		  <times/>
+		  <ci>stg2IxxRange</ci>
+		  <ci>stg2fuelFrac</ci>
+		</apply>
+	      </apply>
+	      <apply>
+		<gt/>
+		<ci>stagedFlag</ci>
+		<cn>0</cn>
+	      </apply>
+	    </piece>
+	    <otherwise>
+	      <apply>
+		<plus/>
+		<ci>stg1burnoutIxx</ci>
+		<apply>
+		  <times/>
+		  <ci>stg1IxxRange</ci>
+		  <ci>stg1fuelFrac</ci>
+		</apply>
+	      </apply>
+	    </otherwise>
+	  </piecewise>
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyMomentOfInertia_Pitch" varID="XIYY" units="kgm2">
+    <description>
+      Pitching moment of inertia about the body Y axis
+
+      Determined by linearly interpolating either the two-stage rocket, or the just the second stage
+      if stagedFlag > 0, between full and empty fuel states, depending on the appropriate fuel
+      fraction value.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <piecewise>
+	    <piece>
+	      <apply>
+		<plus/>
+		<ci>stg2burnoutIyy</ci>
+		<apply>
+		  <times/>
+		  <ci>stg2IyyRange</ci>
+		  <ci>stg2fuelFrac</ci>
+		</apply>
+	      </apply>
+	      <apply>
+		<gt/>
+		<ci>stagedFlag</ci>
+		<cn>0</cn>
+	      </apply>
+	    </piece>
+	    <otherwise>
+	      <apply>
+		<plus/>
+		<ci>stg1burnoutIyy</ci>
+		<apply>
+		  <times/>
+		  <ci>stg1IyyRange</ci>
+		  <ci>stg1fuelFrac</ci>
+		</apply>
+	      </apply>
+	    </otherwise>
+	  </piecewise>
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyMomentOfInertia_Yaw" varID="XIZZ" units="kgm2">
+    <description>
+      Yawing moment of inertia about the body Z axis. Identical to the pitching moment of inertia
+      (XIYY).
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <times/>
+	  <cn>1.0</cn>
+	  <ci>XIYY</ci>
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyProductOfInertia_ZX" varID="XIZX" units="kgm2" initialValue="0.0">
+    <description>
+      Cross-product of inertia in the body X-Z plane
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyProductOfInertia_XY" varID="XIXY" units="kgm2" initialValue="0.0">
+    <description>
+      Cross-product of inertia in the body X-Y plane
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyProductOfInertia_YZ" varID="XIYZ" units="kgm2" initialValue="0.0">
+    <description>
+      Cross-product of inertia in the body Y-Z plane
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="totalMass" varID="XMASS" units="kg">
+    <description>
+      Total mass of vehicle
+
+      Determined by linearly interpolating either the two-stage rocket, or the just the second stage
+      if stagedFlag > 0, between full and empty fuel states, depending on the appropriate fuel
+      fraction value.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <piecewise>
+	    <piece>
+	      <apply>
+		<plus/>
+		<ci>stg2burnoutMass</ci>
+		<apply>
+		  <times/>
+		  <ci>stg2maxFuel</ci>
+		  <ci>stg2fuelFrac</ci>
+		</apply>
+	      </apply>
+	      <apply>
+		<gt/>
+		<ci>stagedFlag</ci>
+		<cn>0</cn>
+	      </apply>
+	    </piece>
+	    <otherwise>
+	      <apply>
+		<plus/>
+		<ci>stg1burnoutMass</ci>
+		<apply>
+		  <times/>
+		  <ci>stg1maxFuel</ci>
+		  <ci>stg1fuelFrac</ci>
+		</apply>
+	      </apply>
+	    </otherwise>
+	  </piecewise>
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="vrsPositionOfMrc" varID="vrsPositionOfMrc_X" units="m" sign="+AFT">
+    <description>
+      Longitudinal location of the moment reference center in meters back from the nose of the
+      vehicle; positive aft. Value changes based on value of staged flag.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <piecewise>
+	    <piece>
+	      <ci>stg2Xref</ci>
+	      <apply>
+		<gt/>
+		<ci>stagedFlag</ci>
+		<cn>0</cn>
+	      </apply>
+	    </piece>
+	    <otherwise>
+	      <ci>fullVehXref</ci>
+	    </otherwise>
+	  </piecewise>
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+  </variableDef>
+
+  <variableDef name="bodyPositionOfCmWrtMrc_X" varID="DXCG" units="m" sign="FWD">
+    <description>
+      Longitudinal location of the center of mass relative to the nose
+      of the vehicle; increasingly positive as the CM moves fwd as
+      fuel is expended.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+	<apply>
+	  <minus/>
+	  <ci>vrsPositionOfMrc_X</ci>
+	  <ci>vrsPositionOfCM_X</ci>
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyPositionOfCmWrtMrc_Y" varID="DYCG" units="ft" sign="RT" initialValue="0.">
+    <description>
+      Longitudinal location of the center of mass relative to the
+      centerline of the vehicle; positive if the CM is to the right of
+      the centerline
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyPositionOfCmWrtMrc_Z" varID="DZCG" units="ft" sign="DOWN" initialValue="0.">
+    <description>
+      Vertical location of the center of mass relative to the
+      centerline of the vehicle; positive if the CM is below the
+      centerline
+    </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+</DAVEfunc>

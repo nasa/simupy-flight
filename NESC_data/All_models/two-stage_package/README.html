@@ -1,0 +1,1389 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.9" />
+<title>Two-stage-to-orbit, open-loop, rocket model</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+.monospaced, code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+  padding: 0;
+  margin: 0;
+}
+pre {
+  white-space: pre-wrap;
+}
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; vertical-align: text-bottom; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="article">
+<div id="header">
+<h1>Two-stage-to-orbit, open-loop, rocket model</h1>
+<span id="author">Bruce Jackson</span><br />
+<span id="email"><code>&lt;<a href="mailto:bruce.jackson@nasa.gov">bruce.jackson@nasa.gov</a>&gt;</code></span><br />
+<span id="revnumber">version 2,</span>
+<span id="revdate">2014-03-30</span>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_goal">Goal</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Provide flight dynamic aero, propulsion, and mass properties models for a conceptual, probably
+unfeasible, two-stage-to-orbit launch vehicle in order to generate flight simulation verification
+time history data.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_acronyms">Acronyms</h2>
+<div class="sectionbody">
+</div>
+</div>
+<div class="sect1">
+<h2 id="_acronyms_2">Acronyms</h2>
+<div class="sectionbody">
+<div class="dlist"><dl>
+<dt class="hdlist1">
+ANL
+</dt>
+<dd>
+<p>
+Aircraft nose left
+</p>
+</dd>
+<dt class="hdlist1">
+ANR
+</dt>
+<dd>
+<p>
+Aircraft nose right
+</p>
+</dd>
+<dt class="hdlist1">
+ANU
+</dt>
+<dd>
+<p>
+Aircraft nose up
+</p>
+</dd>
+<dt class="hdlist1">
+RWD
+</dt>
+<dd>
+<p>
+Right wing down
+</p>
+</dd>
+<dt class="hdlist1">
+SRB
+</dt>
+<dd>
+<p>
+Solid rocket booster
+</p>
+</dd>
+<dt class="hdlist1">
+n.d.
+</dt>
+<dd>
+<p>
+no dimensions
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_assumptions_and_limitations">Assumptions and Limitations</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The various models are specified in accordance with AIAA S-119 <a href="#S119">[S119]</a>, also known as DAVE-ML. See
+<a href="http://daveml.org">http://daveml.org</a> for more information.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_origin_of_data">Origin of data</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The vehicle represented by these subsystem models arose from the fertile mind of Dr. Eric Queen of
+NASA&#8217;s Langley Research Center in Hampton, Virginia after a plea from the author to provide an
+extraordinarily simple two-stage rocket that could be used to exercise and compare simulation
+frameworks within and outside the Agency. A note on one slide of the original document indicates the
+aero data is based on "V2 at Mach 3"; another slide indicates the rockets are modeled after the
+Shuttle solid rocket boosters (SRB). No attribution of any other data appears necessary.</p></div>
+<div class="paragraph"><p>The vehicle is envisioned to be two 3 m diameter solid rocket boosters stacked; the first stage is
+25 m long with a dry mass of 35,000 kg and 180,000 kg of propellant. The second stage is 10 m long
+with a dry mass of 15,000 kg carrying 80,000 kg of propellant, for a total booster length of 35
+m. It is carrying a 4,000 kg payload to orbit.</p></div>
+<div class="paragraph"><p>The vehicle is stable but unguided. Don&#8217;t try this at home.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scope_of_effort">Scope of effort</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>A representative but unclassified and open-source flight vehicle model is provided for use in
+generating or comparing launch vehicle trajectories in atmospheric and exo-atmospheric flight, in a
+non-proprietary format that is both human- and text-readable.</p></div>
+<div class="paragraph"><p>The S-119 format is designed for unambiguous representation of flight dynamic models in an
+archivable format.</p></div>
+<div class="paragraph"><p>To this end, separate system models of a two-stage-to-orbit rocket-powered launch vehicle are
+provided in the following files:</p></div>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<em>twostage_aero.dml</em>, Rev A, dated 2014-03-27
+</dt>
+<dd>
+<p>
+Simple aerodynamics model
+</p>
+</dd>
+<dt class="hdlist1">
+<em>twostage_prop.dml</em>, dated 2013-08-10
+</dt>
+<dd>
+<p>
+Simple propulsion model
+</p>
+</dd>
+<dt class="hdlist1">
+<em>twostage_inertia.dml</em>, dated 2012-08-09
+</dt>
+<dd>
+<p>
+Mass properties model
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_components">Components</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Each component model is described in detail below.</p></div>
+<div class="sect2">
+<h3 id="_em_twostage_aero_dml_em"><em>twostage_aero.dml</em></h3>
+<div class="paragraph"><p>Each of these models is based on data given in <a href="#Queen13">[Queen13]</a> by Dr. Eric Queen.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 1. Input Signals - <em>twostage_aero.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                  </th>
+<th align="center" valign="top"> Units   </th>
+<th align="center" valign="top"> Sign     </th>
+<th align="left" valign="top">Description [nominal value]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>angleOfAttack</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+ANU</p></td>
+<td align="left" valign="top"><p class="table">Angle of attack</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>angleOfSideslip</code></p></td>
+<td align="center" valign="top"><p class="table">deg</p></td>
+<td align="center" valign="top"><p class="table">+ANL</p></td>
+<td align="left" valign="top"><p class="table">Angle of sideslip</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 2. Output Signals - <em>twostage_aero.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                            </th>
+<th align="center" valign="top"> Units </th>
+<th align="center" valign="top"> Sign    </th>
+<th align="left" valign="top"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>longitudinalReferenceLength</code></p></td>
+<td align="center" valign="top"><p class="table">m</p></td>
+<td align="center" valign="top"><p class="table">const.</p></td>
+<td align="left" valign="top"><p class="table">Longitudinal reference length [3 m]</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>lateralReferenceLength</code></p></td>
+<td align="center" valign="top"><p class="table">m</p></td>
+<td align="center" valign="top"><p class="table">const.</p></td>
+<td align="left" valign="top"><p class="table">Lateral reference length [3 m]</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>referenceArea</code></p></td>
+<td align="center" valign="top"><p class="table">m^2</p></td>
+<td align="center" valign="top"><p class="table">const.</p></td>
+<td align="left" valign="top"><p class="table">Reference area [7 m]</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>liftCoefficient</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">+up</p></td>
+<td align="left" valign="top"><p class="table">Total coefficient of force normal to flight path</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>sideforceCoefficient</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">+right</p></td>
+<td align="left" valign="top"><p class="table">Total coefficient of force along the body Y-axis</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>dragCoefficient</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">+down</p></td>
+<td align="left" valign="top"><p class="table">Total coefficient of force parallel to the flight path</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>rollingMomentCoefficient</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Total coefficient of moment around the body X-axis (rolling moment)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>pitchingMomentCoefficient</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">+ANU</p></td>
+<td align="left" valign="top"><p class="table">Total coefficient of moment around the body Y-axis (pitching moment)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>yawingMomentCoefficient</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">+ANR</p></td>
+<td align="left" valign="top"><p class="table">Total coefficient of moment around the body Z-axis (yawing moment)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_em_twostage_prop_dml_em"><em>twostage_prop.dml</em></h3>
+<div class="paragraph"><p>The first stage is modeled as having 17,000,000 N thrust with an Isp of 360 sec. The second stage
+has 5,000,000 N thrust with an Isp of 390 sec. Both stages should burn until prop is depleted.</p></div>
+<div class="paragraph"><p>It is an error to have both stages burning simultaneously.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 3. Input Signals - <em>twostage_prop.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                  </th>
+<th align="center" valign="top"> Units   </th>
+<th align="center" valign="top"> Sign     </th>
+<th align="left" valign="top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>stage1firing_flag</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">0-1</p></td>
+<td align="left" valign="top"><p class="table">Indicates if the first stage is firing</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>stage2firing_flag</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">0-1</p></td>
+<td align="left" valign="top"><p class="table">Indicates if the second stage is firing</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 4. Output Signals - <em>twostage_prop.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                            </th>
+<th align="center" valign="top"> Units </th>
+<th align="center" valign="top"> Sign    </th>
+<th align="left" valign="top"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyThrustForce_X</code></p></td>
+<td align="center" valign="top"><p class="table">N</p></td>
+<td align="center" valign="top"><p class="table">+fwd</p></td>
+<td align="left" valign="top"><p class="table">Steady-state thrust of engine for given inputs in body X axis</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyThrustForce_Y</code></p></td>
+<td align="center" valign="top"><p class="table">N</p></td>
+<td align="center" valign="top"><p class="table">+right</p></td>
+<td align="left" valign="top"><p class="table">Steady-state thrust of engine for given inputs in body Y axis (always 0)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyThrustForce_Z</code></p></td>
+<td align="center" valign="top"><p class="table">N</p></td>
+<td align="center" valign="top"><p class="table">+down</p></td>
+<td align="left" valign="top"><p class="table">Steady-state thrust of engine for given inputs in body Z axis (always 0)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyThrustMoment_Roll</code></p></td>
+<td align="center" valign="top"><p class="table">N-m</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Steady-state moment of engine for given inputs about the body X axis (always 0)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyThrustMoment_Pitch</code></p></td>
+<td align="center" valign="top"><p class="table">N-m</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Steady-state moment of engine for given inputs about the body Y axis (always 0)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyThrustMoment_Roll</code></p></td>
+<td align="center" valign="top"><p class="table">N-m</p></td>
+<td align="center" valign="top"><p class="table">+RWD</p></td>
+<td align="left" valign="top"><p class="table">Steady-state moment of engine for given inputs about the body Z axis (always 0)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>massDot</code></p></td>
+<td align="center" valign="top"><p class="table">kg/s</p></td>
+<td align="center" valign="top"><p class="table">+incr</p></td>
+<td align="left" valign="top"><p class="table">Propellant consumption rate</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_em_twostage_inertia_dml_em"><em>twostage_inertia.dml</em></h3>
+<div class="paragraph"><p>This model linearly interpolates mass properties, including center of mass location, during
+flight. Inputs are total fuel consumed in stages 1 and 2 and if the vehicle has staged (dropped the
+first stage). Outputs are mass properties, fuel fraction consumed in both stages, and the location
+of the moment reference center (which moves when the vehicle stages).</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 5. Input Signals - <em>twostage_inertia.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                  </th>
+<th align="center" valign="top"> Units   </th>
+<th align="center" valign="top"> Sign     </th>
+<th align="left" valign="top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>rocketHasStaged</code></p></td>
+<td align="center" valign="top"><p class="table">n.d.</p></td>
+<td align="center" valign="top"><p class="table">0-1</p></td>
+<td align="left" valign="top"><p class="table">If non-zero, indicates first stage is missing.</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>stage1fuelConsumed</code></p></td>
+<td align="center" valign="top"><p class="table">kg</p></td>
+<td align="center" valign="top"><p class="table">&#8201;&#8212;&#8201;</p></td>
+<td align="left" valign="top"><p class="table">Amount of fuel burned in first stage</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>stage2fuelConsumed</code></p></td>
+<td align="center" valign="top"><p class="table">kg</p></td>
+<td align="center" valign="top"><p class="table">&#8201;&#8212;&#8201;</p></td>
+<td align="left" valign="top"><p class="table">Amount of fuel burned in second stage</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 6. Output Signals - <em>twostage_inertia.dml</em></caption>
+<col width="41%" />
+<col width="8%" />
+<col width="8%" />
+<col width="41%" />
+<thead>
+<tr>
+<th align="left" valign="top">Name                            </th>
+<th align="center" valign="top"> Units    </th>
+<th align="center" valign="top"> Sign    </th>
+<th align="left" valign="top"> Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table"><code>stage1FuelRemainingFrac</code></p></td>
+<td align="center" valign="top"><p class="table">frac</p></td>
+<td align="center" valign="top"><p class="table">0-1</p></td>
+<td align="left" valign="top"><p class="table">Fraction of fuel remaining in first stage</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>stage2FuelRemainingFrac</code></p></td>
+<td align="center" valign="top"><p class="table">frac</p></td>
+<td align="center" valign="top"><p class="table">0-1</p></td>
+<td align="left" valign="top"><p class="table">Fraction of fuel remaining in second stage</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyMomentOfInertia_Roll</code></p></td>
+<td align="center" valign="top"><p class="table">kg-m^2</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Rolling moment of inertia about the body X axis</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyMomentOfInertia_Pitch</code></p></td>
+<td align="center" valign="top"><p class="table">kg-m^2</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Pitching moment of inertia about the body Y axis</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyMomentOfInertia_Yaw</code></p></td>
+<td align="center" valign="top"><p class="table">kg-m^2</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Yawing moment of inertia about the body Z axis</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyProductOfInertia_ZX</code></p></td>
+<td align="center" valign="top"><p class="table">kg-m^2</p></td>
+<td align="center" valign="top"><p class="table">0</p></td>
+<td align="left" valign="top"><p class="table">Cross-product of inertia in the body X-Z plane (no sign reversal)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyProductOfInertia_XY</code></p></td>
+<td align="center" valign="top"><p class="table">kg-m^2</p></td>
+<td align="center" valign="top"><p class="table">0</p></td>
+<td align="left" valign="top"><p class="table">Cross-product of inertia in the body X-Y plane (no sign reversal)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyProductOfInertia_YZ</code></p></td>
+<td align="center" valign="top"><p class="table">kg-m^2</p></td>
+<td align="center" valign="top"><p class="table">0</p></td>
+<td align="left" valign="top"><p class="table">Cross-product of inertia in the body Y-Z plane (no sign reversal)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>totalMass</code></p></td>
+<td align="center" valign="top"><p class="table">kg</p></td>
+<td align="center" valign="top"><p class="table">&gt;0</p></td>
+<td align="left" valign="top"><p class="table">Total mass of the vehicle</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>vrsPositionOfMrc</code></p></td>
+<td align="center" valign="top"><p class="table">m</p></td>
+<td align="center" valign="top"><p class="table">+aft</p></td>
+<td align="left" valign="top"><p class="table">Longitudinal location of the moment reference center (+aft from nose)</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyPositionOfCmWrtMrc_X</code></p></td>
+<td align="center" valign="top"><p class="table">m</p></td>
+<td align="center" valign="top"><p class="table">+fwd</p></td>
+<td align="left" valign="top"><p class="table">Longitudinal location of the center of mass relative to moment reference point</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyPositionOfCmWrtMrc_Y</code></p></td>
+<td align="center" valign="top"><p class="table">m</p></td>
+<td align="center" valign="top"><p class="table">+right</p></td>
+<td align="left" valign="top"><p class="table">Lateral location of the center of mass relative to moment reference point</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>bodyPositionOfCmWrtMrc_Z</code></p></td>
+<td align="center" valign="top"><p class="table">m</p></td>
+<td align="center" valign="top"><p class="table">+down</p></td>
+<td align="left" valign="top"><p class="table">Vertical location of the center of mass relative to moment reference point</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_implementation">Implementation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_interpretation_of_models">Interpretation of models</h3>
+<div class="paragraph"><p>The AIAA S-119 standard is an XML-based encoding scheme that provides both human- and
+machine-readable algorithm and data table specifications in an unambiguous way, suitable for
+exchange over distance and, for archival purposes, time. While specifying models in this fashion may
+initially present a challenge to the implementer, investment in automated scripts or parsers should
+greatly simplify future exchange of models. The nature of XML should make these models
+understandable even without reference to the formal grammar definition document (available from
+<a href="http://daveml.org">http://daveml.org</a>).</p></div>
+<div class="paragraph"><p>The grammar is simple enough that equivalent source code can be implemented by hand in most
+cases. If preferred, several parsers are available, some open and some by request. See the Tools
+section of <a href="http://daveml.org">http://daveml.org</a> for a current list.</p></div>
+<div class="paragraph"><p>These parsers are intended either for use at run-time (an interpreting parser) or at compile-time (a
+translating parser that emits C, Simulink&#174;, FORTRAN or other programming source code). A parser
+that can do both is also available.</p></div>
+<div class="paragraph"><p>S-119 models may also contain their own self-verification check-cases that will help ensure proper
+implementation of the model by the chosen parser. At present, the aero (<em>F16_aero.dml</em>) and
+propulsion (<em>F16_prop.dml</em>) models contain verification checkcase definitions and data.</p></div>
+<div class="paragraph"><p>Variable names used by these various models, where appropriate, reflect the suggested naming
+convention described in <a href="#S119">[S119]</a>.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_hooking_up_the_models">Hooking up the models</h3>
+<div class="paragraph"><p>Inputs from the simulation framework are normal flight conditions: angle-of-attack,
+angle-of-sideslip, and dynamic pressure. These are used to obtain aerodynamic coefficients of forces
+and moments about the current moment reference center, which changes when the vehicle stages.</p></div>
+<div class="paragraph"><p>The specified initial conditions (see below) are assumed for the flight conditions, and the first
+stage is ignited (by passing the appropriate flag to the propulsion model). The resulting thrust
+acts along the body X axis and begins to accelerate the vehicle. The amount of fuel consumed by each
+stage must be calculated by external logic; the mass of fuel consumed is provided to the inertia
+model, which provides the current mass properties including the offset between the center of mass
+and the moment reference center.</p></div>
+<div class="paragraph"><p>This moment arm is used to transfer the aero forces and moments from the reference center to the
+current center of mass using an external cross-product operation of the two vector quantities; thus
+the actual moments and aerodynamic forces can be summed with the thrust value from the propulsion
+model and accelerations can be calculated at the center of mass.</p></div>
+<div class="paragraph"><p>The simulation framework integrates the accelerations twice to arrive at new flight conditions, and
+the simulation loop starts over.</p></div>
+<div class="paragraph"><p>Some internal logic is required to turn off the first stage when it is depleted (remaining fuel
+fraction reaches 0), then the vehicle is allowed to coast for 96.79 seconds before the first vehicle
+is dropped (or staged) and the second stage is ignited. The second stage continues to burn until
+fuel depletion.</p></div>
+<div class="paragraph"><p>At this point the vehicle should be in an elliptical orbit with a perigee greater than 125 km for a
+circular, rotating, earth (although an ellipsoidal/WGS-84 earth should work as well).</p></div>
+<div class="paragraph"><p>The simulation framework is responsible for the appropriate atmospheric model, integrating both the
+equations of motion and the fuel consumed values, providing the moment transfer to the center of
+mass, and the simple switching logic for coasting and staging upon depletion of stage 1.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_initial_conditions">Initial conditions</h3>
+<div class="paragraph"><p>The rocket should be launched from sea level at the equator heading Eastward with an initial pitch
+attitude of 55.220 degrees (measured from horizontal). The initial velocity should be close to zero;
+for comparisons sake and to avoid singularities involving division by zero, use 0.1 ft/s as the
+initial velocity along the X-body axis.</p></div>
+<div class="paragraph"><p>For simplicity&#8217;s sake, the center-of-mass of the vehicle should start at sea level (which would
+physically place the lower part of the rocket below sea level <a href="#Madden1403">[Madden1403]</a>).</p></div>
+<div class="paragraph"><p>Initial angular rates should be zero with respect to the launch site. The vehicle should pitch over
+along the flight path in response to the effect of gravity as it accelerates away from the launch
+site (the so-called <em>gravity turn</em>).</p></div>
+</div>
+<div class="sect2">
+<h3 id="_atmosphere_model">Atmosphere model</h3>
+<div class="paragraph"><p>For comparsion, the full US Standard Atmosphere, 1976, should be used <a href="#NOAA1976">[NOAA1976]</a>. Many simulations
+that support the 1976 atmosphere do not include the portion in the troposphere, which is a separate
+set of tables or equations. The lack of atmospheric data above 86 km if the troposphere data is not
+available will cause slight differences in linear and rotational accelerations.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_change_history">Change history</h2>
+<div class="sectionbody">
+<div class="tableblock">
+<table rules="all"
+width="50%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table 7. Revisions to this file</caption>
+<col width="33%" />
+<col width="11%" />
+<col width="55%" />
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">2013-08-09</p></td>
+<td align="left" valign="top"><p class="table">v1</p></td>
+<td align="left" valign="top"><p class="table">Original version</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">2014-03-30</p></td>
+<td align="left" valign="top"><p class="table">v2</p></td>
+<td align="left" valign="top"><p class="table">Tightened scenario specifications, added</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_references">References</h2>
+<div class="sectionbody">
+<div class="ulist bibliography"><ul>
+<li>
+<p>
+<a id="S119"></a>[S119] Anon.: "Flight Dynamics Model Exchange Standard."
+  American National Standard ANSI/AIAA S-119-2011, American Institute
+  of Aeronautics and Astronautic, Washington, DC, March 2011. Available from <a href="http://arc.aiaa.org/doi/book/10.2514/4.867965">http://arc.aiaa.org/doi/book/10.2514/4.867965</a>
+  (as of May 2013)
+</p>
+</li>
+<li>
+<p>
+<a id="Queen13"></a>[Queen13] Queen, Eric M.: "Two-Stage to Orbit Test Case," found in a Microsoft PowerPoint
+  slide presentation, <em>twosgatetoorbit.pptx</em> dated 2013-07-15.
+</p>
+</li>
+<li>
+<p>
+<a id="Madden1403"></a>[Madden1403] Madden, Michael M.: "Firming Up the Scenario Definition for Atmospheric Case #17
+  (Two Stage Rocket)," e-mail to the author dated 2014-03-28, with a follow-up correction.
+</p>
+</li>
+<li>
+<p>
+<a id="NOAA1976"></a>[NOAA1976] National Oceanic and Atmospheric Administration, "U.S. Standard Atmosphere, 1976."
+  NOAA&#8212;S/T 76-1562, Washington, DC 1976.
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Version 2<br />
+Last updated 2014-03-30 08:51:39 EDT
+</div>
+</div>
+</body>
+</html>

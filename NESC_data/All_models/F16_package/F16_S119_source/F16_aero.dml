@@ -1,0 +1,4077 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE DAVEfunc 
+      PUBLIC "-//AIAA//DTD for Flight Dynamic Models - Functions 2.0//EN" 
+          "http://www.daveml.org/DTDs/2p0/DAVEfunc.dtd">
+<DAVEfunc xmlns="http://daveml.org/2010/DAVEML">
+  <fileHeader name="F-16 Subsonic Aerodynamics Model (a la Garza)">
+    <author name="Bruce Jackson" org="NASA Langley Research Center" email="bruce.jackson@nasa.gov"/>
+    <creationDate date="2003-06-10"/>
+    <fileVersion>Mod P, 2013-10-21</fileVersion>
+    <description>
+      F-16 aero data file. Based on Morelli's adaptation of Stevens and Lewis' F-16 example [1] described in Garza &amp;
+      Morelli's TM [2]. Obtained from E. A. Morelli in the form of Matlab scripts [3] &amp; [4].
+    </description>
+
+    <!-- ================== -->
+    <!--     References     -->
+    <!-- ================== -->
+
+    <reference refID="REF01" author="Stevens, Brian L. and Lewis, Frank L."
+               title="Aircraft Control and Simulation" accession="ISBN O-471-61397-5" date="1992"/>
+
+    <reference
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xlink:href="http://techreports.larc.nasa.gov/ltrs/PDF/2003/tm/NASA-2003-tm212145.pdf"
+        refID="REF02" author="Garza, Fredrico R.; and Morelli, Eugene A."
+        title="A Collection of Nonlinear Aircraft Simulations in MATLAB"
+        accession="NASA TM-2003-212145" date="2003-01"/>
+
+    <reference refID="REF03" author="Morelli, Eugene A." title="f16_aero.m" date="1995-06-17"/>
+
+    <reference refID="REF04" author="Morelli, Eugene A." title="f16_aero_setup.m"
+               date="1995-06-17"/>
+
+    <reference refID="NOTE1" author="Bruce Jackson" title="Checkcase data source"
+               date="2004-02-13">
+      <description>
+        From E. A. Morelli's f16 matlab script, dated 09-Oct-2000;
+        Generated using 'make_DAVEML_checkcases.m'
+      </description>
+    </reference>
+
+    <modificationRecord modID="A" date="2004-02-11">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+        Added checkcase static shots and internal values for debugging
+        purposes.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="B" date="2006-11-16">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+        Corrected to DAVEfunc.dtd 1.9 standards: replaced xns with email; corrected dates to ANSI; replaced docIC with
+        refID in documentRefs; added fileVersion element
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="C" date="2006-11-28">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+        Resorted variableDefs so they appear in proper order, in
+        response to bug report from Giovanni Cignoni. Reindented file using emacs nxml-mode.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="D" date="2008-02-27">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+        Updated to DAVE-ML 2.0: replaced fileCreationDate and functionCreationDate with new creationDate element;
+        changed to my email alias.
+      </description>
+    </modificationRecord>
+
+
+    <modificationRecord modID="E" date="2008-10-08">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+        Updated to DAVE-ML 2.0: replaced signalID elements with varID elements in checkcase data.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="F" date="2008-11-07">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+        Updated to new AIAA standard variable names.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="G" date="2010-01-07">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+        Corrected description of MRC x-location constant; updated to Jan 10 S-119 units-of-measure encoding. Renamed
+        deprecated griddedTables to griddedTableDefs.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="H" date="2010-01-28">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+        Hopefully this time I fixed the problems with internal variable values for positive and negative pitch rate
+        check cases, and with names of yaw rate check cases, originally cited by Trey Arthur and re-discovered by Missy
+        Hill. Untabified (all whitespace are now spaces, not tabs for easier viewing in any text editor
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="I" date="2010-05-10">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+        Removed auto revision field, since we're now under git. Added xmlns attribute to DAVEfunc to conform to DTD 2,
+        RC3.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="J" date="2011-01-07">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+        Added namespace to &lt;math&gt; elements, xmlns attribute to DAVEfunc, and gtIDs to conform to DTD 2.0 RC4;
+        corrected PUBLIC ID string.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="K" date="2011-01-28">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+	Corrected systemID in DOCTYPE to include full formal URL to 2p0 DAVEfunc.dtd
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="L" date="2012-07-31">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+	Added explicit isInput tags to input variables per now-standard practice; added minValue attribute to true
+	airspeed to avoid divide-by-zero in calculations.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="M" date="2012-08-09">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+	Marked reference area, span and chord as outputs; changed all length units from "f" to "ft" to match final S-119
+	convention.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="N" date="2013-08-29">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+	Changed axis prefix of CG and MRC position parameters from "body" to "vrs" to reflect convention that these are
+	positive aft; added explicit 'sign' attribute to CG position input variable.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="O" date="2013-09-12">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+	Removed 'vrsPositionOfCgWrtWingLeadingEdge_X' input to better conform to convention; thus, moment coefficients
+	are given about the moment reference center (35 % mean aero chord). This means moment transfers to the center of
+	mass must be done externally to this routine. Also modified the embedded F-16 matlab script as it no longer
+	matches, as it had the moment transfer calculations. Updated descriptions of coefficient outputs to state they
+	are acting at or about the moment reference center.
+      </description>
+    </modificationRecord>
+
+    <modificationRecord modID="P" date="2013-10-21">
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <description>
+	Replaced 'vt_unlim' internal variable in checkcase data sets with just 'vt', thanks to alert users Mike Madden
+	and Jeremy Schidner.
+      </description>
+    </modificationRecord>
+
+  </fileHeader>
+
+  <!-- from reference 3
+       function [cx,cy,cz,cl,cm,cn] = f16_aero(vt,alpha,beta,p,q,r,el,ail,rdr)
+       %
+       %  function [cx,cy,cz,cl,cm,cn] = f16_aero(vt,alpha,beta,p,q,r,el,ail,rdr)
+       %
+       %  Usage: [cx,cy,cz,cl,cm,cn] = f16_aero(vt,alpha,beta,p,q,r,el,ail,rdr);
+       %
+       %  Description:
+       %
+       %    Computes non-dimensional aerodynamic force and moment
+       %    coefficients for the F-16 nonlinear simulation.
+       %
+       %
+       %  Input:
+       %
+       %     vt  = airspeed, ft/sec.
+       %   alpha = angle of attack, deg.
+       %    beta = sideslip angle, deg.
+       %     p   = roll rate, rad/sec.
+       %     q   = pitch rate, rad/sec.
+       %     r   = yaw rate, rad/sec.
+       %    el   = elevator deflection, deg.
+       %    ail  = aileron deflection, deg.
+       %    rdr  = rudder deflection, deg.
+       %
+       %  output:
+       %
+       %    cx = body axis x force coefficient.
+       %    cy = body axis y force coefficient.
+       %    cz = body axis z force coefficient.
+       %    cl = rolling moment coefficient.
+       %    cm = pitching moment coefficient.
+       %    cn = yawing moment coefficient.
+       %
+
+%
+%    Calls:
+%      cxo.m, czo.m
+%      cmo.m, clo.m, cno.m
+%      dlda.m, dldr.m
+%      dnda.m, dndr.m
+%      dampder.m
+%
+%    Author [of f16_aero.m]:  Eugene A. Morelli
+%
+%    History [of f16_aero.m]:
+%     05 June 1995 - Created and debugged, EAM.
+%
+%
+%  [f16_aero.m] Copyright (C) 2000  Eugene A. Morelli
+%
+%
+%  This program [f16_aero.m] carries no warranty, not even the implied
+%  warranty of merchantability or fitness for a particular purpose.
+%
+%  Please email bug reports or suggestions for improvements [to f16_aero.m] to:
+%
+%      e.a.morelli@larc.nasa.gov
+%
+global CXO CZO CMO CLO CNO DDER
+global DLDA DLDR DNDA DNDR
+rtd=180/pi;
+cbar=11.32;bspan=30.;
+del=el/25.0;dail=ail/20.0;drdr=rdr/30.0;
+%
+%  Aerodynamic forces.
+%
+cxt=cxo(alpha,el);
+cy=-0.02*beta+0.021*dail+0.086*drdr;    % EBJ: renamed to cy0 for XML
+czt=czo(alpha);
+cz=czt*(1.-(beta/rtd)^2)-0.19*del;      % EBJ: this cz renamed cz1 for XML uniqueness
+%
+%  Aerodynamic moments.
+%
+clt=clo(alpha,beta);
+dclda=dlda(alpha,beta);
+dcldr=dldr(alpha,beta);
+cl=clt + dclda*dail + dcldr*drdr;       % EBJ: this cl renamed cl1 for XML uniqueness
+cmt=cmo(alpha,el);
+cnt=cno(alpha,beta);
+dcnda=dnda(alpha,beta);
+dcndr=dndr(alpha,beta);
+cn=cnt + dcnda*dail + dcndr*drdr;       % EBJ: this cn renamed cn1 for XML uniqueness
+%
+%  Add damping derivative contributions
+%  and cg position terms.
+%
+tvt=2*vt;b2v=bspan/tvt;cq2v=cbar*q/tvt;
+d=dampder(alpha);
+cx=cxt + cq2v*d(1);                     % EBJ: d(1) is cxq
+cy=cy + b2v*(d(3)*p + d(2)*r);          % EBJ: d(2) is cyr, d(3) is cyp
+cz=cz + cq2v*d(4);                      % EBJ: d(4) is czq
+cl=cl + b2v*(d(6)*p + d(5)*r);          % EBJ: d(5) is clr, d(6) is clp
+cm=cmt + cq2v*d(7);                     % EBJ: d(7) is cmq; removed moment xfer
+cn=cn + b2v*(d(9)*p + d(8)*r);          % EBJ: d(8) is cnr, d(9) is cnp; remove moment xfer
+
+return
+  -->
+  <!-- ================== -->
+  <!--  Input variables   -->
+  <!-- ================== -->
+
+  <variableDef name="trueAirspeed" varID="vt" units="ft_s" symbol="V" minValue="0.1">
+    <description> True airspeed, ft/sec </description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="angleOfAttack" varID="alpha" units="deg" symbol="&#x3B1;">
+    <description> Instantaneous true angle-of-attack, in degrees </description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="angleOfSideslip" varID="beta" units="deg" symbol="&#x3B2;"
+               sign="wind in right ear">
+    <description> Instantaneous true angle-of-sideslip, in degrees </description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyAngularRate_Roll" varID="p" units="rad_s" sign="right wing down"
+               symbol="p">
+    <description> Body roll rate, rad/sec </description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyAngularRate_Pitch" varID="q" units="rad_s" sign="aircraft nose up"
+               symbol="q">
+    <description> Body pitch rate, rad/sec </description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="bodyAngularRate_Yaw" varID="r" units="rad_s" sign="aircraft nose right"
+               symbol="r">
+    <description> Body yaw rate, rad/sec </description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="elevatorDeflection" varID="el" units="deg" sign="trailing edge down"
+               symbol="&#x3B4;e">
+    <description> Elevator deflection angle, in degrees (+TED) </description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aileronDeflection" varID="ail" units="deg" sign="left roll" symbol="&#x3B4;a">
+    <description> Aileron deflection angle, in degrees (+LWD) </description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="rudderDeflection" varID="rdr" units="deg" sign="TEL" symbol="&#x3B4;r">
+    <description> Rudder deflection angle, in degrees (+TEL) </description>
+    <isInput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--      Constants     -->
+  <!-- ================== -->
+
+  <variableDef name="rtd" varID="rtd" units="deg_rad">
+    <description> Conversion constant from radians to degrees </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <divide/>
+          <cn>180.</cn>
+          <cn>3.14159265</cn>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="referenceWingChord" varID="cbar" units="ft" initialValue="11.32">
+    <description> Length of aerodynamic chord, ft </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="referenceWingSpan" varID="bspan" units="ft" initialValue="30.">
+    <description> Length of aerodynamic span, ft </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="referenceWingArea" varID="sref" units="ft2" initialValue="300.">
+    <description> Reference area of aerodynamic model, ft2 </description>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--  Local variables   -->
+  <!-- ================== -->
+
+  <variableDef name="del" varID="del" units="nd">
+    <description>
+      Normalized elevator deflection (note range is beyond breakpoint range)
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <divide/>
+          <ci>el</ci>
+          <cn>25.0</cn>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="dail" varID="dail" units="nd">
+    <description> Normalized aileron deflection. </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <divide/>
+          <ci>ail</ci>
+          <cn>20.0</cn>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="drdr" varID="drdr" units="nd">
+    <description> Normalized rudder deflection. </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <divide/>
+          <ci>rdr</ci>
+          <cn>30.0</cn>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <!-- Aerodynamic Forces -->
+
+  <variableDef name="CX0" varID="cxt" units="nd" sign="forward">
+    <description>
+      Basic coefficient of force in the X-body direction
+      (+FWD). Function table based on angle of attack and elevator
+      deflection.
+    </description>
+  </variableDef>
+
+  <variableDef name="CY0" varID="cy0" units="nd" sign="right">
+    <description>
+      Basic coefficient of force in the Y-body direction
+      (+right). Function of sideslip angle, aileron and rudder
+      deflection.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <apply>
+            <times/>
+            <cn>-0.02</cn>
+            <ci>beta</ci>
+          </apply>
+          <apply>
+            <times/>
+            <cn>0.021</cn>
+            <ci>dail</ci>
+          </apply>
+          <apply>
+            <times/>
+            <cn>0.086</cn>
+            <ci>drdr</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="CZ0" varID="czt" units="nd" sign="down">
+    <description>
+      Basic coefficient of force in the Z-body direction
+      (+DWN). Function table based on angle of attack and elevator
+      deflection.
+    </description>
+  </variableDef>
+
+  <variableDef name="CZ1" varID="cz1" units="nd" sign="down">
+    <description>
+      Coefficient of force in the Z-body direction, modified from
+      basic CZ0 to include effects of sideslip and elevator
+      deflection.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <!-- cz=czt*(1.-(beta/rtd)^2)-0.19*del; % I've renamed to cz1 for XML   -->
+        <apply>
+          <!-- [czt*(1.-(beta/rtd)^2)] + [-0.19*del]    -->
+          <plus/>
+          <apply>
+            <!--  [czt] * [(1.-(beta/rtd)^2)]           -->
+            <times/>
+            <ci>czt</ci>
+            <apply>
+              <!--          ([1.] + [-(beta/rtd)^2)]            -->
+              <plus/>
+              <cn>1.</cn>
+              <apply>
+                <!--                   -[(beta/rtd)^2]          -->
+                <minus/>
+                <apply>
+                  <!--                   [beta/rtd]^2           -->
+                  <power/>
+                  <apply>
+                    <!--                   [beta]/[rtd]         -->
+                    <divide/>
+                    <ci>beta</ci>
+                    <ci>rtd</ci>
+                  </apply>
+                  <!--                   [beta]/[rtd]           -->
+                  <cn>2</cn>
+                </apply>
+                <!--                   [beta/rtd]^2             -->
+              </apply>
+              <!--                   -[(beta/rtd)^2]            -->
+            </apply>
+            <!--          ([1.] + [-(beta/rtd)^2)]              -->
+          </apply>
+          <!--  [czt] * [(1.-(beta/rtd)^2)]             -->
+          <apply>
+            <!--                          [-0.19]*[del] -->
+            <times/>
+            <cn>-0.19</cn>
+            <ci>del</ci>
+          </apply>
+          <!--                          [-0.19]*[del]   -->
+        </apply>
+        <!-- [czt*(1.-(beta/rtd)^2)] + [-0.19*del]      -->
+      </math>
+    </calculation>
+  </variableDef>
+
+  <!-- Add damping derivatives and cg position terms -->
+
+  <variableDef name="tvt" varID="tvt" units="ft_s">
+    <description>Twice velocity.</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <cn>2</cn>
+          <ci>vt</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="b2v" varID="b2v" units="nd">
+    <description> Wing span over 2 times velocity. Used for coefficient normalization. </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <divide/>
+          <ci>bspan</ci>
+          <ci>tvt</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="cq2v" varID="cq2v" units="nd">
+    <description>
+      Chord times pitch rate over 2 times velocity. Used to normalize aero
+      coefficients.
+    </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <times/>
+          <ci>cbar</ci>
+          <apply>
+            <divide/>
+            <ci>q</ci>
+            <ci>tvt</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+
+  <!-- Function table lookup support variables -->
+
+  <variableDef name="absbeta" varID="absbeta" units="deg">
+    <description> Absolute value of angle-of-sideslip, deg. </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <abs/>
+          <ci>beta</ci>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="absCl0" varID="absCl0" units="nd">
+    <description> Absolute value of rolling moment coefficient </description>
+  </variableDef>
+
+  <variableDef name="absCn0" varID="absCn0" units="nd">
+    <description> Absolute value of yawing moment coefficient </description>
+  </variableDef>
+
+  <!-- Aerodynamic moments, part 1 -->
+
+  <variableDef name="Cl0" varID="clt" units="nd" sign="right wing down">
+    <description> Basic coefficient of moment around the X-body direction (roll) (+RWD) </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <apply>
+                <minus/>
+                <ci>absCl0</ci>
+              </apply>
+              <apply>
+                <lt/>
+                <ci>beta</ci>
+                <cn>0</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <ci>absCl0</ci>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="Cm0" varID="cmt" units="nd" sign="nose up">
+    <description>
+      Basic coefficient of moment around the Y-body direction (pitch) (+ANU)
+    </description>
+  </variableDef>
+
+  <variableDef name="Cn0" varID="cnt" units="nd" sign="nose right">
+    <description> Basic coefficient of moment around the Z-body direction (yaw) (+RWD) </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <piecewise>
+            <piece>
+              <apply>
+                <minus/>
+                <ci>absCn0</ci>
+              </apply>
+              <apply>
+                <lt/>
+                <ci>beta</ci>
+                <cn>0</cn>
+              </apply>
+            </piece>
+            <otherwise>
+              <ci>absCn0</ci>
+            </otherwise>
+          </piecewise>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <!-- Damping derivative tables -->
+
+  <variableDef name="CXq" varID="cxq" units="_rad" sign="fwd/+up">
+    <description> Damping derivative: axial force increment per radian/sec of pitch rate
+    </description>
+  </variableDef>
+
+  <variableDef name="CYr" varID="cyr" units="_rad" sign="right/+right">
+    <description> Damping derivative: lateral force increment per radian/sec of yaw rate
+    </description>
+  </variableDef>
+
+  <variableDef name="CYp" varID="cyp" units="_rad" sign="right/+right">
+    <description> Damping derivative: lateral force increment per radian/sec of roll rate
+    </description>
+  </variableDef>
+
+  <variableDef name="CZq" varID="czq" units="_rad" sign="down/+up">
+    <description> Damping derivative: vertical force increment per radian/sec of pitch rate
+    </description>
+  </variableDef>
+
+  <variableDef name="Clr" varID="clr" units="_rad" sign="right/+right">
+    <description> Damping derivative: rolling moment increment per radian/sec of yaw rate
+    </description>
+  </variableDef>
+
+  <variableDef name="Clp" varID="clp" units="s_rad" sign="right/+right">
+    <description> Damping derivative: rolling moment increment per radian/sec of roll rate
+    </description>
+  </variableDef>
+
+  <variableDef name="Cmq" varID="cmq" units="s_rad" sign="up/+up">
+    <description> Damping derivative: pitching moment increment per radian/sec of pitch rate
+    </description>
+  </variableDef>
+
+  <variableDef name="Cnr" varID="cnr" units="s_rad" sign="right/+right">
+    <description> Damping derivative: yawing moment increment per radian/sec of yaw rate
+    </description>
+  </variableDef>
+
+  <variableDef name="Cnp" varID="cnp" units="s_rad" sign="right/+right">
+    <description> Damping derivative: yawing moment increment per radian/sec of roll rate
+    </description>
+  </variableDef>
+
+  <variableDef name="ClDA" varID="dclda" units="_deg" sign="right/+left">
+    <description> Control power derivative: rolling moment per deg of aileron deflection
+    </description>
+  </variableDef>
+
+  <variableDef name="ClDR" varID="dcldr" units="_deg" sign="right/+left">
+    <description> Control power derivative: rolling moment per deg of rudder deflection
+    </description>
+  </variableDef>
+
+  <variableDef name="CnDA" varID="dcnda" units="_deg" sign="right/+left">
+    <description> Control power derivative: yawing moment per deg of aileron deflection
+    </description>
+  </variableDef>
+
+  <variableDef name="CnDR" varID="dcndr" units="_deg" sign="right/+left">
+    <description> Control power derivative: yawing moment per deg of rudder deflection
+    </description>
+  </variableDef>
+
+  <!-- Aerodynamic moments, part 2 -->
+
+  <variableDef name="Cl1" varID="cl1" units="nd">
+    <description> Initial value of rolling moment, less damping terms </description>
+    <calculation>
+      <!-- cl=clt + dclda*dail + dcldr*drdr;    % EBJ: this cl renamed to cl1 for XML uniqueness -->
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>clt</ci>
+          <apply>
+            <times/>
+            <ci>dclda</ci>
+            <ci>dail</ci>
+          </apply>
+          <apply>
+            <times/>
+            <ci>dcldr</ci>
+            <ci>drdr</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <variableDef name="Cn" varID="cn1" units="nd">
+    <description> Initial value of rolling moment coefficient without damping terms </description>
+    <calculation>
+      <!-- cn=cnt + dcnda*dail + dcndr*drdr;    % EBJ: this cn renamed cn1 for XML uniqueness -->
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>cnt</ci>
+          <apply>
+            <times/>
+            <ci>dcnda</ci>
+            <ci>dail</ci>
+          </apply>
+          <apply>
+            <times/>
+            <ci>dcndr</ci>
+            <ci>drdr</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--  Output variables  -->
+  <!-- ================== -->
+
+  <variableDef name="aeroBodyForceCoefficient_X" varID="cx" units="nd" sign="FWD">
+    <description> Total coefficient of force along the body X-axis acting at the moment reference center</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>cxt</ci>
+          <apply>
+            <times/>
+            <ci>cq2v</ci>
+            <ci>cxq</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aeroBodyForceCoefficient_Y" varID="cy" units="nd" sign="RIGHT">
+    <description> Total coefficient of force along the body Y-axis acting at the moment reference center</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>cy0</ci>
+          <apply>
+            <times/>
+            <ci>b2v</ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci>cyp</ci>
+                <ci>p</ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci>cyr</ci>
+                <ci>r</ci>
+              </apply>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aeroBodyForceCoefficient_Z" varID="cz" units="nd" sign="DOWN">
+    <description> Total coefficient of force along the body Z-axis acting at the moment reference center</description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>cz1</ci>
+          <apply>
+            <times/>
+            <ci>cq2v</ci>
+            <ci>czq</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aeroBodyMomentCoefficient_Roll" varID="cl" units="nd" sign="RWD">
+    <description> Total coefficient of moment around the moment reference center in the body X-axis
+    (rolling moment) </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>cl1</ci>
+          <apply>
+            <times/>
+            <ci>b2v</ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci>clp</ci>
+                <ci>p</ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci>clr</ci>
+                <ci>r</ci>
+              </apply>
+            </apply>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aeroBodyMomentCoefficient_Pitch" varID="cm" units="nd" sign="ANU">
+    <description> Total coefficient of moment around the moment reference center in the body Y-axis
+    (pitching moment) </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <plus/>
+          <ci>cmt</ci>
+          <apply>
+            <times/>
+            <ci>cq2v</ci>
+            <ci>cmq</ci>
+          </apply>
+        </apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <variableDef name="aeroBodyMomentCoefficient_Yaw" varID="cn" units="nd" sign="ANR">
+    <description> Total coefficient of moment around the moment reference center in the body Z-axis (yawing
+    moment) </description>
+    <calculation>
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <apply>
+          <!-- start of cn + b2v*() - cy*()*cbar/bspan -->
+          <plus/>
+          <ci>cn1</ci>
+          <apply>
+            <!-- start of b2v*(d(9)*p + d(8)*r) -->
+            <times/>
+            <ci>b2v</ci>
+            <apply>
+              <!-- start of (d(9)*p + d(8)*r) -->
+              <plus/>
+              <apply>
+                <!-- start of d(9)*p -->
+                <times/>
+                <ci>cnp</ci>
+                <!-- d(9) is cnp -->
+                <ci>p</ci>
+              </apply>
+              <!-- end of d(9)*p -->
+              <apply>
+                <!-- start of d(8)*r -->
+                <times/>
+                <ci>cnr</ci>
+                <!-- d(8) is cnr -->
+                <ci>r</ci>
+              </apply>
+              <!-- end of d(8)*r -->
+            </apply>
+            <!-- end of (d(9)*p + d(8)*r) -->
+          </apply>
+          <!-- end of b2v*(d(9)*p + d(8)*r) -->
+	</apply>
+      </math>
+    </calculation>
+    <isOutput/>
+    <isStdAIAA/>
+  </variableDef>
+
+  <!-- ================== -->
+  <!--  Breakpoint values -->
+  <!-- ================== -->
+
+  <breakpointDef name="alpha" bpID="ALPHA1" units="deg">
+    <description> Alpha breakpoints for basic and damping aero tables </description>
+    <bpVals> -10., -5., 0., 5., 10., 15., 20., 25., 30., 35., 40., 45. </bpVals>
+  </breakpointDef>
+
+  <breakpointDef name="beta" bpID="BETA1" units="deg">
+    <description> Angle-of-sideslip breakpoints for basic aero tables </description>
+    <bpVals> 0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0 </bpVals>
+  </breakpointDef>
+
+  <breakpointDef name="beta" bpID="BETA2" units="deg">
+    <description> Angle-of-sideslip breakpoints for control power tables </description>
+    <bpVals> -30.0, -20.0, -10.0, 0.0, 10.0, 20.0, 30.0 </bpVals>
+  </breakpointDef>
+
+  <breakpointDef name="el" bpID="DE1" units="deg">
+    <description> Elevator angle breakpoints </description>
+    <bpVals> -24., -12., 0., 12., 24. </bpVals>
+  </breakpointDef>
+
+  <!-- ================== -->
+  <!--  Basic Functions   -->
+  <!-- ================== -->
+
+  <function name="Basic CX">
+    <description> Basic coefficient of X-force table as a function of angle of attack and
+    elevator </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-03-28"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="el" min="-24.0" max="24.0" extrapolate="neither"/>
+    <!-- DE breakpoints -->
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="cxt"/>
+
+    <functionDefn name="CX_fn">
+      <griddedTableDef name="CX_table" gtID="CX_table_def">
+        <breakpointRefs>
+          <bpRef bpID="DE1"/>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable>
+          <!-- Note: last breakpoint changes most rapidly -->
+          -.099,-.081,-.081,-.063,-.025,.044,.097,.113,.145,.167,.174,.166,
+          -.048,-.038,-.040,-.021,.016,.083,.127,.137,.162,.177,.179,.167,
+          -.022,-.020,-.021,-.004,.032,.094,.128,.130,.154,.161,.155,.138,
+          -.040,-.038,-.039,-.025,.006,.062,.087,.085,.100,.110,.104,.091,
+        -.083,-.073,-.076,-.072,-.046,.012,.024,.025,.043,.053,.047,.040 </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+
+  <function name="Basic CZ">
+    <description> Basic coefficient of Z-force table as a function of angle of attack </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-03-28"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="czt"/>
+
+    <functionDefn name="CZ0_fn">
+      <griddedTableDef name="CZ0_table" gtID="CZ0_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable> .770,.241,-.100,-.416,-.731,-1.053,
+        -1.366,-1.646,-1.917,-2.120,-2.248,-2.229 </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+
+  <function name="Basic Cm">
+    <description>
+      Basic coefficient of pitching-moment as a function of angle of
+      attack and elevator
+    </description>
+    <provenance>
+      <author name="Bruce Jackson"
+              org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-03-28"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="el" min="-24.0" max="24.0"
+                       extrapolate="neither"/>
+    <!-- DE breakpoints -->
+    <independentVarRef varID="alpha" min="-10.0" max="45.0"
+                       extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="cmt"/>
+
+    <functionDefn name="Cm0_fn">
+      <griddedTableDef name="Cm0_table" gtID="Cm0_table_def">
+        <breakpointRefs>
+          <bpRef bpID="DE1"/>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable>
+          <!-- Note: last breakpoint changes most rapidly -->
+          .205,.168,.186,.196,.213,.251,.245,.238,.252,.231,.198,.192,
+          .081,.077,.107,.110,.110,.141,.127,.119,.133,.108,.081,.093,
+          -.046,-.020,-.009,-.005,-.006,.010,.006,-.001,.014,.000,-.013,.032,
+          -.174,-.145,-.121,-.127,-.129,-.102,-.097,-.113,-.087,-.084,-.069,-.006,
+          -.259,-.202,-.184,-.193,-.199,-.150,-.160,-.167,-.104,-.076,-.041,-.005
+        </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="Basic Cl">
+    <description> Basic coefficient of rolling moment as a function of angle of attack and
+    sideslip angle </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-03-28"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="absbeta" min="0.0" max="30.0" extrapolate="neither"/>
+    <!-- Beta breakpoints -->
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="absCl0"/>
+
+    <functionDefn name="Cl0_fn">
+      <griddedTableDef name="Cl0_table"  gtID="Cl0_table_def">
+        <breakpointRefs>
+          <bpRef bpID="BETA1"/>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable>
+          <!-- Note: last breakpoint changes most rapidly --> 0., 0., 0., 0., 0., 0., 0.,
+          0., 0., 0., 0., 0., -.001,-.004,-.008,-.012,-.016,-.022,
+          -.022,-.021,-.015,-.008,-.013,-.015, -.003,-.009,-.017,-.024,-.030,-.041,
+          -.045,-.040,-.016,-.002,-.010,-.019, -.001,-.010,-.020,-.030,-.039,-.054,
+          -.057,-.054,-.023,-.006,-.014,-.027, .000,-.010,-.022,-.034,-.047,-.060,
+          -.069,-.067,-.033,-.036,-.035,-.035, .007,-.010,-.023,-.034,-.049,-.063,
+          -.081,-.079,-.060,-.058,-.062,-.059, .009,-.011,-.023,-.037,-.050,-.068,
+        -.089,-.088,-.091,-.076,-.077,-.076 </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="Basic Cn">
+    <description> Basic coefficient of yawing moment as a function of angle of attack and
+    sideslip angle </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-03-28"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="absbeta" min="0.0" max="30.0" extrapolate="neither"/>
+    <!-- Beta breakpoints -->
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="absCn0"/>
+
+    <functionDefn name="Cn0_fn">
+      <griddedTableDef name="Cn0_table" gtID="Cn0_table_def">
+        <breakpointRefs>
+          <bpRef bpID="BETA1"/>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable>
+          <!-- Note: last breakpoint (alpha) changes most rapidly -->
+          <!-- -10    -5     0     5    10    15    20    25    30    35    40    45         Alpha       -->
+          0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., <!-- |Beta| =  0. --> .018,
+          .019, .018, .019, .019, .018, .013, .007, .004,-.014,-.017,-.033,
+          <!-- |Beta| =  5. --> .038, .042, .042, .042, .043, .039, .030, .017,
+          .004,-.035,-.047,-.057, <!-- |Beta| = 10. --> .056, .057, .059, .058, .058,
+          .053, .032, .012, .002,-.046,-.071,-.073, <!-- |Beta| = 15. --> .064, .077,
+          .076, .074, .073, .057, .029, .007, .012,-.034,-.065,-.041,
+          <!-- |Beta| = 20. --> .074, .086, .093, .089, .080, .062, .049, .022,
+          .028,-.012,-.002,-.013, <!-- |Beta| = 25. --> .079, .090, .106, .106, .096,
+          .080, .068, .030, .064, .015, .011,-.001 <!-- |Beta| = 30. -->
+        </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <!-- =================== -->
+  <!-- Damping Derivatives -->
+  <!-- =================== -->
+
+  <!--  CXq CYr CYp CZq Clr Clp Cmq Cnr Cnp -->
+
+  <function name="CXq">
+    <description> Damping derivative: axial force due to pitch rate as a function of
+    angle-of-attack </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="cxq"/>
+
+    <functionDefn name="CXq_fn">
+      <griddedTableDef name="CXq_table" gtID="CXq_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable> -.267, -.110, .308, 1.34, 2.08, 2.91, 2.76, 2.05, 1.50, 1.49, 1.83, 1.21
+        </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="CYr">
+    <description> Damping derivative: lateral force due to yaw rate as a function of
+    angle-of-attack </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="cyr"/>
+
+    <functionDefn name="CYr_fn">
+      <griddedTableDef name="CYr_table" gtID="CYr_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable> .882, .852, .876, .958, .962, .974, .819, .483, .590, 1.21, -.493, -1.04
+        </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="CYp">
+    <description> Damping derivative: lateral force due to roll rate as a function of
+    angle-of-attack </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="cyp"/>
+
+    <functionDefn name="CYp_fn">
+      <griddedTableDef name="CYp_table" gtID="CYp_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable> -.108, -.108, -.188, .110, .258, .226, .344, .362, .611, .529, .298,
+        -.227 </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="CZq">
+    <description> Damping derivative: normal force due to pitch rate as a function of
+    angle-of-attack </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="czq"/>
+
+    <functionDefn name="CZq_fn">
+      <griddedTableDef name="CZq_table" gtID="CZq_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable> -8.80, -25.8, -28.9, -31.4, -31.2, -30.7, -27.7, -28.2, -29.0, -29.8,
+        -38.3, -35.3 </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="Clr">
+    <description> Damping derivative: rolling moment due to yaw rate as a function of
+    angle-of-attack </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="clr"/>
+
+    <functionDefn name="Clr_fn">
+      <griddedTableDef name="Clr_table" gtID="Clr_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable> -.126, -.026, .063, .113, .208, .230, .319, .437, .680, .100, .447,
+        -.330 </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="Clp">
+    <description> Damping derivative: rolling moment due to roll rate as a function of
+    angle-of-attack </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="clp"/>
+
+    <functionDefn name="Clp_fn">
+      <griddedTableDef name="Clp_table" gtID="Clp_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable> -.360, -.359, -.443, -.420, -.383, -.375, -.329, -.294, -.230, -.210,
+        -.120, -.100 </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="Cmq">
+    <description>
+      Damping derivative: pitching moment due to pitch rate as a
+      function of angle-of-attack
+    </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="alpha" min="-10.0" max="45.0"
+                       extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="cmq"/>
+
+    <functionDefn name="Cmq_fn">
+      <griddedTableDef name="Cmq_table" gtID="Cmq_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable> -7.21, -5.40, -5.23, -5.26, -6.11, -6.64, -5.69, -6.00, -6.20, -6.40,
+        -6.60, -6.00 </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="Cnr">
+    <description> Damping derivative: yawing moment due to yaw rate as a function of
+    angle-of-attack </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="cnr"/>
+
+    <functionDefn name="Cnr_fn">
+      <griddedTableDef name="Cnr_table" gtID="Cnr_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable> -.380, -.363, -.378, -.386, -.370, -.453, -.550, -.582, -.595, -.637,
+        -1.02, -.840 </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="Cnp">
+    <description> Damping derivative: yawing moment due to roll rate as a function of
+    angle-of-attack </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="cnp"/>
+
+    <functionDefn name="Cnp_fn">
+      <griddedTableDef name="Cnp_table" gtID="Cnp_table_def">
+        <breakpointRefs>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable> .061, .052, .052, -.012, -.013, -.024, .050, .150, .130, .158, .240,
+        .150 </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <!-- ================== -->
+  <!-- Control Increments -->
+  <!-- ================== -->
+
+  <function name="dlda">
+    <description> Rolling moment increment due to aileron deflection as a function of angles of
+    attack and sideslip </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="beta" min="-30.0" max="30.0" extrapolate="neither"/>
+    <!-- Beta breakpoints -->
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="dclda"/>
+
+    <functionDefn name="dlda_fn">
+      <griddedTableDef name="dlda_table" gtID="dlda_table_def">
+        <breakpointRefs>
+          <bpRef bpID="BETA2"/>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable>
+          <!-- Note: last breakpoint (alpha) changes most rapidly -->
+          <!-- -10     -5      0      5     10     15     20     25     30     35     40     45        Alpha        -->
+          -.041, -.052, -.053, -.056, -.050, -.056, -.082, -.059, -.042, -.038, -.027,
+          -.017, <!-- Beta = -30.0 --> -.041, -.053, -.053, -.053, -.050, -.051, -.066,
+          -.043, -.038, -.027, -.023, -.016, <!-- Beta = -20.0 --> -.042, -.053, -.052,
+          -.051, -.049, -.049, -.043, -.035, -.026, -.016, -.018, -.014,
+          <!-- Beta = -10.0 --> -.040, -.052, -.051, -.052, -.048, -.048, -.042, -.037,
+          -.031, -.026, -.017, -.012, <!-- Beta =   0.0 --> -.043, -.049, -.048, -.049,
+          -.043, -.042, -.042, -.036, -.025, -.021, -.016, -.011, <!-- Beta = +10.0 -->
+          -.044, -.048, -.048, -.047, -.042, -.041, -.020, -.028, -.013, -.014, -.011,
+          -.010, <!-- Beta = +20.0 --> -.043, -.049, -.047, -.045, -.042, -.037, -.003,
+          -.013, -.010, -.003, -.007, -.008 <!-- Beta = +30.0 -->
+        </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="dldr">
+    <description> Rolling moment increment due to rudder deflection as a function of angles of
+    attack and sideslip </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="beta" min="-30.0" max="30.0" extrapolate="neither"/>
+    <!-- Beta breakpoints -->
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="dcldr"/>
+
+    <functionDefn name="dldr_fn">
+      <griddedTableDef name="dldr_table" gtID="dldr_table_def">
+        <breakpointRefs>
+          <bpRef bpID="BETA2"/>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable>
+          <!-- Note: last breakpoint (alpha) changes most rapidly -->
+          <!-- -10     -5      0      5     10     15     20     25     30     35     40     45        Alpha        -->
+          .005, .017, .014, .010, -.005, .009, .019, .005, .000, -.005, -.011, .008,
+          <!-- Beta = -30.0 --> .007, .016, .014, .014, .013, .009, .012, .005, .000,
+          .004, .009, .007, <!-- Beta = -20.0 --> .013, .013, .011, .012, .011, .009,
+          .008, .005, .000, .005, .003, .005, <!-- Beta = -10.0 --> .018, .015, .015,
+          .014, .014, .014, .014, .015, .013, .011, .006, .001, <!-- Beta =   0.0 -->
+          .015, .014, .013, .013, .012, .011, .011, .010, .008, .008, .007, .003,
+          <!-- Beta = +10.0 --> .021, .011, .010, .011, .010, .009, .008, .010, .006,
+          .005, .000, .001, <!-- Beta = +20.0 --> .023, .010, .011, .011, .011, .010,
+          .008, .010, .006, .014, .020, .000, <!-- Beta = +30.0 -->
+        </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="dnda">
+    <description> Yawing moment increment due to aileron deflection as a function of angles of
+    attack and sideslip </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="beta" min="-30.0" max="30.0" extrapolate="neither"/>
+    <!-- Beta breakpoints -->
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="dcnda"/>
+
+    <functionDefn name="dnda_fn">
+      <griddedTableDef name="dnda_table" gtID="dnda_table_def">
+        <breakpointRefs>
+          <bpRef bpID="BETA2"/>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable>
+          <!-- Note: last breakpoint (alpha) changes most rapidly -->
+          <!-- -10     -5      0      5     10     15     20     25     30     35     40     45        Alpha        -->
+          .001, -.027, -.017, -.013, -.012, -.016, .001, .017, .011, .017, .008, .016,
+          <!-- Beta = -30.0 --> .002, -.014, -.016, -.016, -.014, -.019, -.021, .002,
+          .012, .016, .015, .011, <!-- Beta = -20.0 --> -.006, -.008, -.006, -.006, -.005,
+          -.008, -.005, .007, .004, .007, .006, .006, <!-- Beta = -10.0 --> -.011, -.011,
+          -.010, -.009, -.008, -.006, .000, .004, .007, .010, .004, .010,
+          <!-- Beta =   0.0 --> -.015, -.015, -.014, -.012, -.011, -.008, -.002, .002,
+          .006, .012, .011, .011, <!-- Beta = +10.0 --> -.024, -.010, -.004, -.002, -.001,
+          .003, .014, .006, -.001, .004, .004, .006, <!-- Beta = +20.0 --> -.022, .002,
+          -.003, -.005, -.003, -.001, -.009, -.009, -.001, .003, -.002, .001
+          <!-- Beta = +30.0 -->
+        </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <function name="dndr">
+    <description> Yawing moment increment due to rudder deflection as a function of angles of
+    attack and sideslip </description>
+    <provenance>
+      <author name="Bruce Jackson" org="NASA Langley Research Center"
+              email="bruce.jackson@nasa.gov"/>
+      <creationDate date="2002-04-04"/>
+      <documentRef refID="REF01"/>
+      <documentRef refID="REF02"/>
+      <documentRef refID="REF03"/>
+    </provenance>
+    <independentVarRef varID="beta" min="-30.0" max="30.0" extrapolate="neither"/>
+    <!-- Beta breakpoints -->
+    <independentVarRef varID="alpha" min="-10.0" max="45.0" extrapolate="neither"/>
+    <!-- Alpha breakpoints -->
+    <dependentVarRef varID="dcndr"/>
+
+    <functionDefn name="dndr_fn">
+      <griddedTableDef name="dndr_table" gtID="dndr_table_def">
+        <breakpointRefs>
+          <bpRef bpID="BETA2"/>
+          <bpRef bpID="ALPHA1"/>
+        </breakpointRefs>
+        <dataTable>
+          <!-- Note: last breakpoint (alpha) changes most rapidly -->
+          <!-- -10     -5      0      5     10     15     20     25     30     35     40     45        Alpha        -->
+          -.018, -.052, -.052, -.052, -.054, -.049, -.059, -.051, -.030, -.037, -.026,
+          -.013, <!-- Beta = -30.0 --> -.028, -.051, -.043, -.046, -.045, -.049, -.057,
+          -.052, -.030, -.033, -.030, -.008, <!-- Beta = -20.0 --> -.037, -.041, -.038,
+          -.040, -.040, -.038, -.037, -.030, -.027, -.024, -.019, -.013,
+          <!-- Beta = -10.0 --> -.048, -.045, -.045, -.045, -.044, -.045, -.047, -.048,
+          -.049, -.045, -.033, -.016, <!-- Beta =   0.0 --> -.043, -.044, -.041, -.041,
+          -.040, -.038, -.034, -.035, -.035, -.029, -.022, -.009, <!-- Beta = +10.0 -->
+          -.052, -.034, -.036, -.036, -.035, -.028, -.024, -.023, -.020, -.016, -.010,
+          -.014, <!-- Beta = +20.0 --> -.062, -.034, -.027, -.028, -.027, -.027, -.023,
+          -.023, -.019, -.009, -.025, -.010 <!-- Beta = +30.0 -->
+        </dataTable>
+      </griddedTableDef>
+    </functionDefn>
+  </function>
+
+  <checkData>
+    <staticShot name="Nominal" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>0.0</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00400000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.41600000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00500000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Positive sideslip" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 2.340</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>2.34</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>-0.0468</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.41530612733377154</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>2.34</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>-0.0056159999999999995</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.008891999999999999</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>-0.0056159999999999995</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.008891999999999999</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.051297999999999996</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.013766</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.009701999999999999</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.044064</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>-0.0056159999999999995</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>0.008891999999999999</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>-0.0468</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.41530612733377154</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>-0.0056159999999999995</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>0.008891999999999999</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00400000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.04680000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.41530612733219</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00561600000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00500000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00889200000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Negative sideslip" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> -2.340</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>-2.34</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.0468</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.41530612733377154</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>2.34</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>-0.0056159999999999995</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.008891999999999999</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0056159999999999995</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>-0.008891999999999999</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.051766</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.013532</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.008298</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.04383</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>0.0056159999999999995</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>-0.008891999999999999</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>0.0468</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.41530612733377154</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>0.0056159999999999995</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>-0.008891999999999999</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00400000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.04680000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.41530612733219</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00561600000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00500000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00889200000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Positive roll rate" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 3.420</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>3.42</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>0.01881</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>-0.07182</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>-0.002052</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00400000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.01881000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.41600000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.07182000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00500000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00205200000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Negative roll rate" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> -3.420</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>-3.42</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>-0.01881</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>0.07182</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>0.002052</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00400000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.01881000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.41600000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.07182000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00500000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00205200000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Positive pitch rate" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.980</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.98</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.018489333333333333</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>0.020775706666666668</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.9965650666666666</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.10225389333333333</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>0.0</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.02077570666667</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.99656506666667</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.10225389333333</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Negative pitch rate" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> -0.980</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>-0.98</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>-0.018489333333333333</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.028775706666666668</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>0.16456506666666665</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>0.09225389333333332</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>0.0</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.02877570666667</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.16456506666667</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.09225389333333</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Positive yaw rate" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 2.920</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>2.92</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>0.139868</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>0.016498</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>-0.056355999999999996</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00400000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.13986800000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.41600000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.01649800000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00500000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.05635600000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Negative yaw rate" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> -2.920</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>-2.92</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>-0.139868</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>-0.016498</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>0.056355999999999996</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00400000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.13986800000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.41600000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.01649800000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00500000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.05635600000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Positive elevator" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 12.920</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>12.92</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.5168</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.028603333333333335</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.514192</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.13206</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.028603333333333335</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.514192</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.13206</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>0.0</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.02860333333333</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.51419200000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.13206000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Negative elevator" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> -12.920</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>-12.92</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>-0.5168</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.024220000000000005</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.317808</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>0.11659333333333334</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.024220000000000005</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.317808</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>0.11659333333333334</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>0.0</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.02422000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.31780800000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.11659333333333</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00000000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Positive aileron" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 24.100</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>24.1</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>1.205</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.025305000000000005</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>-0.06266000000000001</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>-0.010845</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>0.025305000000000005</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>-0.06266000000000001</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>-0.010845</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00400000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.02530500000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.41600000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.06266000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00500000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.01084500000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Negative aileron" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> -24.100</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>-24.1</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>-1.205</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>-0.025305000000000005</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>0.06266000000000001</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>0.010845</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>-0.025305000000000005</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>0.06266000000000001</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>0.010845</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00400000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.02530500000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.41600000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.06266000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00500000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.01084500000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Positive rudder" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 12.030</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>12.03</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>0.40099999999999997</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.034485999999999996</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>0.005614</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>-0.018045</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>0.034485999999999996</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>0.005614</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>-0.018045</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00400000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.03448600000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.41600000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.00561400000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00500000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.01804500000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Negative rudder" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 5.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 0.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> -12.030</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>5.0</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>-12.03</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>-0.40099999999999997</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>-0.034485999999999996</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>0.0</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>1.34</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.958</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.11</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-31.4</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.113</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.42</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-5.26</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.386</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.012</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.052</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.014</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.0090</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.045</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>-0.005614</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>0.018045</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>-0.0040</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>-0.034485999999999996</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.416</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>-0.005614</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>-0.0050</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>0.018045</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00400000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.03448600000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.41600000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00561400000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.00500000000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.01804500000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+    <staticShot name="Skewed inputs" refID="NOTE1">
+      <checkInputs>
+        <signal>
+          <signalName>trueAirspeed</signalName>
+          <signalUnits>ft_s</signalUnits>
+          <signalValue> 300.000</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfAttack</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 16.200</signalValue>
+        </signal>
+        <signal>
+          <signalName>angleOfSideslip</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> -3.240</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Roll</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> 0.560</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Pitch</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> -0.760</signalValue>
+        </signal>
+        <signal>
+          <signalName>bodyAngularRate_Yaw</signalName>
+          <signalUnits>rad_s</signalUnits>
+          <signalValue> -0.940</signalValue>
+        </signal>
+        <signal>
+          <signalName>elevatorDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 4.567</signalValue>
+        </signal>
+        <signal>
+          <signalName>aileronDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> 7.654</signalValue>
+        </signal>
+        <signal>
+          <signalName>rudderDeflection</signalName>
+          <signalUnits>deg</signalUnits>
+          <signalValue> -2.991</signalValue>
+        </signal>
+      </checkInputs>
+      <internalValues>
+	<signal> <varID>vt</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>alpha</varID> <signalValue>16.2</signalValue> </signal>
+	<signal> <varID>beta</varID> <signalValue>-3.24</signalValue> </signal>
+	<signal> <varID>p</varID> <signalValue>0.56</signalValue> </signal>
+	<signal> <varID>q</varID> <signalValue>-0.76</signalValue> </signal>
+	<signal> <varID>r</varID> <signalValue>-0.94</signalValue> </signal>
+	<signal> <varID>el</varID> <signalValue>4.567</signalValue> </signal>
+	<signal> <varID>ail</varID> <signalValue>7.654</signalValue> </signal>
+	<signal> <varID>rdr</varID> <signalValue>-2.991</signalValue> </signal>
+	<signal> <varID>rtd</varID> <signalValue>57.29577957855229</signalValue> </signal>
+	<signal> <varID>cbar</varID> <signalValue>11.32</signalValue> </signal>
+	<signal> <varID>bspan</varID> <signalValue>30.0</signalValue> </signal>
+	<signal> <varID>sref</varID> <signalValue>300.0</signalValue> </signal>
+	<signal> <varID>del</varID> <signalValue>0.18268</signalValue> </signal>
+	<signal> <varID>dail</varID> <signalValue>0.3827</signalValue> </signal>
+	<signal> <varID>drdr</varID> <signalValue>-0.0997</signalValue> </signal>
+	<signal> <varID>cxt</varID> <signalValue>0.08915927333333333</signalValue> </signal>
+	<signal> <varID>cy0</varID> <signalValue>0.0642625</signalValue> </signal>
+	<signal> <varID>czt</varID> <signalValue>-1.12812</signalValue> </signal>
+	<signal> <varID>cz1</varID> <signalValue>-1.15922175221835</signalValue> </signal>
+	<signal> <varID>tvt</varID> <signalValue>600.0</signalValue> </signal>
+	<signal> <varID>b2v</varID> <signalValue>0.05</signalValue> </signal>
+	<signal> <varID>cq2v</varID> <signalValue>-0.014338666666666666</signalValue> </signal>
+	<signal> <varID>absbeta</varID> <signalValue>3.24</signalValue> </signal>
+	<signal> <varID>absCl0</varID> <signalValue>-0.014256</signalValue> </signal>
+	<signal> <varID>absCn0</varID> <signalValue>0.0108864</signalValue> </signal>
+	<signal> <varID>clt</varID> <signalValue>0.014256</signalValue> </signal>
+	<signal> <varID>cmt</varID> <signalValue>-0.03276327333333335</signalValue> </signal>
+	<signal> <varID>cnt</varID> <signalValue>-0.0108864</signalValue> </signal>
+	<signal> <varID>cxq</varID> <signalValue>2.874</signalValue> </signal>
+	<signal> <varID>cyr</varID> <signalValue>0.9368</signalValue> </signal>
+	<signal> <varID>cyp</varID> <signalValue>0.25432000000000005</signalValue> </signal>
+	<signal> <varID>czq</varID> <signalValue>-29.979999999999997</signalValue> </signal>
+	<signal> <varID>clr</varID> <signalValue>0.25136000000000003</signalValue> </signal>
+	<signal> <varID>clp</varID> <signalValue>-0.36396</signalValue> </signal>
+	<signal> <varID>cmq</varID> <signalValue>-6.412</signalValue> </signal>
+	<signal> <varID>cnr</varID> <signalValue>-0.47628000000000004</signalValue> </signal>
+	<signal> <varID>cnp</varID> <signalValue>-0.006239999999999982</signalValue> </signal>
+	<signal> <varID>dclda</varID> <signalValue>-0.046883999999999995</signalValue> </signal>
+	<signal> <varID>dcldr</varID> <signalValue>0.01230224</signalValue> </signal>
+	<signal> <varID>dcnda</varID> <signalValue>-0.005441279999999999</signalValue> </signal>
+	<signal> <varID>dcndr</varID> <signalValue>-0.04297872</signalValue> </signal>
+	<signal> <varID>cl1</varID> <signalValue>-0.004913040127999998</signalValue> </signal>
+	<signal> <varID>cn1</varID> <signalValue>-0.008683799472</signalValue> </signal>
+	<signal> <varID>cx</varID> <signalValue>0.04794994533333333</signalValue> </signal>
+	<signal> <varID>cy</varID> <signalValue>0.027353860000000008</signalValue> </signal>
+	<signal> <varID>cz</varID> <signalValue>-0.7293485255516835</signalValue> </signal>
+	<signal> <varID>cl</varID> <signalValue>-0.026917840128000005</signalValue> </signal>
+	<signal> <varID>cm</varID> <signalValue>0.05917625733333331</signalValue> </signal>
+	<signal> <varID>cn</varID> <signalValue>0.013526640528</signalValue> </signal>
+      </internalValues>
+      <checkOutputs>
+        <signal>
+          <signalName>referenceWingChord</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 11.32</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingSpan</signalName>
+          <signalUnits>ft</signalUnits>
+          <signalValue> 30.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>referenceWingArea</signalName>
+          <signalUnits>ft2</signalUnits>
+          <signalValue> 300.0</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_X</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.04794994533333</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Y</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.02735386000000</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyForceCoefficient_Z</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.72934852554344</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Roll</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue>-0.02691784012800</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Pitch</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.05917625733333</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+        <signal>
+          <signalName>aeroBodyMomentCoefficient_Yaw</signalName>
+          <signalUnits>nd</signalUnits>
+          <signalValue> 0.01352664052800</signalValue>
+          <tol>0.000001</tol>
+        </signal>
+      </checkOutputs>
+    </staticShot>
+  </checkData>
+</DAVEfunc>
