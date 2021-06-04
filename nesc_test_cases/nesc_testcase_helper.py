@@ -31,7 +31,7 @@ nesc_options = dict(
 
 nesc_colors = {'%02d' % (sim_idx+1): 'C%d' % (sim_idx) for sim_idx in range(10)}
 
-# if not in an interactive interpreter session, don't handle command line args
+# if not in an interactive interpreter session, handle command line args
 if not hasattr(sys, 'ps1'):
     parser = argparse.ArgumentParser()
     parser.add_argument("--interactive",
@@ -291,6 +291,7 @@ def plot_nesc_comparisons(simupy_res, case, plot_name=""):
 def plot_F16_controls(simupy_res, plot_name='', y_idx_offset=-4):
     """
     """
+    save_relative_path = nesc_options['save_relative_path']
     interactive_mode = nesc_options['interactive_mode']
 
     abs_fig, delta_fig = plot_cols(simupy_res, [], [],

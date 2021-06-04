@@ -5,8 +5,7 @@ import numpy as np
 from scipy import interpolate
 import matplotlib.pyplot as plt
 
-from nesc_testcase_helper import get_baselines, nesc_options, plot_nesc_comparisons,
-plot_F16_controls, nesc_colors, benchmark
+from nesc_testcase_helper import get_baselines, nesc_options, plot_nesc_comparisons, plot_F16_controls, nesc_colors, benchmark
 from nesc_testcase_helper import ft_per_m
 
 from F16_model import F16_vehicle
