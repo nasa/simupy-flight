@@ -8,67 +8,70 @@ import pandas as pd
 import argparse
 import sys
 import os
+import time
+from contextlib import contextmanager
+from dataclasses import dataclass
+
+ft_per_m = 3.28084
+kg_per_slug = 14.5939
+N_per_lbf = 4.44822
 
 int_opts = DEFAULT_INTEGRATOR_OPTIONS.copy()
 int_opts['max_step'] = 2**-4
 
-
-ft_per_m = 3.28084
-kg_per_slug = 14.5939
+frame_rate_for_differencing = 10
 
 nesc_options = dict(
-    interactive_mode = True,
-    include_simupy_in_autoscale = True,
-    only_baseline05 = False,
-    data_relative_path = '..',
-    save_relative_path = 'plots/',
+    interactive_mode=True,
+    include_simupy_in_autoscale=True,
+    only_baseline05=False,
+    data_relative_path=os.path.join(os.path.dirname(__file__), '..', 'NESC_data'),
+    save_relative_path='plots/',
 )
 
-nesc_colors = {'%02d' % (sim_idx+1) : 'C%d' % (sim_idx) for sim_idx in range(10) }
+nesc_colors = {'%02d' % (sim_idx+1): 'C%d' % (sim_idx) for sim_idx in range(10)}
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--interactive", help="show plots in interactive mode rather than saving to disk",
-                    action="store_true")
-parser.add_argument("--simupy-scale", help="include simupy in plot autoscale or not",
-                    action="store_true")
-parser.add_argument("--baseline05", help="Use SIM 05 as the baseline rather than the ensemble (total) average",
-                    action="store_true")
-parser.add_argument("--output-path", help="Path to save plot outputs")
-parser.add_argument("--nesc-data-path", help="Path to parent directory of Atmospheric_checkcases data folder")
+# if not in an interactive interpreter session, don't handle command line args
+if not hasattr(sys, 'ps1'):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--interactive",
+                        help="show plots in interactive mode rather than saving to "
+                             "disk",
+                        action="store_true")
+    parser.add_argument("--simupy-scale",
+                        action="store_true",
+                        help="include simupy in plot autoscale or not")
+    parser.add_argument("--baseline05",
+                        action="store_true",
+                        help="Use SIM 05 as the baseline rather than the ensemble "
+                             "(total) average")
+    parser.add_argument("--output-path",
+                        help="Path to save plot outputs")
+    parser.add_argument("--nesc-data-path",
+                        help="Path to parent directory of Atmospheric_checkcases data "
+                             "folder")
+    args = parser.parse_args()
 
-def do_argparse():
-    if not hasattr(sys, 'ps1'):
-        args = parser.parse_args()
+    nesc_options['interactive_mode'] = args.interactive
+    nesc_options['include_simupy_in_autoscale'] = args.simupy_scale
+    nesc_options['only_baseline05'] = args.baseline05
+    if args.nesc_data_path:
+        nesc_options['data_relative_path'] = args.nesc_data_path
+    if args.output_path:
+        nesc_options['save_relative_path'] = args.output_path
 
-        if args.interactive:
-            nesc_options['interactive_mode'] = True
-        else:
-            nesc_options['interactive_mode'] = False
-
-        if args.simupy_scale:
-            nesc_options['include_simupy_in_autoscale'] = True
-        else:
-            nesc_options['include_simupy_in_autoscale'] = False
-        
-        if args.baseline05:
-            nesc_options['only_baseline05'] = True
-        else:
-            nesc_options['only_baseline05'] = False
-
-
-frame_rate_for_differencing = 10
 
 def deg_diff(sim, baseline):
     """
-    Compute the NESC angle difference, sim and baseline is a numpy array of angles, 
+    Compute the NESC angle difference, sim and baseline is a numpy array of angles,
     note that the difference is not symmetric
     """
     beta = baseline*np.pi/180
     alpha = sim*np.pi/180
-    
+
     diff_rad = np.arctan2(np.sin(alpha)*np.cos(beta) - np.cos(alpha)*np.sin(beta), np.cos(alpha)*np.cos(beta)+np.sin(alpha)*np.sin(beta))
     return diff_rad*180/np.pi
-    
+
 
 def plot_cols(simupy_res, baseline_pds, baseline_pd_labels, sfvt_idxs, baseline_cols, col_labels):
     """
@@ -140,7 +143,7 @@ def plot_cols(simupy_res, baseline_pds, baseline_pd_labels, sfvt_idxs, baseline_
         else:
             simupy_y = simupy_y - average_value
 
-        for baseline_idx, baseline_pd in enumerate(baseline_pds): 
+        for baseline_idx, baseline_pd in enumerate(baseline_pds):
             try:
                 baseline_y = baseline_pd[baseline_col]
             except KeyError:
@@ -153,7 +156,7 @@ def plot_cols(simupy_res, baseline_pds, baseline_pd_labels, sfvt_idxs, baseline_
                 else:
                     baseline_y = baseline_y - average_value
                 delta_ax.plot(times_for_average, baseline_y, nesc_colors[baseline_pd_labels[baseline_idx]], alpha=0.5, label='NESC %d' % (baseline_idx+1))
-        
+
         if len(baseline_pds) > 0:
             delta_ax_ylim = delta_ax.get_ylim()
             delta_ax.plot(times_for_average, simupy_y, 'k--', label='SimuPy')
@@ -161,58 +164,68 @@ def plot_cols(simupy_res, baseline_pds, baseline_pd_labels, sfvt_idxs, baseline_
                 delta_ax.set_ylim(*delta_ax_ylim)
             delta_ax.set_ylabel('$\\Delta$ ' + col_label)
             delta_ax.grid(True)
-    
-        abs_ax.set_ylabel(col_label)
-        
-        abs_ax.grid(True)
 
+        abs_ax.set_ylabel(col_label)
+
+        abs_ax.grid(True)
 
     abs_axes[0].legend(ncol=2)
     abs_axes[-1].set_xlabel('time, s')
-    
+
     if len(baseline_pds) > 0:
         delta_axes[-1].set_xlabel('time, s')
         return abs_fig, delta_fig
-    
+
     return abs_fig, None
 
-def get_baselines(baseline_pd_glob):
+
+def get_baselines(case):
     interactive_mode = nesc_options['interactive_mode']
-    
+
     baseline_pds = []
     baseline_pd_labels = []
 
-    prefix, suffix = baseline_pd_glob.split('*')
-    for fname in sorted(glob.glob(baseline_pd_glob)):
+    glob_path = os.path.join(
+        nesc_options['data_relative_path'],
+        'Atmospheric_checkcases',
+        f'Atmos_{case}_*',
+        f'Atmos_{case}_sim_*.csv'
+    )
+    for fname in sorted(glob.glob(glob_path)):
+        sim = fname.rsplit("_", maxsplit=1)[-1].replace(".csv", "")
         if interactive_mode:
             print(fname)
         baseline_pds.append(pd.read_csv(fname, index_col=0))
-        baseline_pd_labels.append(fname.replace(prefix, '').replace(suffix, ''))
-    
+        baseline_pd_labels.append(sim)
+
     return baseline_pds, baseline_pd_labels
-    
 
-def plot_nesc_comparisons(simupy_res, baseline_pd_glob, plot_name=''):
+
+def plot_nesc_comparisons(simupy_res, case, plot_name=""):
     """
     """
-    do_argparse()
+    if plot_name == "":
+        plot_name = case
 
+    save_relative_path = nesc_options['save_relative_path']
     interactive_mode = nesc_options['interactive_mode']
 
-    baseline_pds, baseline_pd_labels = get_baselines(baseline_pd_glob)
+    baseline_pds, baseline_pd_labels = get_baselines(case)
 
-    abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds, baseline_pd_labels,
-    [Planet.lamda_D_idx, Planet.phi_D_idx, Planet.h_D_idx],
-    ['longitude_deg', 'latitude_deg', 'altitudeMsl_ft'],
-    ['longitude, deg', 'latitude, deg', 'altitude, ft'],
+    abs_fig, delta_fig = plot_cols(
+        simupy_res, baseline_pds, baseline_pd_labels,
+        [Planet.lamda_D_idx, Planet.phi_D_idx, Planet.h_D_idx],
+        ['longitude_deg', 'latitude_deg', 'altitudeMsl_ft'],
+        ['longitude, deg', 'latitude, deg', 'altitude, ft'],
     )
     if not interactive_mode:
         abs_fig.set_size_inches(4, 6)
-        abs_fig.savefig(os.path.join(save_relative_path, plot_name + '_geodetic_pos.pdf'))
+        abs_fig.savefig(os.path.join(save_relative_path, f'{plot_name}_geodetic_pos.pdf'))
 
         if delta_fig is not None:
             delta_fig.set_size_inches(4, 6)
-            delta_fig.savefig(os.path.join(save_relative_path, plot_name + '_geodetic_pos_delta.pdf'))
+            delta_fig.savefig(
+                os.path.join(save_relative_path, f'{plot_name}_geodetic_pos_delta.pdf'))
 
     abs_fig, delta_fig = plot_cols(simupy_res, baseline_pds, baseline_pd_labels,
     [Planet.psi_idx, Planet.theta_idx, Planet.phi_idx],
@@ -273,27 +286,54 @@ def plot_nesc_comparisons(simupy_res, baseline_pd_glob, plot_name=''):
 
     if interactive_mode:
         plt.show()
-        
+
+
 def plot_F16_controls(simupy_res, plot_name='', y_idx_offset=-4):
     """
     """
-    do_argparse()
-
     interactive_mode = nesc_options['interactive_mode']
-    
+
     abs_fig, delta_fig = plot_cols(simupy_res, [], [],
     np.array([-4, -3, -2, -1])+y_idx_offset,
     ['',]*4, # no NESC test cases provide the control output!
     ['elevator, deg', 'aileron, deg', 'rudder, deg', 'throttle, %'],
     )
-    
+
     # for ax, lims in zip(abs_fig.axes, ((-26, 26), (-25, 25), (-31, 31),(-5, 105))):
     #     ax.set_ylim(*lims)
-        
-    
+
     if not interactive_mode:
         abs_fig.set_size_inches(4, 6)
         abs_fig.savefig(os.path.join(save_relative_path, plot_name + '_controls.pdf'))
 
     if interactive_mode:
         plt.show()
+
+
+@dataclass
+class BenchmarkInfo:
+    """Class data for passing timing data to an enclosing benchmark context."""
+
+    tfinal: float = None
+
+
+@contextmanager
+def benchmark():
+    """Context manager for timing and printing runtime of code within the context.
+
+    A ``BenchmarkInfo`` object is yielded so the enclosed code block can pass
+    information back to the context manager for printing.
+    """
+    b = BenchmarkInfo()
+    ts = time.time()
+
+    yield b
+
+    dt = time.time() - ts
+
+    eval_msg = ""
+    if b.tfinal is not None:
+        r = b.tfinal / dt
+        eval_msg = f"    eval time to run time: {r:.3f}"
+
+    print(f"time to simulate: {dt:.3f} s{eval_msg}")
