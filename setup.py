@@ -5,7 +5,7 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # get the version
-exec(open('simupy_flight/version.py').read())
+exec(open(path.join(here, 'simupy_flight', 'version.py')).read())
 
 # Get the long description from the README file
 with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
@@ -24,6 +24,7 @@ setup(
     install_requires=['numpy>=1.11.3', 'scipy>=0.18.1', 'simupy>=1.0.0', 'pyerfa', 'fluids'],
     extras_require={
         'derivation': ['sympy==1.4', 'jupyter-lab'],
+        'nesc': ['pandas', 'ndsplines', 'matplotlib']
     },
 
     classifiers=[

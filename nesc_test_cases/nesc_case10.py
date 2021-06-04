@@ -1,11 +1,9 @@
 from simupy.block_diagram import BlockDiagram
 import simupy_flight
 import numpy as np
-import os
-import glob
-from nesc_testcase_helper import plot_nesc_comparisons, nesc_options, int_opts, ft_per_m, kg_per_slug
 
-
+from nesc_testcase_helper import plot_nesc_comparisons, int_opts, benchmark
+from nesc_testcase_helper import ft_per_m, kg_per_slug
 
 Ixx = 3.6*kg_per_slug/(ft_per_m**2) #slug-ft2
 Iyy = 3.6*kg_per_slug/(ft_per_m**2) #slug-ft2
@@ -40,37 +38,33 @@ r_b_ic = 0.*np.pi/180
 # omega_Y_ic = 0.*np.pi/180
 # omega_Z_ic = 0.*np.pi/180
 
-
 planet = simupy_flight.Planet(
     gravity=simupy_flight.earth_J2_gravity,
     winds=simupy_flight.get_constant_winds(),
     atmosphere=simupy_flight.atmosphere_1976,
-    planetodetics=simupy_flight.Planetodetic(a=simupy_flight.earth_equitorial_radius, omega_p=simupy_flight.earth_rotation_rate, f=simupy_flight.earth_f)
+    planetodetics=simupy_flight.Planetodetic(
+        a=simupy_flight.earth_equitorial_radius,
+        omega_p=simupy_flight.earth_rotation_rate,
+        f=simupy_flight.earth_f
+    )
 )
 
-
 vehicle = simupy_flight.Vehicle(base_aero_coeffs=simupy_flight.get_constant_aero(CD_b=0.1), m=m, I_xx=Ixx, I_yy=Iyy, I_zz=Izz, I_xy=Ixy, I_yz=Iyz, I_xz=Izx, x_com=x, y_com=y, z_com=z, x_mrc=x, y_mrc=y, z_mrc=z, S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=0.,)
-
 
 BD = BlockDiagram(planet, vehicle)
 BD.connect(planet, vehicle, inputs=np.arange(planet.dim_output))
 BD.connect(vehicle, planet, inputs=np.arange(vehicle.dim_output))
 
-
 planet.initial_condition = planet.ic_from_planetodetic(
-    lamda_E=long_ic, phi_E=lat_ic, h=h_ic, 
-    V_N=V_N_ic, V_E=V_E_ic, V_D=V_D_ic, 
+    lamda_E=long_ic, phi_E=lat_ic, h=h_ic,
+    V_N=V_N_ic, V_E=V_E_ic, V_D=V_D_ic,
     psi=psi_ic, theta=theta_ic, phi=phi_ic,
     p_B=p_b_ic, q_B=q_b_ic, r_B=r_b_ic,)
 # planet.initial_condition[-3:] = omega_X_ic, omega_Y_ic, omega_Z_ic
 planet.initial_condition[-2] = 0.
 
-import time
-tstart = time.time()
-res = BD.simulate(30, integrator_options=int_opts)
-tend = time.time()
-tdelta = tend - tstart
-print("time to simulate: %f    eval time to run time: %f" % (tdelta, res.t[-1]/tdelta))
+with benchmark() as b:
+    res = BD.simulate(30, integrator_options=int_opts)
+    b.tfinal = res.t[-1]
 
-glob_path = os.path.join(nesc_options['data_relative_path'], 'Atmospheric_checkcases', 'Atmos_10_NorthwardCannonball', 'Atmos_10_sim_*.csv')
-plot_nesc_comparisons(res, glob_path, '10')
+plot_nesc_comparisons(res, '10')

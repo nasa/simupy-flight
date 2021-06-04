@@ -2,32 +2,30 @@ from simupy.block_diagram import BlockDiagram
 from simupy import systems
 import simupy_flight
 import numpy as np
-import os
-import glob
 from scipy import optimize
-from nesc_testcase_helper import plot_nesc_comparisons, nesc_options, int_opts, ft_per_m, kg_per_slug
+
+from nesc_testcase_helper import plot_nesc_comparisons, int_opts, benchmark
+from nesc_testcase_helper import ft_per_m, kg_per_slug
+
 import F16_model
-import F16_model_00
 from F16_control import F16_control
 
-
-# F16_vehicle = F16_model.F16_vehicle
-F16_vehicle = F16_model_00.F16_vehicle
+F16_vehicle = F16_model.F16_vehicle
 
 spec_ic_args = dict(
     phi_E = 36.01916667*np.pi/180,  # latitude
     lamda_E = -75.67444444*np.pi/180, # longitude
     h = 10_013/ft_per_m,
-    
+
     V_N = 400./ft_per_m,
     V_E = 400./ft_per_m,
     V_D = 0./ft_per_m,
-    
+
     psi = 45.0*np.pi/180,
-    
+
     theta = 2.653814*np.pi/180,
     phi = 0.0*np.pi/180,
-    
+
     p_B = 0.*np.pi/180,
     q_B = 0.*np.pi/180,
     r_B = 0.*np.pi/180
@@ -45,9 +43,9 @@ planet = simupy_flight.Planet(
 rho_0 = planet.atmosphere(0, 0, 0, 0)[0]
 
 controller_feedback_indices = np.array([
-    planet.h_D_idx, planet.V_T_idx, planet.alpha_idx, planet.beta_idx, 
-    planet.psi_idx, planet.theta_idx, planet.phi_idx, 
-    planet.p_B_idx, planet.q_B_idx, planet.r_B_idx, 
+    planet.h_D_idx, planet.V_T_idx, planet.alpha_idx, planet.beta_idx,
+    planet.psi_idx, planet.theta_idx, planet.phi_idx,
+    planet.p_B_idx, planet.q_B_idx, planet.r_B_idx,
     planet.rho_idx])
 
 dim_feedback = len(controller_feedback_indices)
@@ -57,19 +55,19 @@ dim_feedback = len(controller_feedback_indices)
 def get_controller_function(throttleTrim, longStkTrim, sasOn=False, apOn=False):
     def controller_function(t, u):
         throttle, longStk, latStk, pedal = 0., 0., 0., 0. # pilot command
-        
+
         (alt, V_T, alpha, beta, psi, theta, phi, pb, qb, rb, # feedback
             rho, # rho to calculate equivalent airspeed
             keasCmd, altCmd, latOffset, baseChiCmd) = u # commands
-    
+
         Vequiv = V_T * np.sqrt(rho/rho_0)
         angles = np.array([alpha, beta, phi, theta, psi])
         alpha, beta, phi, theta, psi = angles*180/np.pi
-        
+
         control_eart = F16_control(throttle, longStk, latStk, pedal,
-            sasOn, apOn, 
-            keasCmd, altCmd, latOffset, baseChiCmd, 
-            alt*ft_per_m, Vequiv*knots_per_mps, 
+            sasOn, apOn,
+            keasCmd, altCmd, latOffset, baseChiCmd,
+            alt*ft_per_m, Vequiv*knots_per_mps,
             alpha, beta, phi, theta, psi, pb, qb, rb, throttleTrim, longStkTrim)
         return control_eart
     return controller_function
@@ -80,46 +78,46 @@ def eval_trim(flight_condition, longStk, throttle):
     kin_out = planet.output_equation_function(0, flight_condition)
     controller_func = get_controller_function(throttleTrim=throttle, longStkTrim=longStk)
     aero_plus_prop_acceleration = simupy_flight.dynamics.dynamics_output_function(F16_vehicle, 0, *kin_out, *controller_func(0, np.zeros(dim_feedback+4)))
-    
+
     gen_accel = aero_plus_prop_acceleration
-    
+
     gen_accel[:3] = simupy_flight.kinematics.local_translational_trim_residual(planet, *flight_condition[:-3], *aero_plus_prop_acceleration[:-3]).squeeze()
-    
+
     return gen_accel
 
 
 def run_trimmer(flight_ic_args, throttle_ic=0., longStk_ic=0., allow_roll=False):
     len_vars = 3 + allow_roll
-    
+
     psi, theta_ic, phi_ic = flight_ic_args['psi'], flight_ic_args['theta'], flight_ic_args['phi']
-    
+
     initial_guess = np.zeros(len_vars)
     initial_guess[0] = theta_ic
     initial_guess[1] = throttle_ic
     initial_guess[2] = longStk_ic
-    
+
     extra_index = 3
-    
+
     if allow_roll:
         initial_guess[extra_index] = phi_ic
-        extra_index += 1        
-    
+        extra_index += 1
+
     def parse_x(x):
         theta, throttle, longStk = x[:3]
         extra_index = 3
-        
+
         if allow_roll:
             phi = x[extra_index]
             extra_index += 1
         else:
             phi = phi_ic
-        
+
         return theta, phi, longStk, throttle
-    
+
     weighting_matrix = np.eye(6)
-        
+
     aileron, rudder = 0.0, 0.0
-    
+
     def trim_opt_func(x):
         eval_args = flight_ic_args.copy()
         theta, phi, longStk, throttle = parse_x(x)
@@ -129,7 +127,7 @@ def run_trimmer(flight_ic_args, throttle_ic=0., longStk_ic=0., allow_roll=False)
         return np.linalg.norm(weighting_matrix@eval_trim(flight_condition, longStk, throttle), ord=2)
 
     opt_res = optimize.minimize(trim_opt_func, initial_guess, tol=1E-12, options={'disp': True, 'adaptive': True, 'fatol': 1E-12, 'maxiter': 20_000, 'xatol': 1E-12}, method='Nelder-Mead')
-    
+
     opt_theta, opt_phi, opt_longStk, opt_throttle = opt_result = parse_x(opt_res.x)
     opt_args = flight_ic_args.copy()
     opt_args['theta'] = opt_theta
@@ -170,7 +168,7 @@ latOffsetBlock = systems.DynamicalSystem(state_equation_function=latOffsetStateE
 
 baseChiCmdOutput = np.array([spec_ic_args['psi']*180/np.pi])
 baseChiCmdBlock = systems.SystemFromCallable(lambda *args: baseChiCmdOutput, 0, 1)
-    
+
 BD = BlockDiagram(planet, F16_vehicle, controller_block, keasCmdBlock, altCmdBlock, latOffsetBlock, baseChiCmdBlock)
 BD.connect(planet, F16_vehicle, inputs=np.arange(planet.dim_output))
 BD.connect(F16_vehicle, planet, inputs=np.arange(F16_vehicle.dim_output))
@@ -182,19 +180,8 @@ BD.connect(altCmdBlock, controller_block, inputs=[dim_feedback+1])
 BD.connect(latOffsetBlock, controller_block, inputs=[dim_feedback+2])
 BD.connect(baseChiCmdBlock, controller_block, inputs=[dim_feedback+3])
 
-import cProfile
-cProfile.run('res = BD.simulate(180, integrator_options=int_opts)')
-
-if __name__ == '__main__':
-    
-
-    import time
-    tstart = time.time()
+with benchmark() as b:
     res = BD.simulate(180, integrator_options=int_opts)
-    tend = time.time()
-    tdelta = tend - tstart
-    print("time to simulate: %f    eval time to run time: %f" % (tdelta, res.t[-1]/tdelta))
-    data_relative_path = nesc_options['data_relative_path']
-    glob_path = os.path.join(data_relative_path, 'Atmospheric_checkcases', 'Atmos_11_TrimCheckSubsonicF16', 'Atmos_11_sim_*.csv')
-    plot_nesc_comparisons(res, glob_path, '11')
+    b.tfinal = res.t[-1]
 
+plot_nesc_comparisons(res, '11')

@@ -4,7 +4,7 @@ import F16_prop
 import F16_inertia
 import numpy as np
 import simupy_flight
-from nesc_testcase_helper import ft_per_m, kg_per_slug
+from nesc_testcase_helper import ft_per_m, kg_per_slug, N_per_lbf
 
 x_mrc = 0.
 y_mrc = 0.
@@ -19,7 +19,6 @@ aero_output = F16_aero.F16_aero(*np.zeros(9))
 S_A = aero_output[2]/(ft_per_m**2)
 a_l, b_l, c_l = aero_output[[1, 1, 0]]/ft_per_m
 
-N_per_lbf = 4.44822
 def F16_prop_model(*args):
     """
     Wrapper to convert units appropriately
@@ -32,13 +31,13 @@ def F16_prop_model(*args):
 class VehicleWithAlternateAeroSturcture(simupy_flight.Vehicle):
     def tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, el, ail, rdr, *args):
         """
-        Alternate aero structure that depends only on base_aero_coeffs with three inputs 
+        Alternate aero structure that depends only on base_aero_coeffs with three inputs
         (elevator, aileron, and rudder), forces in body-fixed coordinates instead of wind-fixed,
         uses impertial units, degrees for angles, and depends on body rates.
         """
         aero_out = self.base_aero_coeffs(
-            V_T*ft_per_m, alpha*180/np.pi, beta*180/np.pi, 
-            p_B, q_B, r_B, 
+            V_T*ft_per_m, alpha*180/np.pi, beta*180/np.pi,
+            p_B, q_B, r_B,
             el, ail, rdr
         )
         cx, cy, cz, cl, cm, cn = aero_out[-6:]
@@ -52,13 +51,13 @@ class VehicleWithAlternateAeroSturcture(simupy_flight.Vehicle):
         return forces_moments
 
 F16_vehicle = VehicleWithAlternateAeroSturcture(
-    m=m, 
-    I_xx=Ixx, I_yy=Iyy, I_zz=Izz, 
-    I_xy=Ixy, I_yz=Iyz, I_xz=Izx, 
-    x_com=x_com, y_com=y_com, z_com=z_com, 
-    
-    base_aero_coeffs=F16_aero.F16_aero, 
-    x_mrc=x_mrc, y_mrc=y_mrc, z_mrc=z_mrc, 
+    m=m,
+    I_xx=Ixx, I_yy=Iyy, I_zz=Izz,
+    I_xy=Ixy, I_yz=Iyz, I_xz=Izx,
+    x_com=x_com, y_com=y_com, z_com=z_com,
+
+    base_aero_coeffs=F16_aero.F16_aero,
+    x_mrc=x_mrc, y_mrc=y_mrc, z_mrc=z_mrc,
     S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=0.,
 
     input_force_moment = F16_prop_model,
