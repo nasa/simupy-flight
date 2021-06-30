@@ -216,7 +216,7 @@
   </breakpointDef>
 
   <breakpointDef name="beta_bp_for_forces" bpID="BETA1" units="deg">
-    <description> Angle-of-sideslip breakpoints for aero force coeffcient tables </description>
+    <description> Angle-of-sideslip breakpoints for aero force coefficient tables </description>
     <bpVals> -10., -8., -6., -4., -2., 0., 2., 4., 6., 8., 10.</bpVals>
   </breakpointDef>
 

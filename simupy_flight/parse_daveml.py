@@ -2,7 +2,9 @@ import os
 import re
 import libsbml
 from lxml import etree
-import sympy as sp, numpy as np, ndsplines
+import sympy as sp
+import numpy as np
+import ndsplines
 import warnings
 from simupy import codegen
 
@@ -343,7 +345,7 @@ class ProcessDaveML:
                                 for breakpoint_ref in breakpoint_refs:
                                     knots_arrays.append(self.breakpoints[breakpoint_ref.attrib['bpID']])
 
-                                data_table = np.array([float(num) for num in delimeter_regex.split(data_table.xpath('string()').strip()) if num is not '']).reshape([knots_array.size for knots_array in knots_arrays])
+                                data_table = np.array([float(num) for num in delimeter_regex.split(data_table.xpath('string()').strip()) if num != '']).reshape([knots_array.size for knots_array in knots_arrays])
                                 spline = ndsplines.make_interp_spline(knots_arrays, data_table, degrees=1)
 
                                 if from_griddedTable:
