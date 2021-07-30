@@ -252,14 +252,20 @@ class Vehicle(object):
     Inertia is expressed in body-fixed coordinates about the center of mass
     center of mass (x_com, y_com, z_com) position is relative to an arbitrary reference such as the CAD origin
     TODO: verify sign of products of inertia
+    TODO: provide pattern to support time varying inertial properties -- should be stateful; 
+    TODO: should every variable in the prose descriptions get wrapped by backticks?
 
     Aerodynamics properties: base_aero_coeffs, S_A, a_l, b_l, c_l, d_l, x_mrc, y_mrc, z_mrc,
     base_aero_coeffs is assumed to be a function of angles of attack and sideslip, and Mach and Reynolds number
-    Should return coefficients of:
+    with signature ``base_aero_coeffs(alpha, beta, Ma, Re)`` and should 
+    return an array of coefficients in the following order:
         drag, sideforce, and lift (force coefficients expressed in wind coordinate system), 
         static roll, pitch, and yaw moments (moment coefficients expressed in body-fixed Forward-Right-Down coordinate system), and
         dynamic or damping roll, pitch, and yaw moments (also moment coefficients expressed in body-fixed coordinate system)
-    
+    To translate an aerodynamic database that provides forces expressed in body-fixed coordinates, the 
+    transpose of the ``dynamics.body_to_wind_dcm(alpha, beta)`` direction cosine matrix can be used to transform into
+    the wind coordinate system.
+
     S_A is the reference area
     a_l, b_l, and c_l are reference lengths for roll, pitch, and yaw
     d_l is the reference length for Reynolds number calculation
