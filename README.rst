@@ -11,7 +11,7 @@ Library Design
 .. |SimuPyAPI| replace:: SimuPy's ``DynamicalSystem`` interface
 .. _SimuPyAPI: https://simupy.readthedocs.io/en/latest/api/api.html>
 
-The SimuPy Flight Vehicle Toolkit API is designed to prioritize explicit and modular models, to facilitate adherance to best practices from the scientific Python community, and to follow SimuPy design principles. The library provides a ``Planet`` and ``Vehicle`` that implement |SimuPyAPI|_. This API separation was designed to reflect the modeling distinction between the two bodies being simuated. This separation could have been reflected in other ways; indeed within the ``Planet`` and ``Vehicle`` classes there is a namespace separation between model components. However, it is often convenient to break SimuPy models into distinct systems when intermediate signals may be used for multiple purposes. In particular, the separation allows easy access to the vehicle's sensed acceleration which is an important measurement for flight vehicles, particularly entry vehicles. Due to the disciplined modeling approach set out by SimuPy where the output of systems with state are not dependent on the input, a vehicle whose input changed acceleration could not be modeled without separating the ``Vehicle``.
+The SimuPy Flight Vehicle Toolkit API is designed to prioritize explicit and modular models, to facilitate adherance to best practices from the scientific Python community, and to follow SimuPy design principles. The library provides a ``Planet`` and ``Vehicle`` that implement |SimuPyAPI|_. This API separation was designed to reflect the modeling distinction between the two bodies being simuated. This separation could have been reflected in other ways; indeed within the ``Planet`` and ``Vehicle`` classes there is a namespace separation between model components. However, it is often convenient to break SimuPy models into distinct systems when intermediate signals may be used for multiple purposes. In particular, the separation allows easy access to the vehicle's sensed acceleration which is an important measurement for flight vehicles, particularly entry vehicles. Due to the disciplined modeling approach set out by SimuPy where the output of systems with state are not dependent on the input, a vehicle whose input changed acceleration could not be modeled without separating the ``Vehicle``. In the future, convenience functions will provided for common ``BlockDiagram`` manipulations like connecting guidance, navigation, or control models to reduce the learning curve for new users.
 
 The ``Vehicle`` class provides the state-less dynamics (angular and translational acceleration) of the flight vehicle. It is constructed by
 
@@ -20,14 +20,14 @@ The ``Vehicle`` class provides the state-less dynamics (angular and translationa
     vehicle = Vehicle(
         m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com, # intertia
         base_aero_coeffs, x_mrc, y_mrc, z_mrc, S_A, a_l, b_l, c_l, d_l, # aero
-        input_aero_coeffs, input_force_moment, # extra callbacks 
-        input_aero_coeffs_idx, input_force_moment_idx, # routing for callbacks
+        input_aero_coeffs, input_force_moment, # extra callbacks for control modeling
+        input_aero_coeffs_idx, input_force_moment_idx, # routing for control callbacks
         dim_extra_input, # total number of extra (control) inputs
     )
 
-where:
+where
     - ``m`` is the (constant) mass of the vehicle, ``I_xx``, ``I_yy``, ``I_zz``, ``I_xy``, ``I_yz``, ``I_xz``, are the components of the inertia of the vehicle expressed in body-fixed coordinates about the center of mass (``x_com``, ``y_com``, ``z_com``) position relative to an arbitrary reference position like the CAD origin.
-    - 
+    - ``base_aero_coeffs(alpha, beta, Ma, Re)`` is a callback function representing the vehicle's base (without control) aerodynamics model which is a function of angles of attack and sideslip as well as Mach and Reynolds number. The moment coefficients of the model are reported about the moment reference center (``x_mrc``, ``y_mrc``, ``z_mrc``) relative to the same arbitrary reference position that defines the center of mass. ``S_A`` is the reference area, ``a_l``, ``b_l``, and ``c_l`` are the reference lengths associated with the kkkkkkk 
 
 
 
