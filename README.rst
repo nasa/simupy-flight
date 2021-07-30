@@ -28,6 +28,7 @@ The ``Vehicle`` class provides the state-less dynamics (angular and translationa
 The ``Planet`` class provides the kinematic equations of motion used to drive the position,  orientaiton, and their corresponding rates based on the dynamics modeled by the ``Vehicle``. The ``Plenet`` is constructed by 
 
 .. code:: python
+
     planet = Planet(gravity, winds, atmosphere, planetodetics)
 
 For more details, see the docstrings (via ``help(Vehicle)`` and ``help(Planet)`` respectively) and NESC Test Case examples.
