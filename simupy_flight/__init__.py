@@ -270,8 +270,8 @@ class Vehicle(object):
     a_l, b_l, and c_l are reference lengths for roll, pitch, and yaw
     d_l is the reference length for Reynolds number calculation
 
-    Moment coefficients are assumed to be about the moment reference center (x_com, y_com, z_com) the position of 
-    which is defined relative to the same arbitrary reference as the center of mass. Damping coefficients are transformed
+    Moment coefficients are assumed to be about the moment reference center
+    (x_mrc, y_mrc, z_mrc) the position of which is defined relative to the same arbitrary reference as the center of mass. Damping coefficients are transformed
     with the static moment coefficients which does not usually hold; to model damping coefficients it is recommended
     to set the center of mass and moment reference center to the same location at the arbitrary reference (i.e., [0,0,0])
 

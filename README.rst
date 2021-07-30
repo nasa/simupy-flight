@@ -25,16 +25,12 @@ The ``Vehicle`` class provides the state-less dynamics (angular and translationa
         dim_extra_input, # total number of extra (control) inputs
     )
 
-where
-    - ``m`` is the (constant) mass of the vehicle, ``I_xx``, ``I_yy``, ``I_zz``, ``I_xy``, ``I_yz``, ``I_xz``, are the components of the inertia of the vehicle expressed in body-fixed coordinates about the center of mass (``x_com``, ``y_com``, ``z_com``) position relative to an arbitrary reference position like the CAD origin.
-    - ``base_aero_coeffs(alpha, beta, Ma, Re)`` is a callback function representing the vehicle's base (without control) aerodynamics model which is a function of angles of attack and sideslip as well as Mach and Reynolds number. The moment coefficients of the model are reported about the moment reference center (``x_mrc``, ``y_mrc``, ``z_mrc``) relative to the same arbitrary reference position that defines the center of mass. ``S_A`` is the reference area, ``a_l``, ``b_l``, and ``c_l`` are the reference lengths associated with the kkkkkkk 
+The ``Planet`` class provides the kinematic equations of motion used to drive the position,  orientaiton, and their corresponding rates based on the dynamics modeled by the ``Vehicle``. The ``Plenet`` is constructed by 
 
+.. code:: python
+    planet = Planet(gravity, winds, atmosphere, planetodetics)
 
-
-
-
-The ``Planet`` class provides the kinematic equations of motion governing the 
-
+For more details, see the docstrings (via ``help(Vehicle)`` and ``help(Planet)`` respectively) and NESC Test Case examples.
 
 NESC Test Cases
 ---------------
