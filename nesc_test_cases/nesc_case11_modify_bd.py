@@ -182,6 +182,5 @@ BD.connect(baseChiCmdBlock, controller_block, inputs=[dim_feedback+3])
 
 with benchmark() as b:
     res = BD.simulate(180, integrator_options=int_opts)
-    b.tfinal = res.t[-1]
 
 plot_nesc_comparisons(res, '11')

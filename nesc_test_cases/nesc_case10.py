@@ -65,6 +65,5 @@ planet.initial_condition[-2] = 0.
 
 with benchmark() as b:
     res = BD.simulate(30, integrator_options=int_opts)
-    b.tfinal = res.t[-1]
 
 plot_nesc_comparisons(res, '10')

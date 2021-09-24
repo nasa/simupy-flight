@@ -52,6 +52,5 @@ planet.initial_condition[-3:] = omega_X_ic, omega_Y_ic, omega_Z_ic
 
 with benchmark() as b:
     res = BD.simulate(30, integrator_options=int_opts)
-    b.tfinal = res.t[-1]
 
 plot_nesc_comparisons(res, '06')
