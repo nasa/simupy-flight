@@ -42,11 +42,39 @@ NESC Test Cases
 
 A number of the NESC Atmospheric test cases have been implemented to verify the implementation and derivation of the equations of motion. These are located in the `nesc_test_cases` directory. To run, simply execute any of `nesc_case##.py` files or the `run_nesc_cases.py` which will iterate through test cases that have been implemented. These scripts will attempt to load the NESC reference results from the parent directory and plot the results along with the results from the SimuPy implemntation. To include the NESC results in the comparison plots, download the `Atmospheric trajectory data <https://nescacademy.nasa.gov/src/flightsim/Datasets/Atmospheric_checkcases.zip>`_ and unzip the `Atmospheric_checkcases` directory to the root `simupy_flight` directory. You can place the `Atmospheric_checkcases` directory in different location by changing the `data_relative_path` variable in the `nesc_testcase_helper.py` script.
 
+Installation
+------------
+
+To install, clone the repository and install with pip
+
+.. code:: bash
+   $ git clone https://github.com/nasa/simupy-flight.git
+   $ pip install simupy-flight/
+
+Contributing
+------------
+
+Please feel free to share any thoughts or opinions about the design and
+implementation of this software by `opening an issue on GitHub
+<https://github.com/nasa/simupy-flight/issues/new>`_. Constructive feedback is
+welcomed and appreciated.
+
+Bug fix pull requests are always welcome. For feature additions, breaking
+changes, etc. check if there is an open issue discussing the change and
+reference it in the pull request. If there isn't one, it is recommended to open
+one with your rationale for the change before spending significant time
+preparing the pull request.
+
+Ideally, new/changed functionality should come with tests and documentation. If
+you are new to contributing, it is perfectly fine to open a work-in-progress
+pull request and have it iteratively reviewed.
+
+For pull requests to be accepted, all contributors must have a contributor's agreement on file with NASA. We will provide contributors with additional information during the review process. 
+
 License
 -------
 
 This software is released under the `NASA Open Source Agreement Version 1.3 <https://github.com/nasa/simupy-flight/raw/master/license.pdf>`_.
-
 
 Notices
 -------
