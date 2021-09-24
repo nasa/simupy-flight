@@ -48,6 +48,7 @@ Installation
 To install, clone the repository and install with pip
 
 .. code:: bash
+
    $ git clone https://github.com/nasa/simupy-flight.git
    $ pip install simupy-flight/
 
