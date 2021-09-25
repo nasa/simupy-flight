@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from simupy.block_diagram import DEFAULT_INTEGRATOR_OPTIONS
+from simupy.utils import isclose
 from scipy import interpolate
 from simupy_flight import Planet
 import glob
@@ -21,12 +22,17 @@ int_opts['max_step'] = 2**-4
 
 frame_rate_for_differencing = 10
 
+_here = os.path.abspath(os.path.dirname(__file__))
+regression_data_path = os.path.join(_here, '..', 'regression_data')
+
 nesc_options = dict(
     interactive_mode=True,
     include_simupy_in_autoscale=True,
     only_baseline05=False,
-    data_relative_path=os.path.join(os.path.dirname(__file__), '..', 'NESC_data'),
+    data_relative_path=os.path.join(_here, '..', 'NESC_data'),
     save_relative_path='plots/',
+    regression_test=True,
+    write_regression_data=False,
 )
 
 nesc_colors = {'%02d' % (sim_idx+1): 'C%d' % (sim_idx) for sim_idx in range(10)}
@@ -34,31 +40,55 @@ nesc_colors = {'%02d' % (sim_idx+1): 'C%d' % (sim_idx) for sim_idx in range(10)}
 # if not in an interactive interpreter session, handle command line args
 if not hasattr(sys, 'ps1'):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--interactive",
-                        help="show plots in interactive mode rather than saving to "
-                             "disk",
-                        action="store_true")
-    parser.add_argument("--simupy-scale",
-                        action="store_true",
-                        help="include simupy in plot autoscale or not")
-    parser.add_argument("--baseline05",
-                        action="store_true",
-                        help="Use SIM 05 as the baseline rather than the ensemble "
-                             "(total) average")
-    parser.add_argument("--output-path",
-                        help="Path to save plot outputs")
-    parser.add_argument("--nesc-data-path",
-                        help="Path to parent directory of Atmospheric_checkcases data "
-                             "folder")
+    parser.add_argument(
+        "-i", "--interactive",
+        action="store_true",
+        help="show plots in interactive mode rather than saving to disk",
+    )
+    parser.add_argument(
+        "--simupy-scale",
+        action="store_true",
+        help="include simupy in plot autoscale or not",
+    )
+    parser.add_argument(
+        "--baseline05",
+        action="store_true",
+        help="Use SIM 05 as the baseline rather than the ensemble (total) average",
+    )
+    parser.add_argument(
+        "-o", "--output-path",
+        help="Path to save plot outputs",
+    )
+    parser.add_argument(
+        "--nesc-data-path",
+        help="Path to parent directory of Atmospheric_checkcases data folder",
+    )
+    parser.add_argument(
+        "--write-regression-data",
+        action="store_true",
+        help="Write simulation results to regression data path",
+    )
+
     args = parser.parse_args()
 
     nesc_options['interactive_mode'] = args.interactive
     nesc_options['include_simupy_in_autoscale'] = args.simupy_scale
     nesc_options['only_baseline05'] = args.baseline05
+
     if args.nesc_data_path:
         nesc_options['data_relative_path'] = args.nesc_data_path
     if args.output_path:
         nesc_options['save_relative_path'] = args.output_path
+
+    if not os.path.exists(nesc_options['save_relative_path']):
+        os.makedirs(nesc_options['save_relative_path'])
+
+    if args.write_regression_data:
+        nesc_options['write_regression_data'] = True
+        nesc_options['regression_test'] = False
+
+        if not os.path.exists(regression_data_path):
+            os.mkdir(regression_data_path)
 
 
 def deg_diff(sim, baseline):
@@ -201,9 +231,26 @@ def get_baselines(case):
     return baseline_pds, baseline_pd_labels
 
 
+def regression_test(res, case):
+    fp = os.path.join(regression_data_path, f'case_{case}.npz')
+
+    if nesc_options['write_regression_data']:
+        np.savez(fp, t=res.t, x=res.x, y=res.y)
+        print(f'Outputs saved to {os.path.basename(fp)}')
+
+    else:
+        if not os.path.exists(fp):
+            print('No regression file found, skipping test')
+            return
+        test_res = np.load(fp)
+        passed = np.all(isclose(res.t, res.y, test_res["t"], test_res["y"]))
+        result = 'passed' if passed else 'failed'
+        print(f'Regression test {result.upper()}')
+
+
 def plot_nesc_comparisons(simupy_res, case, plot_name=""):
-    """
-    """
+    regression_test(simupy_res, case)
+
     if plot_name == "":
         plot_name = case
 
