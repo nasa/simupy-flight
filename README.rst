@@ -36,11 +36,15 @@ For more details, see the docstrings (via ``help(Vehicle)`` and ``help(Planet)``
 NESC Test Cases
 ---------------
 
-..
-    TODO: update this section -- retain reference to NESC data and explain
-    the local copy; possibly provide the argument information
+A number of the `NESC Atmospheric test cases <https://nescacademy.nasa.gov/flightsim>`_ have been implemented to verify the implementation and derivation of the equations of motion. These are located in the ``nesc_test_cases`` directory. To run, simply execute any of ``nesc_case##.py`` files or the ``run_nesc_cases.py`` script, which will iterate through test cases that have been implemented. These scripts load the NESC reference results from ``NESC_data/`` directory and plot them along with the results from the SimuPy implementation. The reference results are included in the SimuPy repository, but they can be obtained directly from the NESC `here <https://nescacademy.nasa.gov/src/flightsim/Datasets/Atmospheric_checkcases.zip>`_.
 
-A number of the NESC Atmospheric test cases have been implemented to verify the implementation and derivation of the equations of motion. These are located in the `nesc_test_cases` directory. To run, simply execute any of `nesc_case##.py` files or the `run_nesc_cases.py` which will iterate through test cases that have been implemented. These scripts will attempt to load the NESC reference results from the parent directory and plot the results along with the results from the SimuPy implemntation. To include the NESC results in the comparison plots, download the `Atmospheric trajectory data <https://nescacademy.nasa.gov/src/flightsim/Datasets/Atmospheric_checkcases.zip>`_ and unzip the `Atmospheric_checkcases` directory to the root `simupy_flight` directory. You can place the `Atmospheric_checkcases` directory in different location by changing the `data_relative_path` variable in the `nesc_testcase_helper.py` script.
+The SimuPy results from running all NESC test cases are also included in the repository. By default, running any or all of the tests cases will perform a regression test against this data and report the result(s).
+
+To re-generate the regression data, pass the ``--write-regression-data`` flag::
+
+    $ python nesc_test_cases/run_nesc_cases.py --write-regression-data
+
+Use ``-h`` or ``--help`` to see additional options that can be passed to the test case scripts.
 
 License
 -------
