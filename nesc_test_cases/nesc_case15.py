@@ -89,7 +89,6 @@ if __name__ == '__main__':
 
     with benchmark() as b:
         res = BD.simulate(180, integrator_options=int_opts)
-        b.tfinal = res.t[-1]
 
     plot_nesc_comparisons(res, '15')
     plot_F16_controls(res, '15', y_idx_offset=0)

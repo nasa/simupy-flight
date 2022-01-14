@@ -52,7 +52,6 @@ BD.connect(planet, gnc_block, outputs=planet_output_for_gnc_select)
 
 with benchmark() as b:
     res = BD.simulate(180, integrator_options=int_opts)
-    b.tfinal = res.t[-1]
 
 plot_nesc_comparisons(res, '16')
 plot_F16_controls(res, '16', y_idx_offset=0)

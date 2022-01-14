@@ -255,6 +255,5 @@ BD.connect(controller_block, F16_vehicle, inputs=np.arange(planet.dim_output, pl
 
 with benchmark() as b:
     res = BD.simulate(180, integrator_options=int_opts)
-    b.tfinal = res.t[-1]
 
 plot_nesc_comparisons(res, '11')

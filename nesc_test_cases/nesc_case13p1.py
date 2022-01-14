@@ -15,7 +15,6 @@ BD.systems[2] = systems.SystemFromCallable(get_controller_function(*opt_ctrl, sa
 
 with benchmark() as b:
     res = BD.simulate(20, integrator_options=int_opts)
-    b.tfinal = res.t[-1]
 
 plot_nesc_comparisons(res, '13p1')
 plot_F16_controls(res, '13p1')
