@@ -163,6 +163,7 @@ class Planet(object):
     dim_state = 13
     dim_output = 34
     dim_input = 7
+    num_events = 0
 
     p_x_idx = 0
     p_y_idx = 1
@@ -227,8 +228,8 @@ class Planet(object):
         (self.gravity, self.winds, self.atmosphere, self.planetodetics) =\
             gravity, winds, atmosphere, planetodetics
     
-    def prepare_to_integrate(self, *args, **kwargs):
-        return
+    def prepare_to_integrate(self,  *args, **kwargs):
+        return self.output_equation_function(*args, **kwargs)
 
     def state_equation_function(self, t, x, u):
         return kinematics.kinematics_state_function(self, t, *x, *u)
@@ -326,6 +327,7 @@ class Vehicle(object):
     dim_state = 0
     dim_output = 6
     dim_input = 34
+    num_events = 0
 
     initial_condition = np.empty(0)
 
@@ -423,8 +425,8 @@ class Vehicle(object):
 
         self.m, self.I_xx, self.I_yy, self.I_zz, self.I_xy, self.I_yz, self.I_xz, self.x_com, self.y_com, self.z_com, self.x_mrc, self.y_mrc, self.z_mrc, self.S_A, self.a_l, self.b_l, self.c_l, self.d_l = m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com, x_mrc, y_mrc, z_mrc, S_A, a_l, b_l, c_l, d_l
 
-    def prepare_to_integrate(self, *args, **kwargs):
-        return
+    def prepare_to_integrate(self,  *args, **kwargs):
+        return self.output_equation_function(*args, **kwargs)
     
     def _input_aero_coeffs(self, alpha, beta, Ma, Re, *args):
         filtered_args = np.array(args)[self.input_aero_coeffs_idx]

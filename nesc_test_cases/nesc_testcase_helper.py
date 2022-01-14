@@ -64,7 +64,7 @@ if not hasattr(sys, 'ps1'):
         help="Path to parent directory of Atmospheric_checkcases data folder",
     )
     parser.add_argument(
-        "--write-regression-data",
+        "-w", "--write-regression-data",
         action="store_true",
         help="Write simulation results to regression data path",
     )
