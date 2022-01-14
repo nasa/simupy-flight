@@ -11,13 +11,14 @@ y_mrc = 0.
 z_mrc = 0.
 
 inertia_output = F16_inertia.F16_inertia(25)
-Ixx, Iyy, Izz, Ixy, Iyz, Izx = inertia_output[:6]*kg_per_slug/(ft_per_m**2)
-m = inertia_output[6]*kg_per_slug
+Ixx, Iyy, Izz, Izx, Ixy, Iyz = inertia_output[:6]*kg_per_slug/(ft_per_m**2)
+m = 637.26*kg_per_slug #slugs; DaveML parsed data does not match documentation
 x_com, y_com, z_com = inertia_output[[-1, -3, -2]]/ft_per_m
 
 aero_output = F16_aero.F16_aero(*np.zeros(9))
 S_A = aero_output[2]/(ft_per_m**2)
 a_l, b_l, c_l = aero_output[[1, 1, 0]]/ft_per_m
+
 
 def F16_prop_model(*args):
     """

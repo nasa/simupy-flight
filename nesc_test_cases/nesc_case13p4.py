@@ -23,7 +23,6 @@ BD.connect(planet, latOffsetBlock, outputs=[planet.V_N_idx, planet.V_E_idx], inp
 
 with benchmark() as b:
     res = BD.simulate(60, integrator_options=int_opts)
-    b.tfinal = res.t[-1]
 
 plot_nesc_comparisons(res, '13p4')
 plot_F16_controls(res, '13p4')
