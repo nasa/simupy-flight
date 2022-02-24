@@ -415,6 +415,45 @@ class Planet(object):
         """
 
         return kinematics.local_translational_trim_residual(p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_y, v_z, A_X, A_Y, A_Z)
+    
+    def inertial_to_NED_dcm(self, t, lamda_D, phi_D):
+        """
+        Constructs a direction cosine matrix (DCM) relating the inerital coordinate system
+        to the North-East-Down (NED) coordinate system
+
+        Parameters
+        ----------
+        t
+            time, used to account for sidereel rotation
+        lamda_D, phi_D
+            planetodetic longitude and latitude
+        """
+        return kinematics.inertial_to_NED_dcm(self, t, lamda_D, phi_D)
+
+def inertial_to_body_dcm(q_0, q_1, q_2, q_3):
+    """
+    Constructs a direction cosine matrix (DCM) relating the inerital coordinate system
+    to the body-fixed Forward-Right-Down (FRD) coordinate system
+
+    Parameters
+    ----------
+    q_0, q_1, q_2, q_3
+        quaternion components defining the DCM
+    """
+    return kinematics.inertial_to_body_dcm(q_0, q_1, q_2, q_3)
+
+def body_to_NED_dcm(phi, theta, psi):
+    """
+    Constructs a direction cosine matrix (DCM) relating the the body-fixed Forward-Right-Down (FRD)
+    coordinate system to the North-East-Down (NED) coordinate system
+
+    Parameters
+    ----------
+    phi, theta, phi
+        euler-angles relating the NED frame to the body-fixed frame: roll, pitch, yaw
+    """
+    return kinematics.body_to_NED_dcm(phi, theta, psi)
+    
 
 
 class Vehicle(object):
@@ -671,3 +710,26 @@ class Vehicle(object):
             Captures any additional control inputs for the controlled aerodynamics model
         """
         return dynamics.tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args)
+    
+    def mrc_to_com_cpm(self):
+        """
+        Constructs a skew symmetric matrix that can perform the right-sided 
+        cross product of the position vector from the moment reference center
+        to the center of mass, used for accounting for the translational force
+        contribution to the moment.
+        """
+        return dynamics.mrc_to_com_cpm(self):
+
+def body_to_wind_dcm(alpha, beta):
+    """
+    Constructs a direction cosine matrix (DCM) relating the the body-fixed Forward-Right-Down (FRD)
+    coordinate system to the wind coordinate system. 
+
+    Parameters
+    ----------
+    alpha
+        angle of attack
+    beta
+        angle of sideslip
+    """
+    return dynamics.body_to_wind_dcm(alpha, beta)
