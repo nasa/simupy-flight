@@ -1,3 +1,21 @@
+"""
+Case 11: Subsonic F-16 trimmed flight across planet
+===================================================
+
+==============  ===============
+-------------------------------
+Verifies        Atmosphere, air-data calculations
+Gravitation     J2
+Geodesy         WGS-84 rotating
+Atmosphere      US 1976 STD
+Winds           still air
+Vehicle         F-16 (unaugmented)
+Notes           Initial position is 10,000 ft above KFFA airport on a 45 degree true
+                course. 335.15 KTAS. Stability augmentation off. Test of trim solution.
+==============  ===============
+
+"""
+
 from simupy.block_diagram import BlockDiagram
 from simupy import systems
 import simupy_flight
@@ -13,8 +31,8 @@ from F16_control import F16_control
 F16_vehicle = F16_model.F16_vehicle
 
 spec_ic_args = dict(
-    phi_E = 36.01916667*np.pi/180,  # latitude
-    lamda_E = -75.67444444*np.pi/180, # longitude
+    phi_D = 36.01916667*np.pi/180,  # latitude
+    lamda_D = -75.67444444*np.pi/180, # longitude
     h = 10_013/ft_per_m,
 
     V_N = 400./ft_per_m,

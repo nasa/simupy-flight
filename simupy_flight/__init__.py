@@ -46,7 +46,7 @@ def get_flat_pc2pd():
     The transformation function takes in the planetocentric
     rectangular coordinates `px`, `py`, `pz` and returns a constant 0 for `longitude`, 
     -pi/2 for `latitutde`, and uses `pz` for `altitude`.
-    
+ 
     Returns
     -------
     pcf2pd : callable
@@ -718,7 +718,7 @@ class Vehicle(object):
         to the center of mass, used for accounting for the translational force
         contribution to the moment.
         """
-        return dynamics.mrc_to_com_cpm(self):
+        return dynamics.mrc_to_com_cpm(self)
 
 def body_to_wind_dcm(alpha, beta):
     """
