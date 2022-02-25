@@ -15,12 +15,15 @@ earth_mean_radius = 6371007.1809
 # kinematic functions
 def get_nonflat_pc2pd(a, f):
     """
-    Generate a planetocentric to planetodetic coordinate transformation function for an
-    ellipsoidal planetary model, parameterized by equatorial radius `a` and flattening `f`.
-    The transformation function takes in the planetocentric
-    rectangular coordinates `px`, `py`, `pz` and returns the planetodetic `longitude`, `latitude`,
-    and `altitude`. The units of `a`, `px`, `py`, `pz`, and `altitude` are all the same and
-    assumed to be meters to be consistent with other kinematics.
+    Generate a planetocentric-to-planetodetic coordinate transformation function for an
+    ellipsoidal planetary model, parameterized by equatorial radius `a` and flattening
+    `f`.
+
+    The transformation function takes in the planetocentric rectangular coordinates
+    `px`, `py`, `pz` and returns the planetodetic `longitude`, `latitude`,
+    and `altitude`. The units of `a`, `px`, `py`, `pz`, and `altitude` are all the same
+    and assumed to be meters to be consistent with other kinematics.
+
     Uses the ERFA implementation of Fukushima's method.
 
     Parameters
@@ -29,11 +32,11 @@ def get_nonflat_pc2pd(a, f):
         equatorial radius
     f : float
         flattening parameter
-    
+
     Returns
     -------
     pcf2pd : callable
-        The planetocentric to planetodetic coordinate transformation function.
+        The planetocentric-to-planetodetic coordinate transformation function.
     """
     def pcf2pd(px, py, pz):
         return np.array(erfa.gc2gde(a, f, np.array([px, py, pz])))
@@ -41,16 +44,17 @@ def get_nonflat_pc2pd(a, f):
 
 def get_flat_pc2pd():
     """
-    Generate a planetocentric to planetodetic coordinate transformation function for a
+    Generate a planetocentric-to-planetodetic coordinate transformation function for a
     flat planetary model.
-    The transformation function takes in the planetocentric
-    rectangular coordinates `px`, `py`, `pz` and returns a constant 0 for `longitude`, 
-    -pi/2 for `latitude`, and uses `pz` for `altitude`.
- 
+
+    The transformation function takes in the planetocentric rectangular coordinates
+    `px`, `py`, `pz` and returns a constant 0 for `longitude`, -pi/2 for `latitude`, and
+    uses `pz` for `altitude`.
+
     Returns
     -------
     pcf2pd : callable
-        The planetocentric to planetodetic coordinate transformation function.
+        The planetocentric-to-planetodetic coordinate transformation function.
     """
     def pcf2pd(px, py, pz):
         return np.array([0.0, -np.pi/2, pz])
@@ -58,13 +62,15 @@ def get_flat_pc2pd():
 
 def get_nonflat_pd2pc(a, f):
     """
-    Generate a planetodetic to planetocentric coordinate transformation function for an
-    ellipsoidal planetary model, parameterized by equatorial radius`$a` and flattening `f`.
-    The transformation function takes in the position defined by the planetodetic 
-    `longitude`, `latitude`, and `altitude` and returns the planetocentric
-    rectangular coordinates `px`, `py`, `pz`.
-    The units of `a`, `px`, `py`, `pz`, and `altitude` are all the same and
-    assumed to be meters to be consistent with other kinematics.
+    Generate a planetodetic-to-planetocentric coordinate transformation function for an
+    ellipsoidal planetary model, parameterized by equatorial radius `a` and flattening
+    `f`.
+
+    The transformation function takes in the position defined by the planetodetic
+    `longitude`, `latitude`, and `altitude` and returns the planetocentric rectangular
+    coordinates `px`, `py`, `pz`.  The units of `a`, `px`, `py`, `pz`, and `altitude`
+    are all the same and assumed to be meters to be consistent with other kinematics.
+
     Uses the ERFA implementation of Fukushima's method.
 
     Parameters
@@ -73,11 +79,11 @@ def get_nonflat_pd2pc(a, f):
         equatorial radius
     f : float
         flattening parameter
-    
+
     Returns
     -------
-    pcf2pd : callable
-        The planetodetic to planetocentric coordinate transformation function.
+    pdf2pc : callable
+        The planetodetic-to-planetocentric coordinate transformation function.
     """
     def pd2pcf(longitude, latitude, altitude):
         return np.array(erfa.gd2gce(a, f, longitude, latitude, altitude))
@@ -85,15 +91,16 @@ def get_nonflat_pd2pc(a, f):
 
 def get_flat_pd2pc():
     """
-    Generate a planetodetic to planetocentric coordinate transformation function for a
+    Generate a planetodetic-to-planetocentric coordinate transformation function for a
     flat planetary model.
-    The transformation function takes in the planetocentric
-    rectangular coordinates px, py, pz and returns a constant 0 longitude, 
-    -90 degree latitude, and uses pz for altitude.
-    
+
+    The transformation function takes in the planetocentric rectangular coordinates
+    `px`, `py`, `pz` and returns a constant 0 longitude, -90 degree latitude, and uses
+    `pz` for altitude.
+
     Returns
     -------
-    pcf2pd : callable
+    pdf2pc : callable
         The planetocentric to planetodetic coordinate transformation function.
     """
     def pd2pcf(longitude, latitude, altitude):
@@ -103,23 +110,22 @@ def get_flat_pd2pc():
 class Planetodetic:
     """
     Namespace class used to model the planetodetics used by the Planet class.
+
+    Parameters
+    ----------
+    a : float
+        equatorial radius
+    f : float
+        flattening parameter
+    omega_p : float
+        Angular rate of planetary rotation
+
+
+    .. note::
+        Use `a<=0` and `omega_p=0` for a flat planet model; `f` will be ignored
     """
 
     def __init__(self, a=0., f=0., omega_p=0.):
-        """
-        Parameters
-        ----------
-        a : float
-            equatorial radius
-        f : float
-            flattening parameter
-        omega_p : float
-            Angular rate of planetary rotation
-
-        Notes
-        -----
-        use `a<=0` and `omega_p=0` for a flat planet model; `f` will be ignored
-        """
         self.omega_p, self.a, self.f = omega_p, a, f
         if a<=0:
             self.pcf2pd = get_flat_pc2pd()
@@ -132,8 +138,8 @@ class Planetodetic:
 # constant atmosphere functions
 def get_constant_atmosphere(density_val=0., speed_of_sound_val=1., viscocity_val=1.,):
     """
-    Generate an atmosphere callback that returns a constant and specified density, speed of sound,
-    and viscosity regardless of the input time or planetodetic position
+    Generate an atmosphere callback that returns a constant and specified density, speed
+    of sound, and viscosity regardless of the input time or planetodetic position
     """
     atmosphere_val = np.array([density_val, speed_of_sound_val, viscocity_val])
     def atmosphere_constant(t, longitude, latitude, altitude):
@@ -141,9 +147,7 @@ def get_constant_atmosphere(density_val=0., speed_of_sound_val=1., viscocity_val
     return atmosphere_constant
 
 def atmosphere_1976(t, longitude, latitude, altitude):
-    """
-    Atmospheric model callback for the US Standard 1976 Atmosphere.
-    """
+    """Atmospheric model callback for the US Standard 1976 Atmosphere."""
     atmo = fluids.atmosphere.ATMOSPHERE_1976(altitude)
     return np.array([atmo.rho, atmo.v_sonic, atmo.mu])
 
@@ -182,8 +186,8 @@ def get_constant_winds(wx=0., wy=0., wz=0.):
 # aero functions
 def get_constant_aero(CD_b=0., CS_b=0., CL_b=0., CLcal_b=0., CMcal_b=0., CNcal_b=0., Cp_b=0., Cq_b=0., Cr_b=0.):
     """
-    Generate an aerodynamics model callback that returns a constant and specified set of force, moment, and
-    damping coefficients regardless of flight condition.
+    Generate an aerodynamics model callback that returns a constant and specified set of
+    force, moment, and damping coefficients regardless of flight condition.
     """
     aero_vals = np.array([CD_b, CS_b, CL_b, CLcal_b, CMcal_b, CNcal_b, Cp_b, Cq_b, Cr_b])
     def aero_function(alpha,beta,Ma,Re):
@@ -192,7 +196,8 @@ def get_constant_aero(CD_b=0., CS_b=0., CL_b=0., CLcal_b=0., CMcal_b=0., CNcal_b
 
 def get_constant_force_moments(FX=0., FY=0., FZ=0., MX=0., MY=0., MZ=0.,):
     """
-    Generate a 
+    Generate a force and moment callback that returns a constant and specified set of
+    forces and moments regardless of flight condition.
     """
     force_moment_vals = np.array([FX, FY, FZ, MX, MY, MZ])
     def force_moment_function(*args):
@@ -201,87 +206,95 @@ def get_constant_force_moments(FX=0., FY=0., FZ=0., MX=0., MY=0., MZ=0.,):
 
 class Planet(object):
     """
-    The Planet is the state dynamics block that provides the kinematic equations of motion for integration and an
-    output equation for commonly used variables for flight vehicles according to the planet model. The Planet 
-    planet model is parameterized based on the following components:
+    The Planet is the state dynamics block that provides the kinematic equations of
+    motion for integration and an output equation for commonly used variables for flight
+    vehicles according to the planet model.
 
-    ``gravity`` model: translational acceleration due to gravity as a function of planet-fixed position in rectangular coordinates.
-    For 
+    The planet model is parameterized based on the following components:
 
-    ``atmosphere`` models: density, speed of sound, and viscosity outputs of the atmosphere model as a function of time (i.e.,
-    for stochasticity) and position in planet-fixed frame expressed in geodetic coordinates (longitude, latitude, altitude)
+    `gravity` model:
+        translational acceleration due to gravity as a function of planet-fixed position
+        in rectangular coordinates.
+    `winds` model:
+        wind in local NED frame as a function of time and planetodetic position.
+        Positive wind indicates wind in specified direction so wind "from west" is a
+        positive W_E component.
+    `atmosphere` model:
+        density, speed of sound, and viscosity outputs of the atmosphere model as a
+        function of time (i.e. for stochasticity) and position in planet-fixed frame
+        expressed in geodetic coordinates (longitude, latitude, altitude)
+    `planetodetic` model:
+        must provide rotation rate in rad/s as ``omega_p`` and functions ``pd2pcf`` and
+        ``pcf2pd`` to convert between planetodetic rectangular coordinates and
+        planetocentric spherical coordinates. Future versions may support nutation and
+        precession. The planetodetic model should assume pc2pd excludes sidereal
+        rotation which is accounted for by the kinematics model. See
+        :class:`Planetodetic`.
 
-    ``winds`` model: wind in local NED frame as a function of time and planetodetic position. Positive wind indicates wind in specified
-    direction so wind "from west" is a positive W_E component.
+    The **state** components are:
 
-    ``planetodetic`` model, must provide rotation rate in rad/s as ``omega_p`` and functions ``pd2pcf`` and ``pcf2pd`` to
-    convert between planetodetic rectangular coordinates and planetocentric spherical coordinates. Future versions may support
-    nutation and precession. The planetodetic model should assume pc2pd excludes sidereal rotation
-    which is accounted for by the kinematics model.
+    ``[0:3] p_x, p_y, p_z``
+        translational position (of vehicle center of mass) relative to inertial origin
+        expressed in inertial coordinate system
+    ``[3:7] q_0, q_1, q_2, q_3``
+        quaternion components representing the rotation from the inertial to the
+        body-fixed coordinate systems
+    ``[7:10] v_x, v_y, v_z``
+        translational velocity (of vehicle center of mass) in the inertial coordinate
+        system expressed in inertial coordinates
+    ``[10:13] omega_X, omega_Y, omega_Z``
+        angular velocity from inertial coordinate system to body-fixed coordinate system
+        expressed in body-fixed coordinates
 
-    The state components are:
-        [0:3] p_x, p_y, p_z
-        translational position (of vehicle center of mass) relative to inertial origin expressed in inertial coordinate system
+    The **input** components are:
 
-        [3:7] q_0, q_1, q_2, q_3
-        quaternion components representing the rotation from the inertial to the body-fixed coordinate systems
+    ``[0:3] A_X, A_Y, A_Z``
+        translational acceleration of vehicle center of mass due to non-gravitational
+        forces in the inertial coordinate system expressed in body-fixed
+        Forward-Right-Down (FRD) coordinate system
+    ``[3:6] alpha_X, alpha_Y, alpha_Z``
+        angular acceleration of vehicle coordinate system in the inertial coordinate
+        system expressed in body-fixed FRD coordinates
+    ``[6] c_q``
+        scaling parameter for non-unit quaternion kinematics integration; this is a
+        control for numerical behavior of the integration and can be ignored in most
+        circumstances
 
-        [7:10] v_x, v_y, v_z
-        translational velocity (of vehicle center of mass) in the inertial coordinate system expressed in inertial coordinates
+    The **output** components are:
 
-        [10:13] omega_X, omega_Y, omega_Z
-        angular velocity from inertial coordinate system to body-fixed coordinate system expressed in body-fixed coordinates
-
-    The input components are:
-        [0:3] A_X, A_Y, A_Z
-        translational acceleration of vehicle center of mass due to non-gravitational forces in the inertial coordinate system 
-        expressed in body-fixed Forward-Right-Down (FRD) coordinate system
-              
-        [3:6] alpha_X, alpha_Y, alpha_Z
-        angular acceleration of vehicle coordinate system in the inertial coordinate system expressed in body-fixed FRD coordinates
-
-        [6] c_q
-        scaling parameter for non-unit quaternion kinematics integration; this is a control for numerical behavior of the integration
-        and can be ignored in most circumstances
-
-    The output components are:
-        [0:13] p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_y, v_z, omega_X, omega_Y, omega_Z
+    ``[0:13] p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_y, v_z, omega_X, omega_Y, omega_Z``
         The state components listed above
-
-        [13:16] lamda_D, phi_D, h
-        translational position of the vehicle center of mass in the planet-fixed frame expressed in
-        planetodetic spherical position coordinates: longitude, latitude, and altitude
-
-        [16:19] psi, theta, phi
+    ``[13:16] lamda_D, phi_D, h``
+        translational position of the vehicle center of mass in the planet-fixed frame
+        expressed in planetodetic spherical position coordinates: longitude, latitude,
+        and altitude
+    ``[16:19] psi, theta, phi``
         Euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll
-
-        [19:22] rho, c_s, mu
-        density, speed of sound, and viscosity outputs of the atmosphere model as a function of time and position in planet-fixed frame
-
-        [22:25] V_T, alpha, beta
-        true air speed, angle of attack, and angle of sideslip used for aerodynamics (includes wind)
-
-        [25:28] p_B, q_B, r_B
-        angular velocity components of vehicle-fixed coordinate system relative to NED, used for aerodynamic damping derivatives
-
-        [28:31] V_N, V_E, V_D
-        velocity of the vehicle center of mass in the planet-fixed frame expressed in NED frame
-
-        [31:34] W_N, W_E, W_D
+    ``[19:22] rho, c_s, mu``
+        density, speed of sound, and viscosity outputs of the atmosphere model as a
+        function of time and position in planet-fixed frame
+    ``[22:25] V_T, alpha, beta``
+        true air speed, angle of attack, and angle of sideslip used for aerodynamics
+        (includes wind)
+    ``[25:28] p_B, q_B, r_B``
+        angular velocity components of vehicle-fixed coordinate system relative to NED,
+        used for aerodynamic damping derivatives
+    ``[28:31] V_N, V_E, V_D``
+        velocity of the vehicle center of mass in the planet-fixed frame expressed in
+        NED frame
+    ``[31:34] W_N, W_E, W_D``
         Output of wind model as a function of time and position in planet-fixed frame
-    
+
     Additional class attributes:
-        dim_state, dim_output, dim_input, num_events
-            Used for the SimuPy interface; must be updated for any sub-classes
-        
-        <variable_name>_idx
-            Provides a named index value for indexing the state or output data columns
-        
-        output_column_names
-            A list of strings of the output names, useful for constructing data structures
-        
-        output_column_names_latex
-            A list of strings of the LaTeX output names, useful for labeling plots
+
+    ``dim_state, dim_output, dim_input, num_events``
+        Used for the SimuPy interface; must be updated for any sub-classes
+    ``<variable_name>_idx``
+        Provides a named index value for indexing the state or output data columns
+    ``output_column_names``
+        A list of strings of the output names, useful for constructing data structures
+    ``output_column_names_latex``
+        A list of strings of the LaTeX output names, useful for labeling plots
 
     """
     dim_state = 13
@@ -354,27 +367,27 @@ class Planet(object):
     
     def prepare_to_integrate(self,  *args, **kwargs):
         """
-        SimuPy calls each Block's `prepare_to_integrate` function prior to simulation
+        SimuPy calls each Block's ``prepare_to_integrate`` function prior to simulation
         Returns the first output vector.
         """
         return self.output_equation_function(*args, **kwargs)
 
     def state_equation_function(self, t, x, u):
         """
-        Computes the kinematic rates used for simulation.
+        Compute the kinematic rates used for simulation.
         """
         return kinematics.kinematics_state_function(self, t, *x, *u)
     
     def output_equation_function(self, t, x):
         """
-        Computes the kinematic outputs used for simulation.
+        Compute the kinematic outputs used for simulation.
         """
         return kinematics.kinematics_output_function(self, t, *x)
 
     def ic_from_planetodetic(self, lamda_D=0., phi_D=0., h=0., V_N=0., V_E=0., V_D=0., psi=0., theta=0., phi=0., p_B=0., q_B=0., r_B=0.):
         """
-        A helper function for defining the inertial initial conditions
-        from planetodetic definitions
+        A helper function for defining the inertial initial conditions from planetodetic
+        definitions
 
         Parameters
         ----------
@@ -383,43 +396,46 @@ class Planet(object):
         V_N, V_E, V_D
             relative velocity expressed in the North, East, Down (NED) frame
         psi, theta, phi
-            Euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll
+            Euler-angles relating the NED frame to the body-fixed frame: yaw, pitch,
+            roll
         p_B, q_B, r_B
-            angular velocity components of vehicle-fixed coordinate system relative to NED frame
+            angular velocity components of vehicle-fixed coordinate system relative to
+            NED frame
         """
         return kinematics.ic_from_planetodetic(self, lamda_D, phi_D, h, V_N, V_E, V_D, psi, theta, phi, p_B, q_B, r_B)
     
     def local_translational_trim_residual(self, p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_y, v_z, A_X, A_Y, A_Z):
-        """
-        A helper function that computes the trim residual in the planet-fixed frame. Use an optimizer to zero the output
-        of this function to achieve trim. The first nine inputs, which are components of the state, might come from
-        an initial condition calculation. It is assumed that the trim condition has no relative angular velocity. The
-        last three inputs might come from the vehicle dynamics model. The control inputs of the vehicle dynamics model 
-        is a good candidate for the trim-optimizer's free variables.
+        """A helper function that computes the trim residual in the planet-fixed frame
+
+        Use an optimizer to zero the output of this function to achieve trim. The first
+        nine inputs, which are components of the state, might come from an initial
+        condition calculation. It is assumed that the trim condition has no relative
+        angular velocity. The last three inputs might come from the vehicle dynamics
+        model. The control inputs of the vehicle dynamics model is a good candidate for
+        the trim-optimizer's free variables.
 
         Parameters
         ----------
         p_x, p_y, p_z
-            translational position (of vehicle center of mass) relative to inertial origin expressed in inertial coordinate system
-
+            translational position (of vehicle center of mass) relative to inertial
+            origin expressed in inertial coordinate system
         q_0, q_1, q_2, q_3
-            quaternion components representing the rotation from the inertial to the body-fixed coordinate systems
-
+            quaternion components representing the rotation from the inertial to the
+            body-fixed coordinate systems
         v_x, v_y, v_z
-            translational velocity (of vehicle center of mass) in the inertial coordinate system expressed in inertial coordinates
-
+            translational velocity (of vehicle center of mass) in the inertial
+            coordinate system expressed in inertial coordinates
         A_X, A_Y, A_Z
-            translational acceleration of vehicle center of mass due to non-gravitational forces in the inertial coordinate system 
-            expressed in body-fixed Forward-Right-Down (FRD) coordinate system
-        
+            translational acceleration of vehicle center of mass due to
+            non-gravitational forces in the inertial coordinate system expressed in
+            body-fixed Forward-Right-Down (FRD) coordinate system
         """
-
         return kinematics.local_translational_trim_residual(p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_y, v_z, A_X, A_Y, A_Z)
     
     def inertial_to_NED_dcm(self, t, lamda_D, phi_D):
         """
-        Constructs a direction cosine matrix (DCM) relating the inertial coordinate system
-        to the North-East-Down (NED) coordinate system
+        Construct a direction cosine matrix (DCM) relating the inertial coordinate
+        system to the North-East-Down (NED) coordinate system
 
         Parameters
         ----------
@@ -432,7 +448,7 @@ class Planet(object):
 
 def inertial_to_body_dcm(q_0, q_1, q_2, q_3):
     """
-    Constructs a direction cosine matrix (DCM) relating the inertial coordinate system
+    Construct a direction cosine matrix (DCM) relating the inertial coordinate system
     to the body-fixed Forward-Right-Down (FRD) coordinate system
 
     Parameters
@@ -444,8 +460,9 @@ def inertial_to_body_dcm(q_0, q_1, q_2, q_3):
 
 def body_to_NED_dcm(phi, theta, psi):
     """
-    Constructs a direction cosine matrix (DCM) relating the body-fixed Forward-Right-Down (FRD)
-    coordinate system to the North-East-Down (NED) coordinate system
+    Constructs a direction cosine matrix (DCM) relating the body-fixed
+    Forward-Right-Down (FRD) coordinate system to the North-East-Down (NED) coordinate
+    system
 
     Parameters
     ----------
@@ -456,109 +473,128 @@ def body_to_NED_dcm(phi, theta, psi):
     
 
 
+# TODO: verify sign of products of inertia
+# TODO: provide pattern to support time varying inertial properties -- should be stateful;
 class Vehicle(object):
     """
-    The Vehicle is a state-less dynamics block that provides a common calculation for the dynamics of a flight vehicle. The Vehicle 
-    vehicle model is parameterized based on the following components:
+    The Vehicle is a state-less dynamics block that provides a common calculation for
+    the dynamics of a flight vehicle.
 
-    Inertial properties: m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com
-    Inertia is expressed in body-fixed coordinates about the center of mass
-    center of mass (x_com, y_com, z_com) position is relative to an arbitrary reference such as the CAD origin
-    TODO: verify sign of products of inertia
-    TODO: provide pattern to support time varying inertial properties -- should be stateful; 
-    TODO: should every variable in the prose descriptions get wrapped by backticks?
+    The Vehicle vehicle model is parameterized based on the following components:
 
-    Aerodynamics model: base_aero_coeffs, S_A, a_l, b_l, c_l, d_l, x_mrc, y_mrc, z_mrc,
-    base_aero_coeffs is assumed to be a function of angles of attack and sideslip, and Mach and Reynolds number
-    with signature ``base_aero_coeffs(alpha, beta, Ma, Re)`` and should 
-    return an array of coefficients in the following order:
-        drag, sideforce, and lift (force coefficients expressed in wind coordinate system), 
-        static roll, pitch, and yaw moments (moment coefficients expressed in body-fixed Forward-Right-Down coordinate system), and
-        dynamic or damping roll, pitch, and yaw moments (also moment coefficients expressed in body-fixed coordinate system)
-    To translate an aerodynamic database that provides forces expressed in body-fixed coordinates, the 
-    transpose of the ``dynamics.body_to_wind_dcm(alpha, beta)`` direction cosine matrix can be used to transform into
-    the wind coordinate system.
+    Inertial properties: ``m, I_xx, I_yy, I_zz, I_xy, I_yz, I_xz, x_com, y_com, z_com``
+        Inertia is expressed in body-fixed coordinates about the center of mass
+        position (``x_com, y_com, z_com``). Center of mass position is relative to an
+        arbitrary reference, such as the CAD origin.
 
-    S_A is the reference area
-    a_l, b_l, and c_l are reference lengths for roll, pitch, and yaw
-    d_l is the reference length for Reynolds number calculation
+    Aerodynamics model:
 
-    Moment coefficients are assumed to be about the moment reference center
-    (x_mrc, y_mrc, z_mrc) the position of which is defined relative to the same arbitrary reference as the center of mass. 
-    Damping coefficients are transformed with the static moment coefficients which does not usually hold; 
-    to model damping coefficients it is recommended
-    to set the center of mass and moment reference center to the same location at the arbitrary reference (i.e., [0,0,0])
+    ``base_aero_coeffs``:
+        assumed to be a function of angles of attack and sideslip, and Mach and Reynolds
+        number with signature ``base_aero_coeffs(alpha, beta, Ma, Re)`` and should
+        return an array of coefficients in the following order: drag, sideforce, and
+        lift (force coefficients expressed in wind coordinate system), static roll,
+        pitch, and yaw moments (moment coefficients expressed in body-fixed
+        Forward-Right-Down coordinate system), and dynamic or damping roll, pitch, and
+        yaw moments (also moment coefficients expressed in body-fixed coordinate
+        system). To translate an aerodynamic database that provides forces expressed in
+        body-fixed coordinates, the transpose of the ``dynamics.body_to_wind_dcm(alpha,
+        beta)`` direction cosine matrix can be used to transform into the wind
+        coordinate system.
+    ``x_mrc, y_mrc, z_mrc``:
+        Moment reference center position, defined relative to the same arbitrary
+        reference as the center of mass. Moment coefficients are assumed to be about
+        this position.
+    ``S_A``:
+        the reference area
+    ``a_l, b_l, c_l``:
+        reference lengths for roll, pitch, and yaw
+    ``d_l``
+        reference length for Reynolds number calculation
+
+    Damping coefficients are transformed with the static moment coefficients, which does
+    not usually hold; to model damping coefficients, it is recommended to set the center
+    of mass and moment reference center to the same location at the arbitrary reference
+    (i.e. (0, 0, 0)).
 
     Additional, controlled input can be modeled:
-        Non-aerodynamic controlled inputs (e.g., propulsion): `input_force_moment` and `input_force_moment_idx`
-        Controlled aerodynamics: `input_aero_coeffs` and `input_aero_coeffs_idx`.
 
+    ``input_force_moment, input_force_moment_idx``:
+        Non-aerodynamic controlled inputs (e.g. propulsion)
+    ``input_aero_coeffs, input_aero_coeffs_idx``:
+        Controlled aerodynamics
 
-    Processing of ``input_aero_coeffs`` and ``input_force_moment`` parameterized models follow the same logic:
-        if ``None``: assume that a child class will over-write
-        if callable: use directly (so it should have the correct signature)
-            The input_aero_coeffs callback is assumed to take the flight condition arguments of the aerodynamics model, before any
-            additional routed control inputs, and return aerodynamic coefficient increments.
+    Processing of ``input_aero_coeffs`` and ``input_force_moment`` parameterized models
+    follow the same logic:
 
-            The input_force_moment callback takes only routed control inputs and returns the translational forces and moments
-            (about the center of mass) being modeled, such as for a propulsion model.
-        else: try to build a function that returns constant value(s)
+    - if ``None``: assume that a child class will over-write
+    - if callable: use directly (so it should have the correct signature)
+        - The ``input_aero_coeffs`` callback is assumed to take the flight condition
+          arguments of the aerodynamics model, before any additional routed control
+          inputs, and return aerodynamic coefficient increments.
 
-    Attributes ``input_aero_coeffs_idx`` and ``input_force_moment_idx`` are used to route extra (control) inputs to the input aero and foce/moment
-    functions respectively. Use ``None`` to route all inputs, use a list of integers to route particular inputs including an empty list
-    for no routing. `dim_additional_input` as an input argument to __init__ is used to allocate extra control input channels in the block diagram.
+        - The ``input_force_moment`` callback takes only routed control inputs and
+          returns the translational forces and moments (about the center of mass) being
+          modeled, such as for a propulsion model.
+    - else: try to build a function that returns constant value(s)
 
+    Attributes ``input_aero_coeffs_idx`` and ``input_force_moment_idx`` are used to
+    route extra (control) inputs to the input aero and foce/moment functions
+    respectively. Use ``None`` to route all inputs or use a list of integers to route
+    particular inputs including an empty list for no routing. ``dim_additional_input``
+    as an input argument to ``__init__`` is used to allocate extra control input
+    channels in the block diagram.
 
-    The input components are:
-        [0:13] p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_y, v_z, omega_X, omega_Y, omega_Z
+    The **input** components are:
+
+    ``[0:13] p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_y, v_z, omega_X, omega_Y, omega_Z``
         The vehicle state components
-
-        [13:16] lamda_D, phi_D, h
-        translational position of the vehicle center of mass in the planet-fixed frame expressed in
-        planetodetic spherical position coordinates: longitude, latitude, and altitude
-
-        [16:19] psi, theta, phi
+    ``[13:16] lamda_D, phi_D, h``
+        translational position of the vehicle center of mass in the planet-fixed frame
+        expressed in planetodetic spherical position coordinates: longitude, latitude,
+        and altitude
+    ``[16:19] psi, theta, phi``
         Euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll
-
-        [19:22] rho, c_s, mu
-        density, speed of sound, and viscosity outputs of the atmosphere model as a function of time and position in planet-fixed frame
-
-        [22:25] V_T, alpha, beta
-        true air speed, angle of attack, and angle of sideslip used for aerodynamics (includes wind)
-
-        [25:28] p_B, q_B, r_B
-        angular velocity components of body relative to NED used for aerodynamic damping derivatives
-
-        [28:31] V_N, V_E, V_D
-        velocity of the vehicle center of mass in the planet-fixed frame expressed in NED frame
-
-        [31:34] W_N, W_E, W_D
+    ``[19:22] rho, c_s, mu``
+        density, speed of sound, and viscosity outputs of the atmosphere model as a
+        function of time and position in planet-fixed frame
+    ``[22:25] V_T, alpha, beta``
+        true air speed, angle of attack, and angle of sideslip used for aerodynamics
+        (includes wind)
+    ``[25:28] p_B, q_B, r_B``
+        angular velocity components of body relative to NED used for aerodynamic damping
+        derivatives
+    ``[28:31] V_N, V_E, V_D``
+        velocity of the vehicle center of mass in the planet-fixed frame expressed in
+        NED frame
+    ``[31:34] W_N, W_E, W_D``
         winds acting on the vehicle expressed in NED frame
 
-    The output components are:
-        [0:3] A_X, A_Y, A_Z
-        translational acceleration of vehicle center of mass due to non-gravitational forces in the inertial coordinate system 
-        expressed in body-fixed Forward-Right-Down (FRD) coordinates, computed assuming constant mass and total non-gravitational forces due to aerodynamics
-        (base model and extra aerodynamic coefficients input components) and the extra force input components.
-              
-        [3:6] alpha_X, alpha_Y, alpha_Z
-        angular acceleration of vehicle coordinate system in the inertial coordinate system expressed in body-fixed FRD coordinates, 
-        about the center of mass computed assuming constant inertia and total moments due to aerodynamics
-        (base model and extra aerodynamic coefficients input components) and the extra moment input components.
-    
+    The **output** components are:
+
+    ``[0:3] A_X, A_Y, A_Z``
+        translational acceleration of vehicle center of mass due to non-gravitational
+        forces in the inertial coordinate system expressed in body-fixed
+        Forward-Right-Down (FRD) coordinates, computed assuming constant mass and total
+        non-gravitational forces due to aerodynamics (base model and extra aerodynamic
+        coefficients input components) and the extra force input components.
+    ``[3:6] alpha_X, alpha_Y, alpha_Z``
+        angular acceleration of vehicle coordinate system in the inertial coordinate
+        system expressed in body-fixed FRD coordinates, about the center of mass
+        computed assuming constant inertia and total moments due to aerodynamics (base
+        model and extra aerodynamic coefficients input components) and the extra moment
+        input components.
+
     Additional class attributes:
-        dim_state, dim_output, dim_input, num_events
-            Used for the SimuPy interface; must be updated for any sub-classes
-        
-        <variable_name>_idx
-            Provides a named index value for indexing the state or output data columns
-        
-        output_column_names
-            A list of strings of the output names, useful for constructing data structures
-        
-        output_column_names_latex
-            A list of strings of the LaTeX output names, useful for labeling plots
-    
+
+    ``dim_state, dim_output, dim_input, num_events``
+        Used for the SimuPy interface; must be updated for any sub-classes
+    ``<variable_name>_idx``
+        Provides a named index value for indexing the state or output data columns
+    ``output_column_names``
+        A list of strings of the output names, useful for constructing data structures
+    ``output_column_names_latex``
+        A list of strings of the LaTeX output names, useful for labeling plots
     """
     dim_state = 0
     dim_output = 6
@@ -663,7 +699,7 @@ class Vehicle(object):
 
     def prepare_to_integrate(self,  *args, **kwargs):
         """
-        SimuPy calls each Block's `prepare_to_integrate` function prior to simulation
+        SimuPy calls each Block's ``prepare_to_integrate`` function prior to simulation
         Returns the first output vector.
         """
         return self.output_equation_function(*args, **kwargs)
@@ -678,7 +714,7 @@ class Vehicle(object):
 
     def output_equation_function(self, t, u):
         """
-        Computes the dynamic outputs used for simulation.
+        Compute the dynamic outputs used for simulation.
         """
         uu = u[..., :Vehicle.dim_input]
         u_extra = u[..., Vehicle.dim_input:]
@@ -686,26 +722,23 @@ class Vehicle(object):
 
     def tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args):
         """
-        Helper function to compute the total aerodynamic forces and moments for a given flight
-        and vehicle condition.
+        Helper function to compute the total aerodynamic forces and moments for a given
+        flight and vehicle condition.
 
         Parameters
         ----------
         qbar
             dynamic pressure in Pascals
-        
         Mach
             Mach number (unitless)
-        
         Re
             Reynolds number (unitless)
-
         V_T, alpha, beta
-            true air speed, angle of attack, and angle of sideslip used for aerodynamics (includes wind)
-
+            true air speed, angle of attack, and angle of sideslip used for aerodynamics
+            (includes wind)
         p_B, q_B, r_B
-            angular velocity components of body relative to NED used for aerodynamic damping derivatives
-        
+            angular velocity components of body relative to NED used for aerodynamic
+            damping derivatives
         *args
             Captures any additional control inputs for the controlled aerodynamics model
         """
@@ -713,17 +746,16 @@ class Vehicle(object):
     
     def mrc_to_com_cpm(self):
         """
-        Constructs a skew symmetric matrix that can perform the right-sided 
-        cross product of the position vector from the moment reference center
-        to the center of mass, used for accounting for the translational force
-        contribution to the moment.
+        Construct a skew symmetric matrix that can perform the right-sided cross product
+        of the position vector from the moment reference center to the center of mass,
+        used for accounting for the translational force contribution to the moment.
         """
         return dynamics.mrc_to_com_cpm(self)
 
 def body_to_wind_dcm(alpha, beta):
     """
-    Constructs a direction cosine matrix (DCM) relating the body-fixed Forward-Right-Down (FRD)
-    coordinate system to the wind coordinate system. 
+    Construct a direction cosine matrix (DCM) relating the body-fixed Forward-Right-Down
+    (FRD) coordinate system to the wind coordinate system.
 
     Parameters
     ----------
