@@ -33,6 +33,7 @@ The ``Planet`` class provides the kinematic equations of motion used to drive th
 
 For more details, see the docstrings (via ``help(Vehicle)`` and ``help(Planet)`` respectively) and NESC Test Case examples.
 
+
 NESC Test Cases
 ---------------
 
@@ -45,6 +46,11 @@ To re-generate the regression data, pass the ``--write-regression-data`` flag::
     $ python nesc_test_cases/run_nesc_cases.py --write-regression-data
 
 Use ``-h`` or ``--help`` to see additional options that can be passed to the test case scripts.
+
+DaveML Parsing
+--------------
+
+The the American Institute of Aeronautics and Astronautics (AIAA) has developed a XML exchange format for aircraft simulation flight dynamics models called the `Dynamic Aerospace Vehicle Exchange Markup Language (DAVE-ML) <https://daveml.org/>`. The ``parse_daveml`` submodule implements a parser that can be used to generate python code from valid DaveML. To use it, call the ``ProcessDaveML`` with a filename to the DaveML file. A python file will be created in the working directory with the same base-name as the DaveML file (replacing the extension, if any, with ``.py``). This feature was used to generate the vehicle models for the NESC test cases.
 
 Installation
 ------------
