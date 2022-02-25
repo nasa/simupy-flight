@@ -1,9 +1,9 @@
 """
+===================================================
 Case 11: Subsonic F-16 trimmed flight across planet
 ===================================================
 
 ==============  ===============
--------------------------------
 Verifies        Atmosphere, air-data calculations
 Gravitation     J2
 Geodesy         WGS-84 rotating
@@ -26,9 +26,11 @@ from nesc_testcase_helper import plot_nesc_comparisons, int_opts, benchmark
 from nesc_testcase_helper import ft_per_m, kg_per_slug
 
 import F16_model
+import F16_model_01
 from F16_control import F16_control
 
 F16_vehicle = F16_model.F16_vehicle
+F16_vehicle = F16_model_01.F16()
 
 spec_ic_args = dict(
     phi_D = 36.01916667*np.pi/180,  # latitude
@@ -97,6 +99,7 @@ def get_controller_function(throttleTrim, longStkTrim, sasOn=False, apOn=False):
 def eval_trim(flight_condition, longStk, throttle):
     kin_out = planet.output_equation_function(0, flight_condition)
     controller_func = get_controller_function(throttleTrim=throttle, longStkTrim=longStk)
+    #print("Eval...", F16_vehicle, F16_vehicle.tot_aero_forces_moments, sep="\n")
     aero_plus_prop_acceleration = simupy_flight.dynamics.dynamics_output_function(F16_vehicle, 0, *kin_out, *controller_func(0, np.zeros(dim_feedback+4)))
 
     gen_accel = aero_plus_prop_acceleration
