@@ -23,7 +23,7 @@ setup(
     python_requires='>=3',
     install_requires=['numpy>=1.11.3', 'scipy>=0.18.1', 'simupy>=1.0.0', 'pyerfa', 'fluids'],
     extras_require={
-        'test': ['pandas', 'ndsplines', 'matplotlib']
+        'test': ['pandas', 'ndsplines', 'matplotlib'],
         'derivation': ['sympy==1.4', 'jupyter-lab'],
     },
 
