@@ -16,7 +16,7 @@ earth_mean_radius = 6371007.1809
 def get_nonflat_pc2pd(a, f):
     """
     Generate a planetocentric to planetodetic coordinate transformation function for an
-    ellipsoidal planetary model, parameterized by equitorial radius `a` and flattening `f`.
+    ellipsoidal planetary model, parameterized by equatorial radius `a` and flattening `f`.
     The transformation function takes in the planetocentric
     rectangular coordinates `px`, `py`, `pz` and returns the planetodetic `longitude`, `latitude`,
     and `altitude`. The units of `a`, `px`, `py`, `pz`, and `altitude` are all the same and
@@ -26,14 +26,14 @@ def get_nonflat_pc2pd(a, f):
     Parameters
     ----------
     a : float
-        equitorial radius
+        equatorial radius
     f : float
         flattening parameter
     
     Returns
     -------
     pcf2pd : callable
-        The planetocentric to planetodetic coordinate trnasformation function.
+        The planetocentric to planetodetic coordinate transformation function.
     """
     def pcf2pd(px, py, pz):
         return np.array(erfa.gc2gde(a, f, np.array([px, py, pz])))
@@ -45,12 +45,12 @@ def get_flat_pc2pd():
     flat planetary model.
     The transformation function takes in the planetocentric
     rectangular coordinates `px`, `py`, `pz` and returns a constant 0 for `longitude`, 
-    -pi/2 for `latitutde`, and uses `pz` for `altitude`.
+    -pi/2 for `latitude`, and uses `pz` for `altitude`.
  
     Returns
     -------
     pcf2pd : callable
-        The planetocentric to planetodetic coordinate trnasformation function.
+        The planetocentric to planetodetic coordinate transformation function.
     """
     def pcf2pd(px, py, pz):
         return np.array([0.0, -np.pi/2, pz])
@@ -59,7 +59,7 @@ def get_flat_pc2pd():
 def get_nonflat_pd2pc(a, f):
     """
     Generate a planetodetic to planetocentric coordinate transformation function for an
-    ellipsoidal planetary model, parameterized by equitorial radius`$a` and flattening `f`.
+    ellipsoidal planetary model, parameterized by equatorial radius`$a` and flattening `f`.
     The transformation function takes in the position defined by the planetodetic 
     `longitude`, `latitude`, and `altitude` and returns the planetocentric
     rectangular coordinates `px`, `py`, `pz`.
@@ -70,14 +70,14 @@ def get_nonflat_pd2pc(a, f):
     Parameters
     ----------
     a : float
-        equitorial radius
+        equatorial radius
     f : float
         flattening parameter
     
     Returns
     -------
     pcf2pd : callable
-        The planetodetic to planetocentric coordinate trnasformation function.
+        The planetodetic to planetocentric coordinate transformation function.
     """
     def pd2pcf(longitude, latitude, altitude):
         return np.array(erfa.gd2gce(a, f, longitude, latitude, altitude))
@@ -89,12 +89,12 @@ def get_flat_pd2pc():
     flat planetary model.
     The transformation function takes in the planetocentric
     rectangular coordinates px, py, pz and returns a constant 0 longitude, 
-    -90 degree latitutde, and uses pz for altitude.
+    -90 degree latitude, and uses pz for altitude.
     
     Returns
     -------
     pcf2pd : callable
-        The planetocentric to planetodetic coordinate trnasformation function.
+        The planetocentric to planetodetic coordinate transformation function.
     """
     def pd2pcf(longitude, latitude, altitude):
         return np.array([longitude, latitude, altitude])
@@ -110,7 +110,7 @@ class Planetodetic:
         Parameters
         ----------
         a : float
-            equitorial radius
+            equatorial radius
         f : float
             flattening parameter
         omega_p : float
@@ -133,7 +133,7 @@ class Planetodetic:
 def get_constant_atmosphere(density_val=0., speed_of_sound_val=1., viscocity_val=1.,):
     """
     Generate an atmosphere callback that returns a constant and specified density, speed of sound,
-    and viscocity regardless of the input time or planetodetic position
+    and viscosity regardless of the input time or planetodetic position
     """
     atmosphere_val = np.array([density_val, speed_of_sound_val, viscocity_val])
     def atmosphere_constant(t, longitude, latitude, altitude):
@@ -208,7 +208,7 @@ class Planet(object):
     ``gravity`` model: translational acceleration due to gravity as a function of planet-fixed position in rectangular coordinates.
     For 
 
-    ``atmosphere`` models: density, speed of sound, and viscocity outputs of the atmosphere model as a function of time (i.e.,
+    ``atmosphere`` models: density, speed of sound, and viscosity outputs of the atmosphere model as a function of time (i.e.,
     for stochasticity) and position in planet-fixed frame expressed in geodetic coordinates (longitude, latitude, altitude)
 
     ``winds`` model: wind in local NED frame as a function of time and planetodetic position. Positive wind indicates wind in specified
@@ -216,7 +216,7 @@ class Planet(object):
 
     ``planetodetic`` model, must provide rotation rate in rad/s as ``omega_p`` and functions ``pd2pcf`` and ``pcf2pd`` to
     convert between planetodetic rectangular coordinates and planetocentric spherical coordinates. Future versions may support
-    nutation and precession. The planetodetic model should assume pc2pd excludes sidereel rotation
+    nutation and precession. The planetodetic model should assume pc2pd excludes sidereal rotation
     which is accounted for by the kinematics model.
 
     The state components are:
@@ -234,7 +234,7 @@ class Planet(object):
 
     The input components are:
         [0:3] A_X, A_Y, A_Z
-        translational acceleration of vehicle center of mass due to non-gravitaitonal forces in the inertial coordinate system 
+        translational acceleration of vehicle center of mass due to non-gravitational forces in the inertial coordinate system 
         expressed in body-fixed Forward-Right-Down (FRD) coordinate system
               
         [3:6] alpha_X, alpha_Y, alpha_Z
@@ -253,10 +253,10 @@ class Planet(object):
         planetodetic spherical position coordinates: longitude, latitude, and altitude
 
         [16:19] psi, theta, phi
-        euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll
+        Euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll
 
         [19:22] rho, c_s, mu
-        density, speed of sound, and viscocity outputs of the atmosphere model as a function of time and position in planet-fixed frame
+        density, speed of sound, and viscosity outputs of the atmosphere model as a function of time and position in planet-fixed frame
 
         [22:25] V_T, alpha, beta
         true air speed, angle of attack, and angle of sideslip used for aerodynamics (includes wind)
@@ -361,13 +361,13 @@ class Planet(object):
 
     def state_equation_function(self, t, x, u):
         """
-        Computes the kinematic rates used for ismulation.
+        Computes the kinematic rates used for simulation.
         """
         return kinematics.kinematics_state_function(self, t, *x, *u)
     
     def output_equation_function(self, t, x):
         """
-        Computes the kinematic outputs used for ismulation.
+        Computes the kinematic outputs used for simulation.
         """
         return kinematics.kinematics_output_function(self, t, *x)
 
@@ -383,7 +383,7 @@ class Planet(object):
         V_N, V_E, V_D
             relative velocity expressed in the North, East, Down (NED) frame
         psi, theta, phi
-            euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll
+            Euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll
         p_B, q_B, r_B
             angular velocity components of vehicle-fixed coordinate system relative to NED frame
         """
@@ -409,7 +409,7 @@ class Planet(object):
             translational velocity (of vehicle center of mass) in the inertial coordinate system expressed in inertial coordinates
 
         A_X, A_Y, A_Z
-            translational acceleration of vehicle center of mass due to non-gravitaitonal forces in the inertial coordinate system 
+            translational acceleration of vehicle center of mass due to non-gravitational forces in the inertial coordinate system 
             expressed in body-fixed Forward-Right-Down (FRD) coordinate system
         
         """
@@ -418,13 +418,13 @@ class Planet(object):
     
     def inertial_to_NED_dcm(self, t, lamda_D, phi_D):
         """
-        Constructs a direction cosine matrix (DCM) relating the inerital coordinate system
+        Constructs a direction cosine matrix (DCM) relating the inertial coordinate system
         to the North-East-Down (NED) coordinate system
 
         Parameters
         ----------
         t
-            time, used to account for sidereel rotation
+            time, used to account for sidereal rotation
         lamda_D, phi_D
             planetodetic longitude and latitude
         """
@@ -432,7 +432,7 @@ class Planet(object):
 
 def inertial_to_body_dcm(q_0, q_1, q_2, q_3):
     """
-    Constructs a direction cosine matrix (DCM) relating the inerital coordinate system
+    Constructs a direction cosine matrix (DCM) relating the inertial coordinate system
     to the body-fixed Forward-Right-Down (FRD) coordinate system
 
     Parameters
@@ -444,13 +444,13 @@ def inertial_to_body_dcm(q_0, q_1, q_2, q_3):
 
 def body_to_NED_dcm(phi, theta, psi):
     """
-    Constructs a direction cosine matrix (DCM) relating the the body-fixed Forward-Right-Down (FRD)
+    Constructs a direction cosine matrix (DCM) relating the body-fixed Forward-Right-Down (FRD)
     coordinate system to the North-East-Down (NED) coordinate system
 
     Parameters
     ----------
     phi, theta, phi
-        euler-angles relating the NED frame to the body-fixed frame: roll, pitch, yaw
+        Euler-angles relating the NED frame to the body-fixed frame: roll, pitch, yaw
     """
     return kinematics.body_to_NED_dcm(phi, theta, psi)
     
@@ -518,10 +518,10 @@ class Vehicle(object):
         planetodetic spherical position coordinates: longitude, latitude, and altitude
 
         [16:19] psi, theta, phi
-        euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll
+        Euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll
 
         [19:22] rho, c_s, mu
-        density, speed of sound, and viscocity outputs of the atmosphere model as a function of time and position in planet-fixed frame
+        density, speed of sound, and viscosity outputs of the atmosphere model as a function of time and position in planet-fixed frame
 
         [22:25] V_T, alpha, beta
         true air speed, angle of attack, and angle of sideslip used for aerodynamics (includes wind)
@@ -537,7 +537,7 @@ class Vehicle(object):
 
     The output components are:
         [0:3] A_X, A_Y, A_Z
-        translational acceleration of vehicle center of mass due to non-gravitaitonal forces in the inertial coordinate system 
+        translational acceleration of vehicle center of mass due to non-gravitational forces in the inertial coordinate system 
         expressed in body-fixed Forward-Right-Down (FRD) coordinates, computed assuming constant mass and total non-gravitational forces due to aerodynamics
         (base model and extra aerodynamic coefficients input components) and the extra force input components.
               
@@ -678,7 +678,7 @@ class Vehicle(object):
 
     def output_equation_function(self, t, u):
         """
-        Computes the dynamic outputs used for ismulation.
+        Computes the dynamic outputs used for simulation.
         """
         uu = u[..., :Vehicle.dim_input]
         u_extra = u[..., Vehicle.dim_input:]
@@ -722,7 +722,7 @@ class Vehicle(object):
 
 def body_to_wind_dcm(alpha, beta):
     """
-    Constructs a direction cosine matrix (DCM) relating the the body-fixed Forward-Right-Down (FRD)
+    Constructs a direction cosine matrix (DCM) relating the body-fixed Forward-Right-Down (FRD)
     coordinate system to the wind coordinate system. 
 
     Parameters
