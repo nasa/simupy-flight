@@ -2,7 +2,7 @@ from .version import __version__
 import numpy as np
 import erfa
 import fluids.atmosphere
-from derivation import kinematics, dynamics
+from . import kinematics, dynamics
 
 earth_spherical_gravity_constant = 14076443110000000/(3.28084**3)
 earth_f = 1/298.257223563
@@ -723,7 +723,8 @@ class Vehicle(object):
     def tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args):
         """
         Helper function to compute the total aerodynamic forces and moments for a given
-        flight and vehicle condition.
+        flight  and vehicle condition. Used to evaluate the aerodynamic forces and
+        moments in calculating the dynamics output.
 
         Parameters
         ----------
