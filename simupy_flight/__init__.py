@@ -703,11 +703,7 @@ class Vehicle(object):
         Returns the first output vector.
         """
         return self.output_equation_function(*args, **kwargs)
-    
-    def _input_aero_coeffs(self, alpha, beta, Ma, Re, *args):
-        filtered_args = np.array(args)[self.input_aero_coeffs_idx]
-        return self.input_aero_coeffs(alpha, beta, Ma, Re, *filtered_args)
-    
+ 
     def _input_force_moment(self,t,p_x,p_y,p_z,q_0,q_1,q_2,q_3,v_x,v_y,v_z,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*args):
         filtered_args = np.array(args)[self.input_force_moment_idx]
         return self.input_force_moment(t,p_x,p_y,p_z,v_x,v_y,v_z,q_0,q_1,q_2,q_3,omega_X,omega_Y,omega_Z,lamda_D,phi_D,h_D,psi,theta,phi,rho,c_s,mu,V_T,alpha,beta,p_B,q_B,r_B,V_N,V_E,V_D,W_N,W_E,W_D,qbar,Ma,Re,*filtered_args)
@@ -719,6 +715,10 @@ class Vehicle(object):
         uu = u[..., :Vehicle.dim_input]
         u_extra = u[..., Vehicle.dim_input:]
         return dynamics.dynamics_output_function(self, t, *uu, *u_extra)
+
+    def _tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args):
+        filtered_args = np.array(args)[self.input_aero_coeffs_idx]
+        return self.tot_aero_forces_moments(qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *filtered_args)
 
     def tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, *args):
         """

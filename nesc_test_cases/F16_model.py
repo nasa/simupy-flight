@@ -3,9 +3,17 @@
 F16 Model
 ===========
 
+This model integrates the F16 aerodynamics, propulsion, and inertia models which were
+exchanged using the DaveML format. The corresponding modules were generated using the
+``ProcessDaveML`` sub-module and ``process_NESC_DaveML.py`` script.
 
+Since the aerodynamics model is based on a different interface than the simupy_flight's,
+the ``tot_aero_forces_moments`` method is over-written to handle the computation
+directly rather than using the simupy_flight framework. The control input routing is
+used for both the aerodynamic control surfaces and the propulsion model.
 
 """
+
 import F16_aero
 import F16_prop
 import F16_inertia
@@ -40,9 +48,13 @@ class F16(simupy_flight.Vehicle):
 
             input_force_moment = self.prop_model,
             dim_additional_input=4,
+            input_aero_coeffs_idx=slice(None,3),
+            #input_aero_coeffs_idx=[0,1,2],
+            input_force_moment_idx=[3],
         )
 
-    def tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, el, ail, rdr, *args):
+    def tot_aero_forces_moments(self, qbar, Ma, Re, V_T, alpha, beta, p_B, q_B, r_B, el,
+                                ail, rdr,):# *args):
         #print("hello")
         # el, ail, rdr = args[0][:-1]
         cbar, bspan, sref, cx, cy, cz, cl, cm, cn = F16_aero.F16_aero(V_T*ft_per_m, alpha*180/np.pi, beta*180/np.pi, p_B, q_B, r_B, el, ail, rdr)
