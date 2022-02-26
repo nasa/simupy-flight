@@ -13,36 +13,21 @@ import numpy as np
 import simupy_flight
 from nesc_testcase_helper import ft_per_m, kg_per_slug
 
-S_A = 300.0/(ft_per_m**2)
-b_l = 30./ft_per_m
-c_l = 11.32/ft_per_m
-a_l = b_l
 
 N_per_lbf = 4.44822
 
-Ixx = 9_496.0*kg_per_slug/(ft_per_m**2) #slug-ft2
-Iyy = 55_814.0*kg_per_slug/(ft_per_m**2) #slug-ft2
-Izz = 63_100.0*kg_per_slug/(ft_per_m**2) #slug-ft2
-Ixy = 0.0*kg_per_slug/(ft_per_m**2) #slug-ft2
-Iyz = 0.0*kg_per_slug/(ft_per_m**2) #slug-ft2
-Izx = 982.0*kg_per_slug/(ft_per_m**2) #slug-ft2
-m = 637.26*kg_per_slug #slug
-
-longitudinal_com_pos_percent = 25.
-x_com = 0.01*c_l*(35.-longitudinal_com_pos_percent)
-y_com = 0.
-z_com = 0.
-
-x_mrc = 0.
-y_mrc = 0.
-z_mrc = 0.
-
-# Ixx, Iyy, Izz, Ixy, Iyz, Izx, m, x_com, y_com, z_com = F16_inertia.F16_inertia(0.25)
-inertia_output = F16_inertia.F16_inertia(25)
-Ixx, Iyy, Izz, Izx, Ixy, Iyz = inertia_output[:6]*kg_per_slug/(ft_per_m**2)
+S_A = F16_aero.sref/(ft_per_m**2)
+b_l = F16_aero.bspan/ft_per_m
+c_l = F16_aero.cbar/ft_per_m
+a_l = b_l
 
 class F16(simupy_flight.Vehicle):
-    def __init__(self):
+    def __init__(self, CG_PCT_MAC=25):
+        inertia_output = F16_inertia.F16_inertia(CG_PCT_MAC)
+        Ixx, Iyy, Izz, Izx, Ixy, Iyz = inertia_output[:6]*kg_per_slug/(ft_per_m**2)
+        #m = inertia_output[6]*kg_per_slug
+        m = 637.26*kg_per_slug #slug
+        y_com, z_com, x_com = inertia_output[7:]/ft_per_m
         super().__init__(
             m=m,
             I_xx=Ixx, I_yy=Iyy, I_zz=Izz,
@@ -50,7 +35,7 @@ class F16(simupy_flight.Vehicle):
             x_com=x_com, y_com=y_com, z_com=z_com,
 
             base_aero_coeffs=0.,
-            x_mrc=x_mrc, y_mrc=y_mrc, z_mrc=z_mrc,
+            x_mrc=0., y_mrc=0., z_mrc=0.,
             S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=0.,
 
             input_force_moment = self.prop_model,
@@ -76,5 +61,4 @@ class F16(simupy_flight.Vehicle):
         Ma = args[simupy_flight.Vehicle.Ma_arg_idx]
         return F16_prop.F16_prop(throttle, alt, Ma)*N_per_lbf
 
-F16_vehicle = F16()
 

@@ -14,6 +14,8 @@ Notes           Initial position is 10,000 ft above KFFA airport on a 45 degree 
                 course. 335.15 KTAS. Stability augmentation off. Test of trim solution.
 ==============  ===============
 
+In this example, we first find the trim conditions for the F16 in sub-sonic flight, then
+perform a steady level sight.
 """
 
 from simupy.block_diagram import BlockDiagram
@@ -26,11 +28,9 @@ from nesc_testcase_helper import plot_nesc_comparisons, int_opts, benchmark
 from nesc_testcase_helper import ft_per_m, kg_per_slug
 
 import F16_model
-import F16_model_01
 from F16_control import F16_control
 
-F16_vehicle = F16_model.F16_vehicle
-F16_vehicle = F16_model_01.F16()
+F16_vehicle = F16_model.F16()
 
 spec_ic_args = dict(
     phi_D = 36.01916667*np.pi/180,  # latitude
