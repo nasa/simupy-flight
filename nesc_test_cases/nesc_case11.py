@@ -15,7 +15,8 @@ Notes           Initial position is 10,000 ft above KFFA airport on a 45 degree 
 ==============  ===============
 
 In this example, we first find the trim conditions for the F16 in sub-sonic flight, then
-perform a steady level sight.
+perform a steady level sight. To find trim, we use scipy's optimize module to minimize a
+trim residual.
 """
 
 from simupy.block_diagram import BlockDiagram
@@ -27,11 +28,16 @@ from scipy import optimize
 from nesc_testcase_helper import plot_nesc_comparisons, int_opts, benchmark
 from nesc_testcase_helper import ft_per_m, kg_per_slug
 
+# %%
+# The F16_model.F16 class composes the aerodynamic, propulsion, and inertia  models,
+# into a simupy_flight Vehicle
+
 import F16_model
 from F16_control import F16_control
-
 F16_vehicle = F16_model.F16()
 
+# %%
+# Create a dictionary of keyword arguments for the initial condition
 spec_ic_args = dict(
     phi_D = 36.01916667*np.pi/180,  # latitude
     lamda_D = -75.67444444*np.pi/180, # longitude
@@ -53,6 +59,9 @@ spec_ic_args = dict(
 
 knots_per_mps = 1.94384
 
+# %%
+# Configure the planet model
+
 planet = simupy_flight.Planet(
     gravity=simupy_flight.earth_J2_gravity,
     winds=simupy_flight.get_constant_winds(),
@@ -64,8 +73,12 @@ planet = simupy_flight.Planet(
     )
 )
 
+# %%
+# Air density at the surface is used for the equivalent air-speed calculation
 rho_0 = planet.atmosphere(0, 0, 0, 0)[0]
 
+# %%
+# Select the feedback channels used for the controller
 controller_feedback_indices = np.array([
     planet.h_D_idx, planet.V_T_idx, planet.alpha_idx, planet.beta_idx,
     planet.psi_idx, planet.theta_idx, planet.phi_idx,
@@ -74,7 +87,10 @@ controller_feedback_indices = np.array([
 
 dim_feedback = len(controller_feedback_indices)
 
-
+# %%
+# This is a function generator for the controller (auto-pilot). The generated function
+# uses the DaveML implementation of the controller, which has several configuration
+# options set by the generator. 
 def get_controller_function(throttleTrim, longStkTrim, sasOn=False, apOn=False):
     def controller_function(t, u):
         throttle, longStk, latStk, pedal = 0., 0., 0., 0. # pilot command
@@ -95,7 +111,8 @@ def get_controller_function(throttleTrim, longStkTrim, sasOn=False, apOn=False):
         return control_eart
     return controller_function
 
-
+# %%
+# This function computes the trim residual using the 
 def eval_trim(flight_condition, longStk, throttle):
     kin_out = planet.output_equation_function(0, flight_condition)
     controller_func = get_controller_function(throttleTrim=throttle, longStkTrim=longStk)

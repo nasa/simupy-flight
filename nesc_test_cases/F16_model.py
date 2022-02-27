@@ -56,10 +56,15 @@ class F16(simupy_flight.Vehicle):
             x_mrc=0., y_mrc=0., z_mrc=0.,
             S_A=S_A, a_l=a_l, b_l=b_l, c_l=c_l, d_l=0.,
 
+
+            # the input_force_moment callback is used for the propulsion model
             input_force_moment = self.prop_model,
+
+            # allocate control signals for the elevator, aileron, rudder, and throttle
             dim_additional_input=4,
+            # route the control surfaces to the aerodynamics model
             input_aero_coeffs_idx=slice(None,3),
-            #input_aero_coeffs_idx=[0,1,2],
+            # route the throttle to the propulsion model
             input_force_moment_idx=[3],
         )
 
