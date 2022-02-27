@@ -29,7 +29,7 @@ from nesc_testcase_helper import plot_nesc_comparisons, int_opts, benchmark
 from nesc_testcase_helper import ft_per_m, kg_per_slug
 
 # %%
-# The F16_model.F16 class composes the aerodynamic, propulsion, and inertia  models,
+# The F16_model.F16 class composes the aerodynamic, propulsion, and inertia  models
 # into a simupy_flight Vehicle
 
 import F16_model
@@ -38,6 +38,7 @@ F16_vehicle = F16_model.F16()
 
 # %%
 # Create a dictionary of keyword arguments for the initial condition
+
 spec_ic_args = dict(
     phi_D = 36.01916667*np.pi/180,  # latitude
     lamda_D = -75.67444444*np.pi/180, # longitude
@@ -75,10 +76,12 @@ earth = simupy_flight.Planet(
 
 # %%
 # Air density at the surface is used for the equivalent air-speed calculation
+
 rho_0 = earth.atmosphere(0, 0, 0, 0)[0]
 
 # %%
 # Select the feedback channels used for the controller
+
 controller_feedback_indices = np.array([
     earth.h_D_idx, earth.V_T_idx, earth.alpha_idx, earth.beta_idx,
     earth.psi_idx, earth.theta_idx, earth.phi_idx,
@@ -90,7 +93,8 @@ dim_feedback = len(controller_feedback_indices)
 # %%
 # This is a function generator for the controller (auto-pilot). The generated function
 # uses the DaveML implementation of the controller, which has several configuration
-# options set by the generator. 
+# options set by the generator.
+
 def get_controller_function(throttleTrim, longStkTrim, sasOn=False, apOn=False):
     def controller_function(t, u):
         throttle, longStk, latStk, pedal = 0., 0., 0., 0. # pilot command
@@ -112,20 +116,27 @@ def get_controller_function(throttleTrim, longStkTrim, sasOn=False, apOn=False):
     return controller_function
 
 # %%
-# This function computes the trim residual using the 
+# This function computes the trim residual using the
+# ``local_translational_trim_residual`` helper function, which calculates the
+# accelerations experienced by the vehicle for a given flight condition, longitudinal
+# stick position, and throttle value.
+
 def eval_trim(flight_condition, longStk, throttle):
     kin_out = earth.output_equation_function(0, flight_condition)
     controller_func = get_controller_function(throttleTrim=throttle, longStkTrim=longStk)
-    #print("Eval...", F16_vehicle, F16_vehicle.tot_aero_forces_moments, sep="\n")
     aero_plus_prop_acceleration = simupy_flight.dynamics.dynamics_output_function(F16_vehicle, 0, *kin_out, *controller_func(0, np.zeros(dim_feedback+4)))
 
     gen_accel = aero_plus_prop_acceleration
 
-    #gen_accel[:3] = simupy_flight.kinematics.local_translational_trim_residual(earth, *flight_condition[:-3], *aero_plus_prop_acceleration[:-3]).squeeze()
     gen_accel[:3] = earth.local_translational_trim_residual(*flight_condition[:-3], *aero_plus_prop_acceleration[:-3]).squeeze()
 
     return gen_accel
 
+# %%
+# This function uses optimize.minimize() to minimize the trim redisual. It uses the
+# throttle, longitudinal stick position, pitch angle, and optionally the roll
+# angle, as free variables to achieve trim. The euler angles are passed through the
+# flight condition variable.
 
 def run_trimmer(flight_ic_args, throttle_ic=0., longStk_ic=0., allow_roll=False):
     len_vars = 3 + allow_roll
@@ -178,15 +189,20 @@ def run_trimmer(flight_ic_args, throttle_ic=0., longStk_ic=0., allow_roll=False)
     print("accelerations:\n", eval_trim(opt_flight_condition, opt_longStk, opt_throttle).reshape((2,3)) )
     return opt_args, np.array([opt_throttle, opt_longStk])
 
+# %%
+# Run the trimmer to determine the initial condition for the simulation
 
 opt_args, opt_ctrl = run_trimmer(spec_ic_args, throttle_ic=0.0, longStk_ic=0.0, allow_roll=False)
 
 trimmed_flight_condition = earth.ic_from_planetodetic(**opt_args)
 
 trimmed_KEAS = earth.output_equation_function(0, trimmed_flight_condition)[earth.V_T_idx]*np.sqrt(earth.output_equation_function(0, trimmed_flight_condition)[earth.rho_idx]/rho_0) * knots_per_mps
-int_opts['nsteps'] = 5_000
 
 earth.initial_condition = trimmed_flight_condition
+
+# %%
+# Configure the controller using the trim settings. This requires additional blocks to
+# generate command signals at the trimmed value
 
 controller_block = systems.SystemFromCallable(get_controller_function(*opt_ctrl), dim_feedback + 4, 4)
 
@@ -195,6 +211,13 @@ keasCmdBlock = systems.SystemFromCallable(lambda *args: keasCmdOutput, 0, 1)
 
 altCmdOutput = np.array([spec_ic_args['h']*ft_per_m])
 altCmdBlock = systems.SystemFromCallable(lambda *args: altCmdOutput, 0, 1)
+
+baseChiCmdOutput = np.array([spec_ic_args['psi']*180/np.pi])
+baseChiCmdBlock = systems.SystemFromCallable(lambda *args: baseChiCmdOutput, 0, 1)
+
+# %%
+# This block  computes the rate of lateral offset error, which is integrated and used
+# by the auto-pilot to compute the heading to drive the offset to zero.
 
 def latOffsetStateEquation(t, x, u):
     chi_cmd, V_N, V_E = u
@@ -207,8 +230,10 @@ def latOffsetOutputEquation(t, x):
 
 latOffsetBlock = systems.DynamicalSystem(state_equation_function=latOffsetStateEquation, output_equation_function=latOffsetOutputEquation, dim_state=1, dim_input=3, dim_output=1)
 
-baseChiCmdOutput = np.array([spec_ic_args['psi']*180/np.pi])
-baseChiCmdBlock = systems.SystemFromCallable(lambda *args: baseChiCmdOutput, 0, 1)
+# %%
+# Build a block diagram of the planet kinematics block, the F16 vehicle block, the base
+# controller block, and the various command generating blocks and connect them
+# appropriately.
 
 BD = BlockDiagram(earth, F16_vehicle, controller_block, keasCmdBlock, altCmdBlock, latOffsetBlock, baseChiCmdBlock)
 BD.connect(earth, F16_vehicle, inputs=np.arange(earth.dim_output))
@@ -221,8 +246,14 @@ BD.connect(altCmdBlock, controller_block, inputs=[dim_feedback+1])
 BD.connect(latOffsetBlock, controller_block, inputs=[dim_feedback+2])
 BD.connect(baseChiCmdBlock, controller_block, inputs=[dim_feedback+3])
 
+# %%
+# Simulate and assess the results
+
+int_opts['nsteps'] = 5_000
 if __name__ == "__main__":
+
     with benchmark() as b:
         res = BD.simulate(180, integrator_options=int_opts)
 
     plot_nesc_comparisons(res, '11')
+
