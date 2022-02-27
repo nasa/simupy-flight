@@ -1,3 +1,20 @@
+"""
+============================================================
+Case 9: Sphere launched ballistically eastward along Equator
+============================================================
+
+==============  ===============
+Verifies        Translational EOM
+Gravitation     J2
+Geodesy         WGS-84 rotating
+Atmosphere      US 1976 STD
+Winds           still air
+Vehicle         Sphere with constant C_D
+Notes           Initial velocity is sqrt(2000) ft/s aligned 45 degrees from vertical,
+                heading east; zero angular rate relative to launch platform.
+==============  ===============
+"""
+
 from simupy.block_diagram import BlockDiagram
 import simupy_flight
 import numpy as np

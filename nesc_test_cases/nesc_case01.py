@@ -9,7 +9,7 @@ Gravitation     J2
 Geodesy         WGS-84 rotating
 Atmosphere      US 1976 STD
 Winds           still air
-Vehicle         Dragless spheree
+Vehicle         Dragless sphere
 Notes           Drag coefficient set to zero
 ==============  ===============
 """

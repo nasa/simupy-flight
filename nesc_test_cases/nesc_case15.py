@@ -1,3 +1,20 @@
+"""
+===================================================
+Case 15: Circular F-15 flight around North Pole
+===================================================
+
+==============  ===============
+Verifies        Propagation, geodetic transforms
+Gravitation     J2
+Geodesy         WGS-84 rotating
+Atmosphere      US 1976 STD
+Winds           still air
+Vehicle         F-16 with circumnavigating auto-pilot
+Notes           Initially straight & level and engage auto-pilot
+==============  ===============
+
+"""
+
 from simupy import systems
 from simupy.block_diagram import BlockDiagram
 import os

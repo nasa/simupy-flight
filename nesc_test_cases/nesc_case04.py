@@ -1,3 +1,18 @@
+"""
+===========================================================
+Case 4: Dropped sphere over non-rotating, spherical Earth
+===========================================================
+
+==============  ===============
+Verifies        Gravitation, integration
+Gravitation     1/R^2
+Geodesy         Round fixed
+Atmosphere      US 1976 STD
+Winds           still air
+Vehicle         Sphere with constant C_D
+==============  ===============
+"""
+
 from simupy.block_diagram import BlockDiagram
 import simupy_flight
 import numpy as np
