@@ -63,6 +63,8 @@ To re-generate the regression data, pass the ``--write-regression-data`` flag::
 
 Use ``-h`` or ``--help`` to see additional options that can be passed to the test case scripts.
 
+Every case is annotated with at least a basic description adapted from the NESC reports. Cases 1-3 have moderate annotations to highlight basic API usage and modeling approaches. Case 11, which deomonstrates the trimming and straight and level flight of an F-16 model, is thoroughly annotated to illustrate how this simulation framework can be used for a sophisticated simulation. The F-16 vehicle model itself is also thoroughly annotated because it highlightes how the Vehicle API can be adapted to alternate modeling approaches like the one used for the F16 model implementation provided by the NESC.
+
 DaveML Parsing
 --------------
 
