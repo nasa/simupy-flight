@@ -430,7 +430,7 @@ class Planet(object):
             non-gravitational forces in the inertial coordinate system expressed in
             body-fixed Forward-Right-Down (FRD) coordinate system
         """
-        return kinematics.local_translational_trim_residual(p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_y, v_z, A_X, A_Y, A_Z)
+        return kinematics.local_translational_trim_residual(self, p_x, p_y, p_z, q_0, q_1, q_2, q_3, v_x, v_y, v_z, A_X, A_Y, A_Z)
     
     def inertial_to_NED_dcm(self, t, lamda_D, phi_D):
         """

@@ -1,6 +1,6 @@
 """
 ===================================================
-Case 11: Subsonic F-16 trimmed flight across planet
+Case 11: Subsonic F-16 trimmed flight across earth
 ===================================================
 
 ==============  ===============
@@ -60,9 +60,9 @@ spec_ic_args = dict(
 knots_per_mps = 1.94384
 
 # %%
-# Configure the planet model
+# Configure the earth model
 
-planet = simupy_flight.Planet(
+earth = simupy_flight.Planet(
     gravity=simupy_flight.earth_J2_gravity,
     winds=simupy_flight.get_constant_winds(),
     atmosphere=simupy_flight.atmosphere_1976,
@@ -75,15 +75,15 @@ planet = simupy_flight.Planet(
 
 # %%
 # Air density at the surface is used for the equivalent air-speed calculation
-rho_0 = planet.atmosphere(0, 0, 0, 0)[0]
+rho_0 = earth.atmosphere(0, 0, 0, 0)[0]
 
 # %%
 # Select the feedback channels used for the controller
 controller_feedback_indices = np.array([
-    planet.h_D_idx, planet.V_T_idx, planet.alpha_idx, planet.beta_idx,
-    planet.psi_idx, planet.theta_idx, planet.phi_idx,
-    planet.p_B_idx, planet.q_B_idx, planet.r_B_idx,
-    planet.rho_idx])
+    earth.h_D_idx, earth.V_T_idx, earth.alpha_idx, earth.beta_idx,
+    earth.psi_idx, earth.theta_idx, earth.phi_idx,
+    earth.p_B_idx, earth.q_B_idx, earth.r_B_idx,
+    earth.rho_idx])
 
 dim_feedback = len(controller_feedback_indices)
 
@@ -114,14 +114,15 @@ def get_controller_function(throttleTrim, longStkTrim, sasOn=False, apOn=False):
 # %%
 # This function computes the trim residual using the 
 def eval_trim(flight_condition, longStk, throttle):
-    kin_out = planet.output_equation_function(0, flight_condition)
+    kin_out = earth.output_equation_function(0, flight_condition)
     controller_func = get_controller_function(throttleTrim=throttle, longStkTrim=longStk)
     #print("Eval...", F16_vehicle, F16_vehicle.tot_aero_forces_moments, sep="\n")
     aero_plus_prop_acceleration = simupy_flight.dynamics.dynamics_output_function(F16_vehicle, 0, *kin_out, *controller_func(0, np.zeros(dim_feedback+4)))
 
     gen_accel = aero_plus_prop_acceleration
 
-    gen_accel[:3] = simupy_flight.kinematics.local_translational_trim_residual(planet, *flight_condition[:-3], *aero_plus_prop_acceleration[:-3]).squeeze()
+    #gen_accel[:3] = simupy_flight.kinematics.local_translational_trim_residual(earth, *flight_condition[:-3], *aero_plus_prop_acceleration[:-3]).squeeze()
+    gen_accel[:3] = earth.local_translational_trim_residual(*flight_condition[:-3], *aero_plus_prop_acceleration[:-3]).squeeze()
 
     return gen_accel
 
@@ -163,7 +164,7 @@ def run_trimmer(flight_ic_args, throttle_ic=0., longStk_ic=0., allow_roll=False)
         theta, phi, longStk, throttle = parse_x(x)
         eval_args['theta'] = theta
         eval_args['phi'] = phi
-        flight_condition = planet.ic_from_planetodetic(**eval_args)
+        flight_condition = earth.ic_from_planetodetic(**eval_args)
         return np.linalg.norm(weighting_matrix@eval_trim(flight_condition, longStk, throttle), ord=2)
 
     opt_res = optimize.minimize(trim_opt_func, initial_guess, tol=1E-12, options={'disp': True, 'adaptive': True, 'fatol': 1E-12, 'maxiter': 20_000, 'xatol': 1E-12}, method='Nelder-Mead')
@@ -172,7 +173,7 @@ def run_trimmer(flight_ic_args, throttle_ic=0., longStk_ic=0., allow_roll=False)
     opt_args = flight_ic_args.copy()
     opt_args['theta'] = opt_theta
     opt_args['phi'] = opt_phi
-    opt_flight_condition = planet.ic_from_planetodetic(**opt_args)
+    opt_flight_condition = earth.ic_from_planetodetic(**opt_args)
     print("pitch: %.4e  roll: %.4e  longStk: %.4f  throttle: %.4f" % (opt_theta*180/np.pi, opt_phi*180/np.pi, opt_longStk*100, opt_throttle*100))
     print("accelerations:\n", eval_trim(opt_flight_condition, opt_longStk, opt_throttle).reshape((2,3)) )
     return opt_args, np.array([opt_throttle, opt_longStk])
@@ -180,12 +181,12 @@ def run_trimmer(flight_ic_args, throttle_ic=0., longStk_ic=0., allow_roll=False)
 
 opt_args, opt_ctrl = run_trimmer(spec_ic_args, throttle_ic=0.0, longStk_ic=0.0, allow_roll=False)
 
-trimmed_flight_condition = planet.ic_from_planetodetic(**opt_args)
+trimmed_flight_condition = earth.ic_from_planetodetic(**opt_args)
 
-trimmed_KEAS = planet.output_equation_function(0, trimmed_flight_condition)[planet.V_T_idx]*np.sqrt(planet.output_equation_function(0, trimmed_flight_condition)[planet.rho_idx]/rho_0) * knots_per_mps
+trimmed_KEAS = earth.output_equation_function(0, trimmed_flight_condition)[earth.V_T_idx]*np.sqrt(earth.output_equation_function(0, trimmed_flight_condition)[earth.rho_idx]/rho_0) * knots_per_mps
 int_opts['nsteps'] = 5_000
 
-planet.initial_condition = trimmed_flight_condition
+earth.initial_condition = trimmed_flight_condition
 
 controller_block = systems.SystemFromCallable(get_controller_function(*opt_ctrl), dim_feedback + 4, 4)
 
@@ -209,11 +210,11 @@ latOffsetBlock = systems.DynamicalSystem(state_equation_function=latOffsetStateE
 baseChiCmdOutput = np.array([spec_ic_args['psi']*180/np.pi])
 baseChiCmdBlock = systems.SystemFromCallable(lambda *args: baseChiCmdOutput, 0, 1)
 
-BD = BlockDiagram(planet, F16_vehicle, controller_block, keasCmdBlock, altCmdBlock, latOffsetBlock, baseChiCmdBlock)
-BD.connect(planet, F16_vehicle, inputs=np.arange(planet.dim_output))
-BD.connect(F16_vehicle, planet, inputs=np.arange(F16_vehicle.dim_output))
-BD.connect(controller_block, F16_vehicle, inputs=np.arange(planet.dim_output, planet.dim_output+4))
-BD.connect(planet, controller_block, outputs=controller_feedback_indices, inputs=np.arange(dim_feedback))
+BD = BlockDiagram(earth, F16_vehicle, controller_block, keasCmdBlock, altCmdBlock, latOffsetBlock, baseChiCmdBlock)
+BD.connect(earth, F16_vehicle, inputs=np.arange(earth.dim_output))
+BD.connect(F16_vehicle, earth, inputs=np.arange(F16_vehicle.dim_output))
+BD.connect(controller_block, F16_vehicle, inputs=np.arange(earth.dim_output, earth.dim_output+4))
+BD.connect(earth, controller_block, outputs=controller_feedback_indices, inputs=np.arange(dim_feedback))
 
 BD.connect(keasCmdBlock, controller_block, inputs=[dim_feedback+0])
 BD.connect(altCmdBlock, controller_block, inputs=[dim_feedback+1])
