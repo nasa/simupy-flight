@@ -82,7 +82,7 @@ def get_nonflat_pd2pc(a, f):
 
     Returns
     -------
-    pdf2pc : callable
+    pd2pcf : callable
         The planetodetic-to-planetocentric coordinate transformation function.
     """
     def pd2pcf(longitude, latitude, altitude):
@@ -100,7 +100,7 @@ def get_flat_pd2pc():
 
     Returns
     -------
-    pdf2pc : callable
+    pd2pcf : callable
         The planetocentric to planetodetic coordinate transformation function.
     """
     def pd2pcf(longitude, latitude, altitude):
