@@ -63,12 +63,12 @@ To re-generate the regression data, pass the ``--write-regression-data`` flag::
 
 Use ``-h`` or ``--help`` to see additional options that can be passed to the test case scripts.
 
-Every case is annotated with at least a basic description adapted from the NESC reports. Cases 1-3 have moderate annotations to highlight basic API usage and modeling approaches. Case 11, which deomonstrates the trimming and straight and level flight of an F-16 model, is thoroughly annotated to illustrate how this simulation framework can be used for a sophisticated simulation. The F-16 vehicle model itself is also thoroughly annotated because it highlightes how the Vehicle API can be adapted to alternate modeling approaches like the one used for the F16 model implementation provided by the NESC.
+Every case is annotated with at least a basic description adapted from the NESC reports. Cases 1-3 have moderate annotations to highlight basic API usage and modeling approaches. Case 11, which demonstrates the trimming and straight and level flight of an F-16 model, is thoroughly annotated to illustrate how this simulation framework can be used for a sophisticated simulation. The F-16 vehicle model itself is also thoroughly annotated because it highlights how the ``Vehicle`` API can be adapted to alternate modeling approaches like the one used for the F-16 model implementation provided by the NESC.
 
 DaveML Parsing
 --------------
 
-The the American Institute of Aeronautics and Astronautics (AIAA) has developed a XML exchange format for aircraft simulation flight dynamics models called the `Dynamic Aerospace Vehicle Exchange Markup Language (DAVE-ML) <https://daveml.org/>`_. The ``parse_daveml`` submodule implements a parser that can be used to generate python code from valid DaveML. To use it, call the ``ProcessDaveML`` with a filename to the DaveML file. A python file will be created in the working directory with the same base-name as the DaveML file (replacing the extension, if any, with ``.py``). This feature was used to generate the vehicle models for the NESC test cases using the ``nesc_test_cases/process_NESC_DaveML.py`` script.
+The American Institute of Aeronautics and Astronautics (AIAA) has developed a XML exchange format for aircraft simulation flight dynamics models called the `Dynamic Aerospace Vehicle Exchange Markup Language (DAVE-ML) <https://daveml.org/>`_. The ``parse_daveml`` submodule implements a parser that can be used to generate python code from valid DaveML. To use it, call the ``ProcessDaveML`` with a filename to the DaveML file. A python file will be created in the working directory with the same base-name as the DaveML file (replacing the extension, if any, with ``.py``). This feature was used to generate the vehicle models for the NESC test cases using the ``nesc_test_cases/process_NESC_DaveML.py`` script.
 
 Contributing
 ------------
