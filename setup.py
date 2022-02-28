@@ -19,16 +19,15 @@ setup(
     packages=find_packages(),
     author='Benjamin W. L. Margolis',
     author_email='benjamin.margolis@nasa.gov',
-    license="BSD 2-clause \"Simplified\" License",
+    license="NASA Open Source Agreement Version 1.3",
     python_requires='>=3',
     install_requires=['numpy>=1.11.3', 'scipy>=0.18.1', 'simupy>=1.0.0', 'pyerfa', 'fluids'],
     extras_require={
+        'test': ['pandas', 'ndsplines', 'matplotlib'],
         'derivation': ['sympy==1.4', 'jupyter-lab'],
-        'nesc': ['pandas', 'ndsplines', 'matplotlib']
     },
 
     classifiers=[
-        'License :: OSI Approved :: BSD License',
         'Programming Language :: Python :: 3',
         'Intended Audience :: Education',
         'Intended Audience :: Science/Research',

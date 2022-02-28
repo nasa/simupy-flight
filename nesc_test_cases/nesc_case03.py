@@ -1,3 +1,19 @@
+"""
+====================================================
+Case 3: Tumbling brick with dynamic damping, no drag
+====================================================
+
+==============  ===============
+Verifies        Inertial coupling [dynamic damping model]
+Gravitation     J2
+Geodesy         WGS-84 rotating
+Atmosphere      US 1976 STD
+Winds           still air
+Vehicle         Dragless rotating brick with aero damping
+Notes           Drag coefficient set to zero
+==============  ===============
+"""
+
 from simupy.block_diagram import BlockDiagram
 import simupy_flight
 import numpy as np
@@ -27,6 +43,9 @@ m = 0.155404754*kg_per_slug #slug
 x = 0.
 y = 0.
 z = 0.
+
+# %%
+# Configure the constant dynamic damping
 
 S_A = 0.22222/(ft_per_m**2)
 b_l = 1/(3*ft_per_m)

@@ -1,3 +1,18 @@
+"""
+=======================================================
+Case 8: Sphere dropped through a varying wind field
+=======================================================
+
+==============  ===============
+Verifies        2D winds / wind shear
+Gravitation     J2
+Geodesy         WGS-84 rotating
+Atmosphere      US 1976 STD
+Winds           wind varies linearly with altitude
+Vehicle         Sphere with constant C_D
+==============  ===============
+"""
+
 from simupy.block_diagram import BlockDiagram
 import simupy_flight
 import numpy as np

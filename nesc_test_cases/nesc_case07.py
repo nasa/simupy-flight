@@ -1,3 +1,18 @@
+"""
+=======================================================
+Case 7: Sphere dropped through a steady wind field
+=======================================================
+
+==============  ===============
+Verifies        Wind effects
+Gravitation     J2
+Geodesy         WGS-84 rotating
+Atmosphere      US 1976 STD
+Winds           steady 20 ft/s from due west
+Vehicle         Sphere with constant C_D
+==============  ===============
+"""
+
 from simupy.block_diagram import BlockDiagram
 import simupy_flight
 import numpy as np

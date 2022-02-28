@@ -1,3 +1,23 @@
+"""
+===================================================
+Case 13.3: Course change of a subsonic aircraft
+===================================================
+
+==============  ===============
+Verifies        Multidimensional table look-up
+Gravitation     J2
+Geodesy         WGS-84 rotating
+Atmosphere      US 1976 STD
+Winds           still air
+Vehicle         F-16 with simple auto-pilot
+Notes           Initially straight & level. t=15s, command 15 degree right heading change
+==============  ===============
+
+For the manuevering examples, the BlockDiagram from case 11 is modified to replace the
+controller with the auto-pilot configuration and generate the appropriate command
+signals.
+"""
+
 from simupy import systems
 import numpy as np
 from scipy import interpolate

@@ -1,3 +1,18 @@
+"""
+=======================================================
+Case 6: Dropped sphere over rotating, ellipsoidal Earth
+=======================================================
+
+==============  ===============
+Verifies        Ellipsoidal earth
+Gravitation     J2
+Geodesy         WGS-84 rotating
+Atmosphere      US 1976 STD
+Winds           still air
+Vehicle         Sphere with constant C_D
+==============  ===============
+"""
+
 from simupy.block_diagram import BlockDiagram
 import simupy_flight
 import numpy as np

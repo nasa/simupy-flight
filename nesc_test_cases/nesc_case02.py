@@ -1,3 +1,20 @@
+"""
+===================================================
+Case 2: Tumbling brick with no damping or drag
+===================================================
+
+==============  ===============
+Verifies        Rotational EOMs
+Gravitation     J2
+Geodesy         WGS-84 rotating
+Atmosphere      US 1976 STD
+Winds           still air
+Vehicle         Dragless rotating brick
+Notes           Damping and drag coefficients set to zero
+==============  ===============
+
+"""
+
 from simupy.block_diagram import BlockDiagram
 import simupy_flight
 import numpy as np
@@ -16,6 +33,8 @@ planet = simupy_flight.Planet(
     ),
 )
 
+# %%
+# The inertial forces due to rotation needed to be modeled with a vehicle
 Ixx = 0.001894220*kg_per_slug/(ft_per_m**2) #slug-ft2
 Iyy = 0.006211019*kg_per_slug/(ft_per_m**2) #slug-ft2
 Izz = 0.007194665*kg_per_slug/(ft_per_m**2) #slug-ft2
@@ -48,6 +67,7 @@ omega_Y_ic = 20.*np.pi/180
 omega_Z_ic = 30.*np.pi/180
 
 planet.initial_condition = planet.ic_from_planetodetic(long_ic, lat_ic, h_ic, V_N_ic, V_E_ic, V_D_ic, psi_ic, theta_ic, phi_ic)
+# The specification is for inertial angular rate, not relative
 planet.initial_condition[-3:] = omega_X_ic, omega_Y_ic, omega_Z_ic
 
 with benchmark() as b:

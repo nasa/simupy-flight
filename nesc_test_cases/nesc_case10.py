@@ -1,3 +1,20 @@
+"""
+=====================================================================
+Case 10: Sphere launched ballistically northward along Prime Meridian
+=====================================================================
+
+==============  ===============
+Verifies        Coriolis
+Gravitation     J2
+Geodesy         WGS-84 rotating
+Atmosphere      US 1976 STD
+Winds           still air
+Vehicle         Sphere with constant C_D
+Notes           Initial velocity is sqrt(2000) ft/s aligned 45 degrees from vertical,
+                heading north; zero angular rate relative to launch platform.
+==============  ===============
+"""
+
 from simupy.block_diagram import BlockDiagram
 import simupy_flight
 import numpy as np
