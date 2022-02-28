@@ -26,10 +26,10 @@ Vehicle flight simulation is an important part of the innovation of aerospace ve
 
 The NESC has identified and addressed the need to verify flight vehicle simulations through their work on the flight simulation test cases [@nesc1]. In that work, the NESC established flight vehicle simulation test cases to compare and validate a suite of simulation tools, several from within NASA and one external, open-source tool. Implementations of the NESC test cases via the SimuPy Flight Vehicle Toolkit's API help verify its correctness and demonstrate its effectiveness in succinctly constructing flight vehicle simulations.
 
+One author has used a precursor to this software package to simulate control system performance for a novel mechancially deployed hypersonic entry vehicle [@d2019developing; @margolis2019control; @margolis2019iac; @okolo2020scitech; @margolis2020fuzzy; @d2021scitech; @margolis2021scitech].
+
 # Description
 
 The SimuPy Flight Vehicle Toolkit leverages open source scientific computing tools to implement an efficient simulation framework for flight vehicles in Python. Equations of motion are composed in blocks using the SimuPy library [@simupy], an open source Python alternative to Simulink. The resulting differential equations are solved using SciPy's wrappers for standard Fortran implementations [@scipy]. Equations of motion for the inertial state of a rigid-body model of the vehicle representing the position, orientation, and their corresponding rates for integration are developed using the SymPy symbolic library [@sympy] and implemented using code generation. Kinematics equations are implemented through symbolic definition and code generation. Open-source scientific libraries are leveraged where possible, such as solving the inverse geodesy problem [@pyerfa] and implementing a standard atmosphere model [@fluids]. The library also provides a parser for the American Institute of Aeronautics and Astronautics's (AIAA) simulation description mark-up language standard [@daveml] using code generation. Aerodynamic data table interpolation is implemented using ndsplines [@ndsplines].
-
-One author has used a precursor to this software package to simulate control system performance for a novel mechancially deployed hypersonic entry vehicle [@d2019developing; @margolis2019control; @margolis2019iac; @okolo2020scitech; @margolis2020fuzzy; @d2021scitech; @margolis2021scitech].
 
 # References
