@@ -1,0 +1,3 @@
+[tool.black]
+line-length = 88
+extend-exclude = '(dynamics|kinematics|F16_aero|F16_control|F16_gnc|F16_inertia|F16_prop).py'
