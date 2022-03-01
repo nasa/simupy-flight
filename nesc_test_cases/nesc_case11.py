@@ -103,11 +103,38 @@ dim_feedback = len(controller_feedback_indices)
 # options set by the generator.
 
 
-def get_controller_function(throttleTrim, longStkTrim, sasOn=False, apOn=False):
-    def controller_function(t, u):
+class F16ControllerBlock:
+    num_events = 1
+    dim_state = 0
+    dim_output = 4
+    dim_input = 15
+
+    initial_condition = np.array([])
+
+    def __init__(self, throttleTrim, longStkTrim, sasOn=False, apOn=False, event_t=0.):
+        self.throttleTrim = throttleTrim
+        self.longStkTrim = longStkTrim
+        self.sasOn = sasOn
+        self.apOn = apOn
+        self.event_t = event_t
+
+    def update_equation_function(self, t, u, event_channels):
+        return self.__call__(t, u)
+
+    def prepare_to_integrate(self, t, u):
+        return self.__call__(t, u)
+
+    def event_equation_function(self, t, u):
+        return np.array([t - self.event_t])
+
+    def output_equation_function(self, t, u):
+        return self.__call__(t, u)
+
+    def __call__(self, t, u):
         throttle, longStk, latStk, pedal = 0.0, 0.0, 0.0, 0.0  # pilot command
 
         (
+            # feedback
             alt,
             V_T,
             alpha,
@@ -117,13 +144,15 @@ def get_controller_function(throttleTrim, longStkTrim, sasOn=False, apOn=False):
             phi,
             pb,
             qb,
-            rb,  # feedback
-            rho,  # rho to calculate equivalent airspeed
+            rb,
+            # rho to calculate equivalent airspeed
+            rho,
+            # commands
             keasCmd,
             altCmd,
             latOffset,
             baseChiCmd,
-        ) = u  # commands
+        ) = u
 
         Vequiv = V_T * np.sqrt(rho / rho_0)
         angles = np.array([alpha, beta, phi, theta, psi])
@@ -134,8 +163,8 @@ def get_controller_function(throttleTrim, longStkTrim, sasOn=False, apOn=False):
             longStk,
             latStk,
             pedal,
-            sasOn,
-            apOn,
+            self.sasOn,
+            self.apOn,
             keasCmd,
             altCmd,
             latOffset,
@@ -150,12 +179,10 @@ def get_controller_function(throttleTrim, longStkTrim, sasOn=False, apOn=False):
             pb,
             qb,
             rb,
-            throttleTrim,
-            longStkTrim,
+            self.throttleTrim,
+            self.longStkTrim,
         )
         return control_eart
-
-    return controller_function
 
 
 # %%
@@ -167,7 +194,7 @@ def get_controller_function(throttleTrim, longStkTrim, sasOn=False, apOn=False):
 
 def eval_trim(flight_condition, longStk, throttle):
     kin_out = earth.output_equation_function(0, flight_condition)
-    controller_func = get_controller_function(
+    controller_func = F16ControllerBlock(
         throttleTrim=throttle, longStkTrim=longStk
     )
     aero_plus_prop_acceleration = simupy_flight.dynamics.dynamics_output_function(
@@ -295,9 +322,7 @@ earth.initial_condition = trimmed_flight_condition
 # Configure the controller using the trim settings. This requires additional blocks to
 # generate command signals at the trimmed value
 
-controller_block = systems.SystemFromCallable(
-    get_controller_function(*opt_ctrl), dim_feedback + 4, 4
-)
+controller_block = F16ControllerBlock(*opt_ctrl)
 
 keasCmdOutput = np.array([trimmed_KEAS])
 keasCmdBlock = systems.SystemFromCallable(lambda *args: keasCmdOutput, 0, 1)

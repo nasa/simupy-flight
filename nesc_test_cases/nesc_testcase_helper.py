@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from simupy.block_diagram import DEFAULT_INTEGRATOR_OPTIONS
+from simupy.block_diagram import DEFAULT_INTEGRATOR_OPTIONS, SimulationResult
 from simupy.utils import isclose
 from scipy import interpolate
 from simupy_flight import Planet
@@ -270,15 +270,15 @@ def regression_test(res, case):
     fp = os.path.join(regression_data_path, f"case_{case}.npz")
 
     if nesc_options["write_regression_data"]:
-        np.savez(fp, t=res.t, x=res.x, y=res.y)
+        res.to_file(fp)
         print(f"Outputs saved to {os.path.basename(fp)}")
 
     else:
         if not os.path.exists(fp):
             print("No regression file found, skipping test")
             return
-        test_res = np.load(fp)
-        passed = np.all(isclose(res.t, res.y, test_res["t"], test_res["y"]))
+        test_res = SimulationResult.from_file(fp)
+        passed = np.all(isclose(test_res, res))
         result = "passed" if passed else "failed"
         print(f"Regression test {result.upper()}")
 
