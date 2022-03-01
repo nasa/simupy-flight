@@ -31,7 +31,7 @@ from nesc_case11 import (
     spec_ic_args,
     opt_ctrl,
     dim_feedback,
-    planet,
+    earth,
     baseChiCmdBlock,
     latOffsetStateEquation,
     latOffsetOutputEquation,
@@ -60,7 +60,7 @@ BD.systems[2] = systems.SystemFromCallable(
 )
 BD.connect(baseChiCmdBlock, latOffsetBlock, inputs=[0])
 BD.connect(
-    planet, latOffsetBlock, outputs=[planet.V_N_idx, planet.V_E_idx], inputs=[1, 2]
+    earth, latOffsetBlock, outputs=[earth.V_N_idx, earth.V_E_idx], inputs=[1, 2]
 )
 
 with benchmark() as b:

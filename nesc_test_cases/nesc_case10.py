@@ -93,8 +93,8 @@ BD.connect(planet, vehicle, inputs=np.arange(planet.dim_output))
 BD.connect(vehicle, planet, inputs=np.arange(vehicle.dim_output))
 
 planet.initial_condition = planet.ic_from_planetodetic(
-    lamda_E=long_ic,
-    phi_E=lat_ic,
+    lamda_D=long_ic,
+    phi_D=lat_ic,
     h=h_ic,
     V_N=V_N_ic,
     V_E=V_E_ic,

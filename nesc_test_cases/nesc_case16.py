@@ -32,28 +32,30 @@ from nesc_testcase_helper import (
 )
 from nesc_testcase_helper import ft_per_m
 
-from F16_model import F16_vehicle
+import F16_model
 from F16_gnc import F16_gnc, trimmedKEAS
+
+F16_vehicle = F16_model.F16()
 
 from nesc_case11 import (
     get_controller_function,
     BD,
-    planet,
+    earth,
     rho_0,
     eval_trim,
     run_trimmer,
     knots_per_mps,
 )
 from nesc_case15 import (
-    planet_output_for_gnc_select,
+    earth_output_for_gnc_select,
     dim_feedback,
     get_gnc_function,
     int_opts,
 )
 
 spec_ic_args = dict(
-    phi_E=0.0 * np.pi / 180,  # latitude
-    lamda_E=-179.95 * np.pi / 180,  # longitude
+    phi_D=0.0 * np.pi / 180,  # latitude
+    lamda_D=-179.95 * np.pi / 180,  # longitude
     h=10_000 / ft_per_m,
     V_N=563.643 / ft_per_m,
     V_E=0.0 / ft_per_m,
@@ -70,19 +72,19 @@ opt_args, opt_ctrl = run_trimmer(
     spec_ic_args, throttle_ic=0.0, longStk_ic=0.0, allow_roll=False
 )
 
-trimmed_flight_condition = planet.ic_from_planetodetic(**opt_args)
+trimmed_flight_condition = earth.ic_from_planetodetic(**opt_args)
 
 trimmed_KEAS = (
-    planet.output_equation_function(0, trimmed_flight_condition)[planet.V_T_idx]
+    earth.output_equation_function(0, trimmed_flight_condition)[earth.V_T_idx]
     * np.sqrt(
-        planet.output_equation_function(0, trimmed_flight_condition)[planet.rho_idx]
+        earth.output_equation_function(0, trimmed_flight_condition)[earth.rho_idx]
         / rho_0
     )
     * knots_per_mps
 )
 
 
-planet.initial_condition = trimmed_flight_condition
+earth.initial_condition = trimmed_flight_condition
 
 gnc_block = systems.SystemFromCallable(
     get_gnc_function(*opt_ctrl, keasCmd=trimmed_KEAS, circlePoleSW=False),
@@ -90,13 +92,13 @@ gnc_block = systems.SystemFromCallable(
     4,
 )
 
-BD = BlockDiagram(planet, F16_vehicle, gnc_block)
-BD.connect(planet, F16_vehicle, inputs=np.arange(planet.dim_output))
-BD.connect(F16_vehicle, planet, inputs=np.arange(F16_vehicle.dim_output))
+BD = BlockDiagram(earth, F16_vehicle, gnc_block)
+BD.connect(earth, F16_vehicle, inputs=np.arange(earth.dim_output))
+BD.connect(F16_vehicle, earth, inputs=np.arange(F16_vehicle.dim_output))
 BD.connect(
-    gnc_block, F16_vehicle, inputs=np.arange(planet.dim_output, planet.dim_output + 4)
+    gnc_block, F16_vehicle, inputs=np.arange(earth.dim_output, earth.dim_output + 4)
 )
-BD.connect(planet, gnc_block, outputs=planet_output_for_gnc_select)
+BD.connect(earth, gnc_block, outputs=earth_output_for_gnc_select)
 
 with benchmark() as b:
     res = BD.simulate(180, integrator_options=int_opts)
@@ -107,8 +109,8 @@ plot_F16_controls(res, "16", y_idx_offset=0)
 plt.subplots(constrained_layout=True)
 plt.axis("equal")
 
-sim_lat = res.y[:, planet.phi_D_idx] * 180 / np.pi
-sim_long = res.y[:, planet.lamda_D_idx] * 180 / np.pi
+sim_lat = res.y[:, earth.phi_D_idx] * 180 / np.pi
+sim_long = res.y[:, earth.lamda_D_idx] * 180 / np.pi
 
 baseline_pds, baseline_pd_labels = get_baselines("16")
 
