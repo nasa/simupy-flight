@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from simupy.block_diagram import DEFAULT_INTEGRATOR_OPTIONS, SimulationResult
 from simupy.utils import isclose
 from scipy import interpolate
-from simupy_flight import Planet
+from simupy_flight import Planet, Vehicle
 import glob
 import pandas as pd
 import argparse
@@ -278,7 +278,20 @@ def regression_test(res, case):
             print("No regression file found, skipping test")
             return
         test_res = SimulationResult.from_file(fp)
-        passed = np.all(isclose(test_res, res))
+        if case in ["13p1", "13p2"]:
+            atol = np.r_[[1E-5]*Planet.dim_output,
+                         [2.5E-3]*Vehicle.dim_output,
+                         [1E-2]*(res.y.shape[1]-Planet.dim_output-Vehicle.dim_output)]
+            p = 2
+        elif case in ["13p3", "13p4"]:
+            atol = np.r_[[5E-5]*Planet.dim_output,
+                         [0.25]*Vehicle.dim_output,
+                         [1E-1]*(res.y.shape[1]-Planet.dim_output-Vehicle.dim_output)]
+            p = 2
+        else:
+            atol = 1E-8
+            p = np.inf
+        passed = np.all(isclose(test_res, res, p=p, atol=atol, mode="pep485"))
         result = "passed" if passed else "failed"
         print(f"Regression test {result.upper()}")
 
