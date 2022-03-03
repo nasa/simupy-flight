@@ -411,6 +411,8 @@ def plot_F16_controls(simupy_res, plot_name="", y_idx_offset=-4):
     """ """
     save_relative_path = nesc_options["save_relative_path"]
     interactive_mode = nesc_options["interactive_mode"]
+    old_scale_opt = nesc_options["include_simupy_in_autoscale"]
+    nesc_options["include_simupy_in_autoscale"] = True
 
     abs_fig, delta_fig = plot_cols(
         simupy_res,
@@ -424,8 +426,12 @@ def plot_F16_controls(simupy_res, plot_name="", y_idx_offset=-4):
         ["elevator, deg", "aileron, deg", "rudder, deg", "throttle, %"],
     )
 
-    # for ax, lims in zip(abs_fig.axes, ((-26, 26), (-25, 25), (-31, 31),(-5, 105))):
-    #     ax.set_ylim(*lims)
+    if not old_scale_opt:
+
+        for ax, lims in zip(abs_fig.axes, ((-30, 30), (-26.5, 26.5), (-35, 35),(-5, 105))):
+            ax.set_ylim(*lims)
+
+    nesc_options["include_simupy_in_autoscale"] = old_scale_opt
 
     if not interactive_mode:
         abs_fig.set_size_inches(4, 6)
