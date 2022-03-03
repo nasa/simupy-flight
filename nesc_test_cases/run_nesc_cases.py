@@ -12,7 +12,8 @@ if not os.path.exists(savepath):
     os.makedirs(savepath)
 
 print("\n\n")
-cases_to_run = ["%02d" % num for num in range(1, 12)]
+cases_to_run = []
+cases_to_run += ["%02d" % num for num in range(1, 12)]
 cases_to_run += ["13p%01d" % num for num in range(1, 5)]
 cases_to_run += ["%02d" % num for num in range(15, 17)]
 
