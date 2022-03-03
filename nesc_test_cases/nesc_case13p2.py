@@ -24,7 +24,7 @@ from scipy import interpolate
 from nesc_testcase_helper import plot_nesc_comparisons, plot_F16_controls, benchmark
 from nesc_case11 import (
     int_opts,
-    get_controller_function,
+    F16ControllerBlock,
     BD,
     opt_ctrl,
     dim_feedback,
@@ -38,9 +38,7 @@ keasCmdBlock = systems.SystemFromCallable(
 )
 
 BD.systems[-4] = keasCmdBlock
-BD.systems[2] = systems.SystemFromCallable(
-    get_controller_function(*opt_ctrl, sasOn=True, apOn=True), dim_feedback + 4, 4
-)
+BD.systems[2] = F16ControllerBlock(*opt_ctrl, sasOn=True, apOn=True, event_t=5.)
 
 with benchmark() as b:
     res = BD.simulate(20, integrator_options=int_opts)
