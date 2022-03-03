@@ -38,7 +38,6 @@ from F16_gnc import F16_gnc, trimmedKEAS
 F16_vehicle = F16_model.F16()
 
 from nesc_case11 import (
-    get_controller_function,
     BD,
     earth,
     rho_0,
