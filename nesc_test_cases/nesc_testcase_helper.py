@@ -279,21 +279,34 @@ def regression_test(res, case):
             return
         test_res = SimulationResult.from_file(fp)
         if case in ["13p1", "13p2"]:
-            atol = np.r_[[1E-5]*Planet.dim_output,
-                         [2.5E-3]*Vehicle.dim_output,
-                         [1E-2]*(res.y.shape[1]-Planet.dim_output-Vehicle.dim_output)]
+            atol = np.r_[
+                [1e-5] * Planet.dim_output,
+                [2.5e-3] * Vehicle.dim_output,
+                [1e-2] * (res.y.shape[1] - Planet.dim_output - Vehicle.dim_output),
+            ]
             p = 2
         elif case in ["13p3", "13p4"]:
-            atol = np.r_[[5E-5]*Planet.dim_output,
-                         [0.25]*Vehicle.dim_output,
-                         [1E-1]*(res.y.shape[1]-Planet.dim_output-Vehicle.dim_output)]
+            atol = np.r_[
+                [5e-5] * Planet.dim_output,
+                [0.25] * Vehicle.dim_output,
+                [1e-1] * (res.y.shape[1] - Planet.dim_output - Vehicle.dim_output),
+            ]
             p = 2
         else:
-            atol = 1E-8
+            atol = 1e-8
             p = np.inf
-        passed = np.all(isclose(test_res, res, p=p, atol=atol, mode="pep485"))
+        matches = isclose(test_res, res, p=p, atol=atol, mode="pep485")
+        passed = np.all(matches)
         result = "passed" if passed else "failed"
         print(f"Regression test {result.upper()}")
+        if not passed:
+            for i, match in enumerate(matches):
+                if not match:
+                    print(f"col {i:02d} failed")
+            print("Writing output data for comparison")
+            fp = os.path.join(regression_data_path, f"case_{case}_fail.npz")
+            res.to_file(fp)
+
 
 
 def plot_nesc_comparisons(simupy_res, case, plot_name=""):
@@ -441,7 +454,9 @@ def plot_F16_controls(simupy_res, plot_name="", y_idx_offset=-4):
 
     if not old_scale_opt:
 
-        for ax, lims in zip(abs_fig.axes, ((-30, 30), (-26.5, 26.5), (-35, 35),(-5, 105))):
+        for ax, lims in zip(
+            abs_fig.axes, ((-30, 30), (-26.5, 26.5), (-35, 35), (-5, 105))
+        ):
             ax.set_ylim(*lims)
 
     nesc_options["include_simupy_in_autoscale"] = old_scale_opt
