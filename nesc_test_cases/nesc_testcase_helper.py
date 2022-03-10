@@ -272,41 +272,47 @@ def regression_test(res, case):
     if nesc_options["write_regression_data"]:
         res.to_file(fp)
         print(f"Outputs saved to {os.path.basename(fp)}")
+        return
 
+    if not os.path.exists(fp):
+        print("No regression file found, skipping test")
+        return
+
+    test_res = SimulationResult.from_file(fp)
+    cols = slice(None)
+    if case in ["13p1", "13p2"]:
+        atol = np.r_[
+            [1e-5] * Planet.dim_output,
+            [5e-3] * Vehicle.dim_output,
+        ]
+        p = 2
+        cols = slice(Planet.dim_output + Vehicle.dim_output)
+    elif case in ["13p3", "13p4"]:
+        atol = np.r_[
+            [5e-5] * Planet.dim_output,
+            [0.25] * Vehicle.dim_output,
+        ]
+        p = 2
+        cols = slice(Planet.dim_output + Vehicle.dim_output)
+    elif case in ["15", "16"]:
+        # skip automatic testing for cases 15 and 16
+        return
     else:
-        if not os.path.exists(fp):
-            print("No regression file found, skipping test")
-            return
-        test_res = SimulationResult.from_file(fp)
-        if case in ["13p1", "13p2"]:
-            atol = np.r_[
-                [1e-5] * Planet.dim_output,
-                [2.5e-3] * Vehicle.dim_output,
-                [1e-2] * (res.y.shape[1] - Planet.dim_output - Vehicle.dim_output),
-            ]
-            p = 2
-        elif case in ["13p3", "13p4"]:
-            atol = np.r_[
-                [5e-5] * Planet.dim_output,
-                [0.25] * Vehicle.dim_output,
-                [1e-1] * (res.y.shape[1] - Planet.dim_output - Vehicle.dim_output),
-            ]
-            p = 2
-        else:
-            atol = 1e-8
-            p = np.inf
-        matches = isclose(test_res, res, p=p, atol=atol, mode="pep485")
-        passed = np.all(matches)
-        result = "passed" if passed else "failed"
-        print(f"Regression test {result.upper()}")
-        if not passed:
-            for i, match in enumerate(matches):
-                if not match:
-                    print(f"col {i:02d} failed")
-            print("Writing output data for comparison")
-            fp = os.path.join(regression_data_path, f"case_{case}_fail.npz")
-            res.to_file(fp)
+        atol = 1e-8
+        p = np.inf
 
+    matches = isclose(test_res, res, cols=cols, p=p, atol=atol, mode="pep485")
+    passed = np.all(matches)
+    result = "passed" if passed else "failed"
+    print(f"Regression test {result.upper()}")
+
+    if not passed:
+        for i, match in enumerate(matches):
+            if not match:
+                print(f"col {i:02d} failed")
+        print("Writing output data for comparison")
+        fp = os.path.join(regression_data_path, f"case_{case}_fail.npz")
+        res.to_file(fp)
 
 
 def plot_nesc_comparisons(simupy_res, case, plot_name=""):
