@@ -12,12 +12,13 @@ if not os.path.exists(savepath):
     os.makedirs(savepath)
 
 print("\n\n")
-cases_to_run = ["%02d" % num for num in range(1, 12)]
+cases_to_run = []
+cases_to_run += ["%02d" % num for num in range(1, 12)]
 cases_to_run += ["13p%01d" % num for num in range(1, 5)]
 cases_to_run += ["%02d" % num for num in range(15, 17)]
 
 for case_id in cases_to_run:
-    print("case number:", case_id)
+    print("case number:", case_id, flush=True)
     call(["python", "nesc_case%s.py" % case_id] + sys.argv[1:])
 
-    print("\n\n")
+    print("\n\n", flush=True)

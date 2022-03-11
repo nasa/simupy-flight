@@ -34,7 +34,6 @@ from nesc_testcase_helper import ft_per_m
 
 from nesc_case11 import (
     int_opts,
-    get_controller_function,
     BD,
     earth,
     rho_0,

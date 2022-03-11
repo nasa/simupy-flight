@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from simupy.block_diagram import DEFAULT_INTEGRATOR_OPTIONS
+from simupy.block_diagram import DEFAULT_INTEGRATOR_OPTIONS, SimulationResult
 from simupy.utils import isclose
 from scipy import interpolate
-from simupy_flight import Planet
+from simupy_flight import Planet, Vehicle
 import glob
 import pandas as pd
 import argparse
@@ -270,17 +270,49 @@ def regression_test(res, case):
     fp = os.path.join(regression_data_path, f"case_{case}.npz")
 
     if nesc_options["write_regression_data"]:
-        np.savez(fp, t=res.t, x=res.x, y=res.y)
+        res.to_file(fp)
         print(f"Outputs saved to {os.path.basename(fp)}")
+        return
 
+    if not os.path.exists(fp):
+        print("No regression file found, skipping test")
+        return
+
+    test_res = SimulationResult.from_file(fp)
+    cols = slice(None)
+    if case in ["13p1", "13p2"]:
+        atol = np.r_[
+            [1e-5] * Planet.dim_output,
+            [5e-3] * Vehicle.dim_output,
+        ]
+        p = 2
+        cols = slice(Planet.dim_output + Vehicle.dim_output)
+    elif case in ["13p3", "13p4"]:
+        atol = np.r_[
+            [5e-5] * Planet.dim_output,
+            [0.25] * Vehicle.dim_output,
+        ]
+        p = 2
+        cols = slice(Planet.dim_output + Vehicle.dim_output)
+    elif case in ["15", "16"]:
+        # skip automatic testing for cases 15 and 16
+        return
     else:
-        if not os.path.exists(fp):
-            print("No regression file found, skipping test")
-            return
-        test_res = np.load(fp)
-        passed = np.all(isclose(res.t, res.y, test_res["t"], test_res["y"]))
-        result = "passed" if passed else "failed"
-        print(f"Regression test {result.upper()}")
+        atol = 1e-8
+        p = np.inf
+
+    matches = isclose(test_res, res, cols=cols, p=p, atol=atol, mode="pep485")
+    passed = np.all(matches)
+    result = "passed" if passed else "failed"
+    print(f"Regression test {result.upper()}")
+
+    if not passed:
+        for i, match in enumerate(matches):
+            if not match:
+                print(f"col {i:02d} failed")
+        print("Writing output data for comparison")
+        fp = os.path.join(regression_data_path, f"case_{case}_fail.npz")
+        res.to_file(fp)
 
 
 def plot_nesc_comparisons(simupy_res, case, plot_name=""):
@@ -411,6 +443,8 @@ def plot_F16_controls(simupy_res, plot_name="", y_idx_offset=-4):
     """ """
     save_relative_path = nesc_options["save_relative_path"]
     interactive_mode = nesc_options["interactive_mode"]
+    old_scale_opt = nesc_options["include_simupy_in_autoscale"]
+    nesc_options["include_simupy_in_autoscale"] = True
 
     abs_fig, delta_fig = plot_cols(
         simupy_res,
@@ -424,8 +458,14 @@ def plot_F16_controls(simupy_res, plot_name="", y_idx_offset=-4):
         ["elevator, deg", "aileron, deg", "rudder, deg", "throttle, %"],
     )
 
-    # for ax, lims in zip(abs_fig.axes, ((-26, 26), (-25, 25), (-31, 31),(-5, 105))):
-    #     ax.set_ylim(*lims)
+    if not old_scale_opt:
+
+        for ax, lims in zip(
+            abs_fig.axes, ((-30, 30), (-26.5, 26.5), (-35, 35), (-5, 105))
+        ):
+            ax.set_ylim(*lims)
+
+    nesc_options["include_simupy_in_autoscale"] = old_scale_opt
 
     if not interactive_mode:
         abs_fig.set_size_inches(4, 6)
