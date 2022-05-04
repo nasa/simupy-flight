@@ -9,9 +9,9 @@ Gravitation     J2
 Geodesy         WGS-84 rotating
 Atmosphere      US 1976 STD
 Winds           still air
-Vehicle         Sphere with constant C_D
-Notes           Initial velocity is sqrt(2000) ft/s aligned 45 degrees from vertical,
-                heading north; zero angular rate relative to launch platform.
+Vehicle         Sphere with constant :math:`C_D`
+Notes           Initial velocity is :math:`\\sqrt{2000}` ft/s aligned 45 degrees from
+                vertical, heading north; zero angular rate relative to launch platform.
 ==============  ===============
 """
 
@@ -111,5 +111,7 @@ planet.initial_condition[-2] = 0.0
 
 with benchmark() as b:
     res = BD.simulate(30, integrator_options=int_opts)
+
+# %%
 
 plot_nesc_comparisons(res, "10")

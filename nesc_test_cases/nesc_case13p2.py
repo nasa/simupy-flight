@@ -43,5 +43,7 @@ BD.systems[2] = F16ControllerBlock(*opt_ctrl, sasOn=True, apOn=True, event_t=5.)
 with benchmark() as b:
     res = BD.simulate(20, integrator_options=int_opts)
 
+# %%
+
 plot_nesc_comparisons(res, "13p2")
 plot_F16_controls(res, "13p2")

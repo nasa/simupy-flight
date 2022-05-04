@@ -9,7 +9,7 @@ Gravitation     J2
 Geodesy         WGS-84 rotating
 Atmosphere      US 1976 STD
 Winds           wind varies linearly with altitude
-Vehicle         Sphere with constant C_D
+Vehicle         Sphere with constant :math:`C_D`
 ==============  ===============
 """
 
@@ -107,5 +107,7 @@ planet.initial_condition[-3:] = omega_X_ic, omega_Y_ic, omega_Z_ic
 
 with benchmark() as b:
     res = BD.simulate(30, integrator_options=int_opts)
+
+# %%
 
 plot_nesc_comparisons(res, "08")

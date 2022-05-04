@@ -5,11 +5,11 @@ Case 5: Dropped sphere over rotating, spherical Earth
 
 ==============  ===============
 Verifies        Earth rotation
-Gravitation     1/R^2
+Gravitation     :math:`1/R^2`
 Geodesy         Round rotating
 Atmosphere      US 1976 STD
 Winds           still air
-Vehicle         Sphere with constant C_D
+Vehicle         Sphere with constant :math:`C_D`
 ==============  ===============
 """
 
@@ -93,5 +93,7 @@ planet.initial_condition[-3:] = omega_X_ic, omega_Y_ic, omega_Z_ic
 
 with benchmark() as b:
     res = BD.simulate(30, integrator_options=int_opts)
+
+# %%
 
 plot_nesc_comparisons(res, "05")

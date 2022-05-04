@@ -64,5 +64,7 @@ BD.connect(
 with benchmark() as b:
     res = BD.simulate(60, integrator_options=int_opts)
 
+# %%
+
 plot_nesc_comparisons(res, "13p4")
 plot_F16_controls(res, "13p4")
