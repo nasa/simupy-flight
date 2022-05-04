@@ -74,7 +74,7 @@ if not hasattr(sys, "ps1"):
     parser.add_argument(
         "--no-test",
         action="store_true",
-        help="show plots in interactive mode rather than saving to disk",
+        help="skip regression testing",
     )
 
     args = parser.parse_args()
