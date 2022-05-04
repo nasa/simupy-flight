@@ -4,6 +4,7 @@ plots/
 .venv*/
 tags
 _build/
+build/
 .ipynb_checkpoints/
 
 docs/nesc_test_cases/
