@@ -52,7 +52,7 @@ sphinx_gallery_conf = {
     "examples_dirs": os.path.join(os.path.dirname(__file__), "..", "nesc_test_cases"),
     "gallery_dirs": "nesc_test_cases",
     "filename_pattern": r"/nesc_case",
-    "ignore_pattern": r"(F16_)|(helper)|(process)|(run)",
+    "ignore_pattern": r"(F16_)|(nesc_testcase_helper)|(process_NESC)|(run_nesc).*\.py",
     "within_subsection_order": FileNameSortKey,
     "reset_argv": lambda gallery_conf, script_vars: ["--no-test"],
     "reference_url": {
