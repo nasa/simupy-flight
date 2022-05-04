@@ -30,4 +30,4 @@ jobs:
 
     - name: Run tests
       run: |
-        python nesc_test_cases/run_nesc_cases.py
+        python nesc_test_cases/nesc_case01.py
