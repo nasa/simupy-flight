@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SimuPy Flight API &mdash; SimuPy Flight  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="_static/sg_gallery-rendered-html.css" type="text/css" />
+      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Case 16: Circular F-15 flight around Equator/dateline intersection" href="nesc_test_cases/nesc_case16.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> SimuPy Flight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="nesc_test_cases/index.html">NESC Test Cases</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SimuPy Flight API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SimuPy Flight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>SimuPy Flight API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-simupy_flight">
+<span id="simupy-flight-api"></span><h1>SimuPy Flight API<a class="headerlink" href="#module-simupy_flight" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="simupy_flight.Planet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">Planet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gravity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">winds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atmosphere</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">planetodetics</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Planet" title="Permalink to this definition"></a></dt>
+<dd><p>The Planet is the state dynamics block that provides the kinematic equations of
+motion for integration and an output equation for commonly used variables for flight
+vehicles according to the planet model.</p>
+<p>The planet model is parameterized based on the following components:</p>
+<dl class="simple">
+<dt><cite>gravity</cite> model:</dt><dd><p>translational acceleration due to gravity as a function of planet-fixed position
+in rectangular coordinates. See <a class="reference internal" href="#simupy_flight.earth_J2_gravity" title="simupy_flight.earth_J2_gravity"><code class="xref py py-func docutils literal notranslate"><span class="pre">earth_J2_gravity()</span></code></a> for example.</p>
+</dd>
+<dt><cite>winds</cite> model:</dt><dd><p>wind in local NED frame as a function of time and planetodetic position.
+Positive wind indicates wind in specified direction so wind “from west” is a
+positive W_E component. See <a class="reference internal" href="#simupy_flight.get_constant_winds" title="simupy_flight.get_constant_winds"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_constant_winds()</span></code></a> for generating a simple
+wind model.</p>
+</dd>
+<dt><cite>atmosphere</cite> model:</dt><dd><p>density, speed of sound, and viscosity outputs of the atmosphere model as a
+function of time (i.e. for stochasticity) and position in planet-fixed frame
+expressed in geodetic coordinates (longitude, latitude, altitude). See
+<a class="reference internal" href="#simupy_flight.get_constant_atmosphere" title="simupy_flight.get_constant_atmosphere"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_constant_atmosphere()</span></code></a> for generating a simple atmosphere model and
+<a class="reference internal" href="#simupy_flight.atmosphere_1976" title="simupy_flight.atmosphere_1976"><code class="xref py py-func docutils literal notranslate"><span class="pre">atmosphere_1976()</span></code></a> for the US Standard 1976 Atmosphere.</p>
+</dd>
+<dt><cite>planetodetic</cite> model:</dt><dd><p>must provide rotation rate in rad/s as <code class="docutils literal notranslate"><span class="pre">omega_p</span></code> and functions <code class="docutils literal notranslate"><span class="pre">pd2pcf</span></code> and
+<code class="docutils literal notranslate"><span class="pre">pcf2pd</span></code> to convert between planetodetic rectangular coordinates and
+planetocentric spherical coordinates. Future versions may support nutation and
+precession. The planetodetic model should assume pc2pd excludes sidereal
+rotation which is accounted for by the kinematics model. See
+<a class="reference internal" href="#simupy_flight.Planetodetic" title="simupy_flight.Planetodetic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Planetodetic</span></code></a>.</p>
+</dd>
+</dl>
+<p>The <strong>state</strong> components are:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">[0:3]</span> <span class="pre">p_x,</span> <span class="pre">p_y,</span> <span class="pre">p_z</span></code></dt><dd><p>translational position (of vehicle center of mass) relative to inertial origin
+expressed in inertial coordinate system</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[3:7]</span> <span class="pre">q_0,</span> <span class="pre">q_1,</span> <span class="pre">q_2,</span> <span class="pre">q_3</span></code></dt><dd><p>quaternion components representing the rotation from the inertial to the
+body-fixed coordinate systems</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[7:10]</span> <span class="pre">v_x,</span> <span class="pre">v_y,</span> <span class="pre">v_z</span></code></dt><dd><p>translational velocity (of vehicle center of mass) in the inertial coordinate
+system expressed in inertial coordinates</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[10:13]</span> <span class="pre">omega_X,</span> <span class="pre">omega_Y,</span> <span class="pre">omega_Z</span></code></dt><dd><p>angular velocity from inertial coordinate system to body-fixed coordinate system
+expressed in body-fixed coordinates</p>
+</dd>
+</dl>
+<p>The <strong>input</strong> components are:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">[0:3]</span> <span class="pre">A_X,</span> <span class="pre">A_Y,</span> <span class="pre">A_Z</span></code></dt><dd><p>translational acceleration of vehicle center of mass due to non-gravitational
+forces in the inertial coordinate system expressed in body-fixed
+Forward-Right-Down (FRD) coordinate system</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[3:6]</span> <span class="pre">alpha_X,</span> <span class="pre">alpha_Y,</span> <span class="pre">alpha_Z</span></code></dt><dd><p>angular acceleration of vehicle coordinate system in the inertial coordinate
+system expressed in body-fixed FRD coordinates</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[6]</span> <span class="pre">c_q</span></code></dt><dd><p>scaling parameter for non-unit quaternion kinematics integration; this is a
+control for numerical behavior of the integration and can be ignored in most
+circumstances</p>
+</dd>
+</dl>
+<p>The <strong>output</strong> components are:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">[0:13]</span> <span class="pre">p_x,</span> <span class="pre">p_y,</span> <span class="pre">p_z,</span> <span class="pre">q_0,</span> <span class="pre">q_1,</span> <span class="pre">q_2,</span> <span class="pre">q_3,</span> <span class="pre">v_x,</span> <span class="pre">v_y,</span> <span class="pre">v_z,</span> <span class="pre">omega_X,</span> <span class="pre">omega_Y,</span> <span class="pre">omega_Z</span></code></dt><dd><p>The state components listed above</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[13:16]</span> <span class="pre">lamda_D,</span> <span class="pre">phi_D,</span> <span class="pre">h</span></code></dt><dd><p>translational position of the vehicle center of mass in the planet-fixed frame
+expressed in planetodetic spherical position coordinates: longitude, latitude,
+and altitude</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[16:19]</span> <span class="pre">psi,</span> <span class="pre">theta,</span> <span class="pre">phi</span></code></dt><dd><p>Euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[19:22]</span> <span class="pre">rho,</span> <span class="pre">c_s,</span> <span class="pre">mu</span></code></dt><dd><p>density, speed of sound, and viscosity outputs of the atmosphere model as a
+function of time and position in planet-fixed frame</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[22:25]</span> <span class="pre">V_T,</span> <span class="pre">alpha,</span> <span class="pre">beta</span></code></dt><dd><p>true air speed, angle of attack, and angle of sideslip used for aerodynamics
+(includes wind)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[25:28]</span> <span class="pre">p_B,</span> <span class="pre">q_B,</span> <span class="pre">r_B</span></code></dt><dd><p>angular velocity components of vehicle-fixed coordinate system relative to NED,
+used for aerodynamic damping derivatives</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[28:31]</span> <span class="pre">V_N,</span> <span class="pre">V_E,</span> <span class="pre">V_D</span></code></dt><dd><p>velocity of the vehicle center of mass in the planet-fixed frame expressed in
+NED frame</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[31:34]</span> <span class="pre">W_N,</span> <span class="pre">W_E,</span> <span class="pre">W_D</span></code></dt><dd><p>Output of wind model as a function of time and position in planet-fixed frame</p>
+</dd>
+</dl>
+<p>Additional class attributes:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">dim_state,</span> <span class="pre">dim_output,</span> <span class="pre">dim_input,</span> <span class="pre">num_events</span></code></dt><dd><p>Used for the SimuPy interface; must be updated for any sub-classes</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">&lt;variable_name&gt;_idx</span></code></dt><dd><p>Provides a named index value for indexing the state or output data columns</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">output_column_names</span></code></dt><dd><p>A list of strings of the output names, useful for constructing data structures</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">output_column_names_latex</span></code></dt><dd><p>A list of strings of the LaTeX output names, useful for labeling plots</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="simupy_flight.Planet.ic_from_planetodetic">
+<span class="sig-name descname"><span class="pre">ic_from_planetodetic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lamda_D</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi_D</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V_N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V_E</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V_D</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_B</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_B</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_B</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Planet.ic_from_planetodetic" title="Permalink to this definition"></a></dt>
+<dd><p>A helper function for defining the inertial initial conditions from planetodetic
+definitions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lamda_D</strong> – planetodetic longitude, latitude, and altitude</p></li>
+<li><p><strong>phi_D</strong> – planetodetic longitude, latitude, and altitude</p></li>
+<li><p><strong>h</strong> – planetodetic longitude, latitude, and altitude</p></li>
+<li><p><strong>V_N</strong> – relative velocity expressed in the North, East, Down (NED) frame</p></li>
+<li><p><strong>V_E</strong> – relative velocity expressed in the North, East, Down (NED) frame</p></li>
+<li><p><strong>V_D</strong> – relative velocity expressed in the North, East, Down (NED) frame</p></li>
+<li><p><strong>psi</strong> – Euler-angles relating the NED frame to the body-fixed frame: yaw, pitch,
+roll</p></li>
+<li><p><strong>theta</strong> – Euler-angles relating the NED frame to the body-fixed frame: yaw, pitch,
+roll</p></li>
+<li><p><strong>phi</strong> – Euler-angles relating the NED frame to the body-fixed frame: yaw, pitch,
+roll</p></li>
+<li><p><strong>p_B</strong> – angular velocity components of vehicle-fixed coordinate system relative to
+NED frame</p></li>
+<li><p><strong>q_B</strong> – angular velocity components of vehicle-fixed coordinate system relative to
+NED frame</p></li>
+<li><p><strong>r_B</strong> – angular velocity components of vehicle-fixed coordinate system relative to
+NED frame</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simupy_flight.Planet.inertial_to_NED_dcm">
+<span class="sig-name descname"><span class="pre">inertial_to_NED_dcm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lamda_D</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi_D</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Planet.inertial_to_NED_dcm" title="Permalink to this definition"></a></dt>
+<dd><p>Construct a direction cosine matrix (DCM) relating the inertial coordinate
+system to the North-East-Down (NED) coordinate system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> – time, used to account for sidereal rotation</p></li>
+<li><p><strong>lamda_D</strong> – planetodetic longitude and latitude</p></li>
+<li><p><strong>phi_D</strong> – planetodetic longitude and latitude</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simupy_flight.Planet.local_translational_trim_residual">
+<span class="sig-name descname"><span class="pre">local_translational_trim_residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_Y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_Z</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Planet.local_translational_trim_residual" title="Permalink to this definition"></a></dt>
+<dd><p>A helper function that computes the trim residual in the planet-fixed frame</p>
+<p>Use an optimizer to zero the output of this function to achieve trim. The first
+nine inputs, which are components of the state, might come from an initial
+condition calculation. It is assumed that the trim condition has no relative
+angular velocity. The last three inputs might come from the vehicle dynamics
+model. The control inputs of the vehicle dynamics model is a good candidate for
+the trim-optimizer’s free variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p_x</strong> – translational position (of vehicle center of mass) relative to inertial
+origin expressed in inertial coordinate system</p></li>
+<li><p><strong>p_y</strong> – translational position (of vehicle center of mass) relative to inertial
+origin expressed in inertial coordinate system</p></li>
+<li><p><strong>p_z</strong> – translational position (of vehicle center of mass) relative to inertial
+origin expressed in inertial coordinate system</p></li>
+<li><p><strong>q_0</strong> – quaternion components representing the rotation from the inertial to the
+body-fixed coordinate systems</p></li>
+<li><p><strong>q_1</strong> – quaternion components representing the rotation from the inertial to the
+body-fixed coordinate systems</p></li>
+<li><p><strong>q_2</strong> – quaternion components representing the rotation from the inertial to the
+body-fixed coordinate systems</p></li>
+<li><p><strong>q_3</strong> – quaternion components representing the rotation from the inertial to the
+body-fixed coordinate systems</p></li>
+<li><p><strong>v_x</strong> – translational velocity (of vehicle center of mass) in the inertial
+coordinate system expressed in inertial coordinates</p></li>
+<li><p><strong>v_y</strong> – translational velocity (of vehicle center of mass) in the inertial
+coordinate system expressed in inertial coordinates</p></li>
+<li><p><strong>v_z</strong> – translational velocity (of vehicle center of mass) in the inertial
+coordinate system expressed in inertial coordinates</p></li>
+<li><p><strong>A_X</strong> – translational acceleration of vehicle center of mass due to
+non-gravitational forces in the inertial coordinate system expressed in
+body-fixed Forward-Right-Down (FRD) coordinate system</p></li>
+<li><p><strong>A_Y</strong> – translational acceleration of vehicle center of mass due to
+non-gravitational forces in the inertial coordinate system expressed in
+body-fixed Forward-Right-Down (FRD) coordinate system</p></li>
+<li><p><strong>A_Z</strong> – translational acceleration of vehicle center of mass due to
+non-gravitational forces in the inertial coordinate system expressed in
+body-fixed Forward-Right-Down (FRD) coordinate system</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simupy_flight.Planet.output_equation_function">
+<span class="sig-name descname"><span class="pre">output_equation_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Planet.output_equation_function" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the kinematic outputs used for simulation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simupy_flight.Planet.prepare_to_integrate">
+<span class="sig-name descname"><span class="pre">prepare_to_integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Planet.prepare_to_integrate" title="Permalink to this definition"></a></dt>
+<dd><p>SimuPy calls each Block’s <code class="docutils literal notranslate"><span class="pre">prepare_to_integrate</span></code> function prior to simulation
+Returns the first output vector.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simupy_flight.Planet.state_equation_function">
+<span class="sig-name descname"><span class="pre">state_equation_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Planet.state_equation_function" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the kinematic rates used for simulation.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simupy_flight.Planetodetic">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">Planetodetic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega_p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Planetodetic" title="Permalink to this definition"></a></dt>
+<dd><p>Namespace class used to model the planetodetics used by the Planet class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>float</em>) – equatorial radius</p></li>
+<li><p><strong>f</strong> (<em>float</em>) – flattening parameter</p></li>
+<li><p><strong>omega_p</strong> (<em>float</em>) – Angular rate of planetary rotation</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Use <cite>a&lt;=0</cite> and <cite>omega_p=0</cite> for a flat planet model; <cite>f</cite> will be ignored</p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="simupy_flight.Vehicle">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">Vehicle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I_xx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I_yy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I_zz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I_xy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I_yz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I_xz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_aero_coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_mrc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_mrc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_mrc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S_A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_aero_coeffs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_force_moment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_aero_coeffs_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_force_moment_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_additional_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Vehicle" title="Permalink to this definition"></a></dt>
+<dd><p>The Vehicle is a state-less dynamics block that provides a common calculation for
+the dynamics of a flight vehicle.</p>
+<p>The Vehicle vehicle model is parameterized based on the following components:</p>
+<dl class="simple">
+<dt>Inertial properties: <code class="docutils literal notranslate"><span class="pre">m,</span> <span class="pre">I_xx,</span> <span class="pre">I_yy,</span> <span class="pre">I_zz,</span> <span class="pre">I_xy,</span> <span class="pre">I_yz,</span> <span class="pre">I_xz,</span> <span class="pre">x_com,</span> <span class="pre">y_com,</span> <span class="pre">z_com</span></code></dt><dd><p>Inertia is expressed in body-fixed coordinates about the center of mass
+position (<code class="docutils literal notranslate"><span class="pre">x_com,</span> <span class="pre">y_com,</span> <span class="pre">z_com</span></code>). Center of mass position is relative to an
+arbitrary reference, such as the CAD origin.</p>
+</dd>
+</dl>
+<p>Aerodynamics model:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">base_aero_coeffs</span></code>:</dt><dd><p>assumed to be a function of angles of attack and sideslip, and Mach and Reynolds
+number with signature <code class="docutils literal notranslate"><span class="pre">base_aero_coeffs(alpha,</span> <span class="pre">beta,</span> <span class="pre">Ma,</span> <span class="pre">Re)</span></code> and should
+return an array of coefficients in the following order: drag, sideforce, and
+lift (force coefficients expressed in wind coordinate system), static roll,
+pitch, and yaw moments (moment coefficients expressed in body-fixed
+Forward-Right-Down coordinate system), and dynamic or damping roll, pitch, and
+yaw moments (also moment coefficients expressed in body-fixed coordinate
+system). To translate an aerodynamic database that provides forces expressed in
+body-fixed coordinates, the transpose of the <code class="docutils literal notranslate"><span class="pre">dynamics.body_to_wind_dcm(alpha,</span>
+<span class="pre">beta)</span></code> direction cosine matrix can be used to transform into the wind
+coordinate system. See <a class="reference internal" href="#simupy_flight.get_constant_aero" title="simupy_flight.get_constant_aero"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_constant_aero()</span></code></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">x_mrc,</span> <span class="pre">y_mrc,</span> <span class="pre">z_mrc</span></code>:</dt><dd><p>Moment reference center position, defined relative to the same arbitrary
+reference as the center of mass. Moment coefficients are assumed to be about
+this position.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">S_A</span></code>:</dt><dd><p>the reference area</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">a_l,</span> <span class="pre">b_l,</span> <span class="pre">c_l</span></code>:</dt><dd><p>reference lengths for roll, pitch, and yaw</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">d_l</span></code></dt><dd><p>reference length for Reynolds number calculation</p>
+</dd>
+</dl>
+<p>Damping coefficients are transformed with the static moment coefficients, which does
+not usually hold; to model damping coefficients, it is recommended to set the center
+of mass and moment reference center to the same location at the arbitrary reference
+(i.e. (0, 0, 0)).</p>
+<p>Additional, controlled input can be modeled:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">input_force_moment,</span> <span class="pre">input_force_moment_idx</span></code>:</dt><dd><p>Non-aerodynamic controlled inputs (e.g. propulsion)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">input_aero_coeffs,</span> <span class="pre">input_aero_coeffs_idx</span></code>:</dt><dd><p>Controlled aerodynamics</p>
+</dd>
+</dl>
+<p>Processing of <code class="docutils literal notranslate"><span class="pre">input_aero_coeffs</span></code> and <code class="docutils literal notranslate"><span class="pre">input_force_moment</span></code> parameterized models
+follow the same logic:</p>
+<ul class="simple">
+<li><p>if <code class="docutils literal notranslate"><span class="pre">None</span></code>: assume that a child class will over-write</p></li>
+<li><dl class="simple">
+<dt>if callable: use directly (so it should have the correct signature)</dt><dd><ul>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">input_aero_coeffs</span></code> callback is assumed to take the flight condition
+arguments of the aerodynamics model, before any additional routed control
+inputs, and return aerodynamic coefficient increments.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">input_force_moment</span></code> callback takes only routed control inputs and
+returns the translational forces and moments (about the center of mass) being
+modeled, such as for a propulsion model.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>else: try to build a function that returns constant value(s)</p></li>
+</ul>
+<p>Attributes <code class="docutils literal notranslate"><span class="pre">input_aero_coeffs_idx</span></code> and <code class="docutils literal notranslate"><span class="pre">input_force_moment_idx</span></code> are used to
+route extra (control) inputs to the input aero and foce/moment functions
+respectively. Use <code class="docutils literal notranslate"><span class="pre">None</span></code> to route all inputs or use a list of integers to route
+particular inputs including an empty list for no routing. <code class="docutils literal notranslate"><span class="pre">dim_additional_input</span></code>
+as an input argument to <code class="docutils literal notranslate"><span class="pre">__init__</span></code> is used to allocate extra control input
+channels in the block diagram.</p>
+<p>The <strong>input</strong> components are:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">[0:13]</span> <span class="pre">p_x,</span> <span class="pre">p_y,</span> <span class="pre">p_z,</span> <span class="pre">q_0,</span> <span class="pre">q_1,</span> <span class="pre">q_2,</span> <span class="pre">q_3,</span> <span class="pre">v_x,</span> <span class="pre">v_y,</span> <span class="pre">v_z,</span> <span class="pre">omega_X,</span> <span class="pre">omega_Y,</span> <span class="pre">omega_Z</span></code></dt><dd><p>The vehicle state components</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[13:16]</span> <span class="pre">lamda_D,</span> <span class="pre">phi_D,</span> <span class="pre">h</span></code></dt><dd><p>translational position of the vehicle center of mass in the planet-fixed frame
+expressed in planetodetic spherical position coordinates: longitude, latitude,
+and altitude</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[16:19]</span> <span class="pre">psi,</span> <span class="pre">theta,</span> <span class="pre">phi</span></code></dt><dd><p>Euler-angles relating the NED frame to the body-fixed frame: yaw, pitch, roll</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[19:22]</span> <span class="pre">rho,</span> <span class="pre">c_s,</span> <span class="pre">mu</span></code></dt><dd><p>density, speed of sound, and viscosity outputs of the atmosphere model as a
+function of time and position in planet-fixed frame</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[22:25]</span> <span class="pre">V_T,</span> <span class="pre">alpha,</span> <span class="pre">beta</span></code></dt><dd><p>true air speed, angle of attack, and angle of sideslip used for aerodynamics
+(includes wind)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[25:28]</span> <span class="pre">p_B,</span> <span class="pre">q_B,</span> <span class="pre">r_B</span></code></dt><dd><p>angular velocity components of body relative to NED used for aerodynamic damping
+derivatives</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[28:31]</span> <span class="pre">V_N,</span> <span class="pre">V_E,</span> <span class="pre">V_D</span></code></dt><dd><p>velocity of the vehicle center of mass in the planet-fixed frame expressed in
+NED frame</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[31:34]</span> <span class="pre">W_N,</span> <span class="pre">W_E,</span> <span class="pre">W_D</span></code></dt><dd><p>winds acting on the vehicle expressed in NED frame</p>
+</dd>
+</dl>
+<p>The <strong>output</strong> components are:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">[0:3]</span> <span class="pre">A_X,</span> <span class="pre">A_Y,</span> <span class="pre">A_Z</span></code></dt><dd><p>translational acceleration of vehicle center of mass due to non-gravitational
+forces in the inertial coordinate system expressed in body-fixed
+Forward-Right-Down (FRD) coordinates, computed assuming constant mass and total
+non-gravitational forces due to aerodynamics (base model and extra aerodynamic
+coefficients input components) and the extra force input components.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">[3:6]</span> <span class="pre">alpha_X,</span> <span class="pre">alpha_Y,</span> <span class="pre">alpha_Z</span></code></dt><dd><p>angular acceleration of vehicle coordinate system in the inertial coordinate
+system expressed in body-fixed FRD coordinates, about the center of mass
+computed assuming constant inertia and total moments due to aerodynamics (base
+model and extra aerodynamic coefficients input components) and the extra moment
+input components.</p>
+</dd>
+</dl>
+<p>Additional class attributes:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">dim_state,</span> <span class="pre">dim_output,</span> <span class="pre">dim_input,</span> <span class="pre">num_events</span></code></dt><dd><p>Used for the SimuPy interface; must be updated for any sub-classes</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">&lt;variable_name&gt;_idx</span></code></dt><dd><p>Provides a named index value for indexing the state or output data columns</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">output_column_names</span></code></dt><dd><p>A list of strings of the output names, useful for constructing data structures</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">output_column_names_latex</span></code></dt><dd><p>A list of strings of the LaTeX output names, useful for labeling plots</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="simupy_flight.Vehicle.mrc_to_com_cpm">
+<span class="sig-name descname"><span class="pre">mrc_to_com_cpm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Vehicle.mrc_to_com_cpm" title="Permalink to this definition"></a></dt>
+<dd><p>Construct a skew symmetric matrix that can perform the right-sided cross product
+of the position vector from the moment reference center to the center of mass,
+used for accounting for the translational force contribution to the moment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simupy_flight.Vehicle.output_equation_function">
+<span class="sig-name descname"><span class="pre">output_equation_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Vehicle.output_equation_function" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the dynamic outputs used for simulation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simupy_flight.Vehicle.prepare_to_integrate">
+<span class="sig-name descname"><span class="pre">prepare_to_integrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Vehicle.prepare_to_integrate" title="Permalink to this definition"></a></dt>
+<dd><p>SimuPy calls each Block’s <code class="docutils literal notranslate"><span class="pre">prepare_to_integrate</span></code> function prior to simulation
+Returns the first output vector.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simupy_flight.Vehicle.tot_aero_forces_moments">
+<span class="sig-name descname"><span class="pre">tot_aero_forces_moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qbar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V_T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_B</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.Vehicle.tot_aero_forces_moments" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function to compute the total aerodynamic forces and moments for a given
+flight  and vehicle condition. Used to evaluate the aerodynamic forces and
+moments in calculating the dynamics output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qbar</strong> – dynamic pressure in Pascals</p></li>
+<li><p><strong>Mach</strong> – Mach number (unitless)</p></li>
+<li><p><strong>Re</strong> – Reynolds number (unitless)</p></li>
+<li><p><strong>V_T</strong> – true air speed, angle of attack, and angle of sideslip used for aerodynamics
+(includes wind)</p></li>
+<li><p><strong>alpha</strong> – true air speed, angle of attack, and angle of sideslip used for aerodynamics
+(includes wind)</p></li>
+<li><p><strong>beta</strong> – true air speed, angle of attack, and angle of sideslip used for aerodynamics
+(includes wind)</p></li>
+<li><p><strong>p_B</strong> – angular velocity components of body relative to NED used for aerodynamic
+damping derivatives</p></li>
+<li><p><strong>q_B</strong> – angular velocity components of body relative to NED used for aerodynamic
+damping derivatives</p></li>
+<li><p><strong>r_B</strong> – angular velocity components of body relative to NED used for aerodynamic
+damping derivatives</p></li>
+<li><p><strong>*args</strong> – Captures any additional control inputs for the controlled aerodynamics model</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.atmosphere_1976">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">atmosphere_1976</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">altitude</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.atmosphere_1976" title="Permalink to this definition"></a></dt>
+<dd><p>Atmospheric model callback for the US Standard 1976 Atmosphere.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.body_to_NED_dcm">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">body_to_NED_dcm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psi</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.body_to_NED_dcm" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a direction cosine matrix (DCM) relating the body-fixed
+Forward-Right-Down (FRD) coordinate system to the North-East-Down (NED) coordinate
+system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phi</strong> – Euler-angles relating the NED frame to the body-fixed frame: roll, pitch, yaw</p></li>
+<li><p><strong>theta</strong> – Euler-angles relating the NED frame to the body-fixed frame: roll, pitch, yaw</p></li>
+<li><p><strong>phi</strong> – Euler-angles relating the NED frame to the body-fixed frame: roll, pitch, yaw</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.body_to_wind_dcm">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">body_to_wind_dcm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.body_to_wind_dcm" title="Permalink to this definition"></a></dt>
+<dd><p>Construct a direction cosine matrix (DCM) relating the body-fixed Forward-Right-Down
+(FRD) coordinate system to the wind coordinate system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alpha</strong> – angle of attack</p></li>
+<li><p><strong>beta</strong> – angle of sideslip</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.earth_J2_gravity">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">earth_J2_gravity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">px</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">py</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pz</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.earth_J2_gravity" title="Permalink to this definition"></a></dt>
+<dd><p>Gravitational model callback for the J2 gravity model</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.get_constant_aero">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">get_constant_aero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">CD_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CS_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CL_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CLcal_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CMcal_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CNcal_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cp_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cq_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cr_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.get_constant_aero" title="Permalink to this definition"></a></dt>
+<dd><p>Generate an aerodynamics model callback that returns a constant and specified set of
+force, moment, and damping coefficients regardless of flight condition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.get_constant_atmosphere">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">get_constant_atmosphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">density_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed_of_sound_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viscocity_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.get_constant_atmosphere" title="Permalink to this definition"></a></dt>
+<dd><p>Generate an atmosphere callback that returns a constant and specified density, speed
+of sound, and viscosity regardless of the input time or planetodetic position</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.get_constant_force_moments">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">get_constant_force_moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">FX</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FY</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FZ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MX</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MY</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MZ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.get_constant_force_moments" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a force and moment callback that returns a constant and specified set of
+forces and moments regardless of flight condition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.get_constant_winds">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">get_constant_winds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.get_constant_winds" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a wind model callback that returns a constant, specified wind vector
+regardless of the input time or geodetic position</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.get_flat_pc2pd">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">get_flat_pc2pd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.get_flat_pc2pd" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a planetocentric-to-planetodetic coordinate transformation function for a
+flat planetary model.</p>
+<p>The transformation function takes in the planetocentric rectangular coordinates
+<cite>px</cite>, <cite>py</cite>, <cite>pz</cite> and returns a constant 0 for <cite>longitude</cite>, -pi/2 for <cite>latitude</cite>, and
+uses <cite>pz</cite> for <cite>altitude</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>pcf2pd</strong> – The planetocentric-to-planetodetic coordinate transformation function.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.get_flat_pd2pc">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">get_flat_pd2pc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.get_flat_pd2pc" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a planetodetic-to-planetocentric coordinate transformation function for a
+flat planetary model.</p>
+<p>The transformation function takes in the planetocentric rectangular coordinates
+<cite>px</cite>, <cite>py</cite>, <cite>pz</cite> and returns a constant 0 longitude, -90 degree latitude, and uses
+<cite>pz</cite> for altitude.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>pd2pcf</strong> – The planetocentric to planetodetic coordinate transformation function.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.get_nonflat_pc2pd">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">get_nonflat_pc2pd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.get_nonflat_pc2pd" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a planetocentric-to-planetodetic coordinate transformation function for an
+ellipsoidal planetary model, parameterized by equatorial radius <cite>a</cite> and flattening
+<cite>f</cite>.</p>
+<p>The transformation function takes in the planetocentric rectangular coordinates
+<cite>px</cite>, <cite>py</cite>, <cite>pz</cite> and returns the planetodetic <cite>longitude</cite>, <cite>latitude</cite>,
+and <cite>altitude</cite>. The units of <cite>a</cite>, <cite>px</cite>, <cite>py</cite>, <cite>pz</cite>, and <cite>altitude</cite> are all the same
+and assumed to be meters to be consistent with other kinematics.</p>
+<p>Uses the ERFA implementation of Fukushima’s method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>float</em>) – equatorial radius</p></li>
+<li><p><strong>f</strong> (<em>float</em>) – flattening parameter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pcf2pd</strong> – The planetocentric-to-planetodetic coordinate transformation function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.get_nonflat_pd2pc">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">get_nonflat_pd2pc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.get_nonflat_pd2pc" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a planetodetic-to-planetocentric coordinate transformation function for an
+ellipsoidal planetary model, parameterized by equatorial radius <cite>a</cite> and flattening
+<cite>f</cite>.</p>
+<p>The transformation function takes in the position defined by the planetodetic
+<cite>longitude</cite>, <cite>latitude</cite>, and <cite>altitude</cite> and returns the planetocentric rectangular
+coordinates <cite>px</cite>, <cite>py</cite>, <cite>pz</cite>.  The units of <cite>a</cite>, <cite>px</cite>, <cite>py</cite>, <cite>pz</cite>, and <cite>altitude</cite>
+are all the same and assumed to be meters to be consistent with other kinematics.</p>
+<p>Uses the ERFA implementation of Fukushima’s method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>float</em>) – equatorial radius</p></li>
+<li><p><strong>f</strong> (<em>float</em>) – flattening parameter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pd2pcf</strong> – The planetodetic-to-planetocentric coordinate transformation function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.get_spherical_gravity">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">get_spherical_gravity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gravitational_constant</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.get_spherical_gravity" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a spherical gravitational model with the specified gravitational constant</p>
+<p>units?</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simupy_flight.inertial_to_body_dcm">
+<span class="sig-prename descclassname"><span class="pre">simupy_flight.</span></span><span class="sig-name descname"><span class="pre">inertial_to_body_dcm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simupy_flight.inertial_to_body_dcm" title="Permalink to this definition"></a></dt>
+<dd><p>Construct a direction cosine matrix (DCM) relating the inertial coordinate system
+to the body-fixed Forward-Right-Down (FRD) coordinate system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q_0</strong> – quaternion components defining the DCM</p></li>
+<li><p><strong>q_1</strong> – quaternion components defining the DCM</p></li>
+<li><p><strong>q_2</strong> – quaternion components defining the DCM</p></li>
+<li><p><strong>q_3</strong> – quaternion components defining the DCM</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nesc_test_cases/nesc_case16.html" class="btn btn-neutral float-left" title="Case 16: Circular F-15 flight around Equator/dateline intersection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Benjamin W. L. Margolis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

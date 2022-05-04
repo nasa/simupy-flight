@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case 15: Circular F-15 flight around North Pole &mdash; SimuPy Flight  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Case 16: Circular F-15 flight around Equator/dateline intersection" href="nesc_case16.html" />
+    <link rel="prev" title="Case 13.4: Lateral offset manuever of a subsonic aircraft" href="nesc_case13p4.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> SimuPy Flight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">NESC Test Cases</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="nesc_case01.html">Case 1: Dropped sphere with no drag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case02.html">Case 2: Tumbling brick with no damping or drag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case03.html">Case 3: Tumbling brick with dynamic damping, no drag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case04.html">Case 4: Dropped sphere over non-rotating, spherical Earth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case05.html">Case 5: Dropped sphere over rotating, spherical Earth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case06.html">Case 6: Dropped sphere over rotating, ellipsoidal Earth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case07.html">Case 7: Sphere dropped through a steady wind field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case08.html">Case 8: Sphere dropped through a varying wind field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case09.html">Case 9: Sphere launched ballistically eastward along Equator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case10.html">Case 10: Sphere launched ballistically northward along Prime Meridian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case11.html">Case 11: Subsonic F-16 trimmed flight across earth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case13p1.html">Case 13.1: Altitude change of a subsonic aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case13p2.html">Case 13.2: Velocity change of a subsonic aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case13p3.html">Case 13.3: Course change of a subsonic aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case13p4.html">Case 13.4: Lateral offset manuever of a subsonic aircraft</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Case 15: Circular F-15 flight around North Pole</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case16.html">Case 16: Circular F-15 flight around Equator/dateline intersection</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">SimuPy Flight API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SimuPy Flight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">NESC Test Cases</a> &raquo;</li>
+      <li>Case 15: Circular F-15 flight around North Pole</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/nesc_test_cases/nesc_case15.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-nesc-test-cases-nesc-case15-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="case-15-circular-f-15-flight-around-north-pole">
+<span id="sphx-glr-nesc-test-cases-nesc-case15-py"></span><h1>Case 15: Circular F-15 flight around North Pole<a class="headerlink" href="#case-15-circular-f-15-flight-around-north-pole" title="Permalink to this headline"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 77%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Verifies</p></td>
+<td><p>Propagation, geodetic transforms</p></td>
+</tr>
+<tr class="row-even"><td><p>Gravitation</p></td>
+<td><p>J2</p></td>
+</tr>
+<tr class="row-odd"><td><p>Geodesy</p></td>
+<td><p>WGS-84 rotating</p></td>
+</tr>
+<tr class="row-even"><td><p>Atmosphere</p></td>
+<td><p>US 1976 STD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Winds</p></td>
+<td><p>still air</p></td>
+</tr>
+<tr class="row-even"><td><p>Vehicle</p></td>
+<td><p>F-16 with circumnavigating auto-pilot</p></td>
+</tr>
+<tr class="row-odd"><td><p>Notes</p></td>
+<td><p>Initially straight &amp; level and engage auto-pilot</p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">simupy</span> <span class="kn">import</span> <span class="n">systems</span>
+<span class="kn">from</span> <span class="nn">simupy.block_diagram</span> <span class="kn">import</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class"><span class="n">BlockDiagram</span></a>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">interpolate</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">nesc_testcase_helper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_baselines</span><span class="p">,</span>
+    <span class="n">plot_nesc_comparisons</span><span class="p">,</span>
+    <span class="n">plot_F16_controls</span><span class="p">,</span>
+    <span class="n">nesc_options</span><span class="p">,</span>
+    <span class="n">nesc_colors</span><span class="p">,</span>
+    <span class="n">benchmark</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">nesc_testcase_helper</span> <span class="kn">import</span> <span class="n">ft_per_m</span>
+
+<span class="kn">from</span> <span class="nn">nesc_case11</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">int_opts</span><span class="p">,</span>
+    <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BD</span></a><span class="p">,</span>
+    <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="p">,</span>
+    <span class="n">rho_0</span><span class="p">,</span>
+    <span class="n">eval_trim</span><span class="p">,</span>
+    <span class="n">run_trimmer</span><span class="p">,</span>
+    <span class="n">knots_per_mps</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">F16_model</span>
+<span class="kn">from</span> <span class="nn">F16_gnc</span> <span class="kn">import</span> <span class="n">F16_gnc</span><span class="p">,</span> <span class="n">trimmedKEAS</span>
+
+<span class="n">F16_vehicle</span> <span class="o">=</span> <a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class"><span class="n">F16_model</span><span class="o">.</span><span class="n">F16</span></a><span class="p">()</span>
+
+<span class="n">spec_ic_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">phi_D</span><span class="o">=</span><span class="mf">89.95</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>  <span class="c1"># latitude</span>
+    <span class="n">lamda_D</span><span class="o">=-</span><span class="mi">45</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>  <span class="c1"># longitude</span>
+    <span class="n">h</span><span class="o">=</span><span class="mi">10_000</span> <span class="o">/</span> <span class="n">ft_per_m</span><span class="p">,</span>
+    <span class="n">V_N</span><span class="o">=</span><span class="mf">0.0</span> <span class="o">/</span> <span class="n">ft_per_m</span><span class="p">,</span>
+    <span class="n">V_E</span><span class="o">=</span><span class="mf">563.643</span> <span class="o">/</span> <span class="n">ft_per_m</span><span class="p">,</span>
+    <span class="n">V_D</span><span class="o">=</span><span class="mf">0.0</span> <span class="o">/</span> <span class="n">ft_per_m</span><span class="p">,</span>
+    <span class="n">psi</span><span class="o">=</span><span class="mf">90.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>
+    <span class="n">theta</span><span class="o">=</span><span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>
+    <span class="n">phi</span><span class="o">=</span><span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>
+    <span class="n">p_B</span><span class="o">=</span><span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>
+    <span class="n">q_B</span><span class="o">=</span><span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>
+    <span class="n">r_B</span><span class="o">=</span><span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">earth_output_for_gnc_select</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="p">[</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">phi_D_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">lamda_D_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">h_D_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">V_T_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">alpha_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">beta_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">psi_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">theta_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">phi_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">p_B_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">q_B_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">r_B_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">rho_idx</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+
+<span class="n">dim_feedback</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">earth_output_for_gnc_select</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_gnc_function</span><span class="p">(</span>
+    <span class="n">throttleTrim</span><span class="p">,</span>
+    <span class="n">longStkTrim</span><span class="p">,</span>
+    <span class="n">keasCmd</span><span class="o">=</span><span class="n">trimmedKEAS</span><span class="p">,</span>
+    <span class="n">altCmd</span><span class="o">=</span><span class="n">spec_ic_args</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">ft_per_m</span><span class="p">,</span>
+    <span class="n">sasOn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">apOn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">circlePoleSW</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">def</span> <span class="nf">gnc_function</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="n">throttle</span><span class="p">,</span> <span class="n">longStk</span><span class="p">,</span> <span class="n">latStk</span><span class="p">,</span> <span class="n">pedal</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>  <span class="c1"># pilot command</span>
+
+        <span class="p">(</span>
+            <span class="n">latitude</span><span class="p">,</span>
+            <span class="n">longitude</span><span class="p">,</span>
+            <span class="n">alt</span><span class="p">,</span>
+            <span class="n">V_T</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="p">,</span>
+            <span class="n">beta</span><span class="p">,</span>
+            <span class="n">psi</span><span class="p">,</span>
+            <span class="n">theta</span><span class="p">,</span>
+            <span class="n">phi</span><span class="p">,</span>
+            <span class="n">pb</span><span class="p">,</span>
+            <span class="n">qb</span><span class="p">,</span>
+            <span class="n">rb</span><span class="p">,</span>  <span class="c1"># feedback</span>
+            <span class="n">rho</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">u</span>  <span class="c1"># rho to calculate equivalent airspeed</span>
+
+        <span class="n">Vequiv</span> <span class="o">=</span> <span class="n">V_T</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rho</span> <span class="o">/</span> <span class="n">rho_0</span><span class="p">)</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">psi</span><span class="p">])</span>
+        <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">psi</span> <span class="o">=</span> <span class="n">angles</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="n">control_eart</span> <span class="o">=</span> <span class="n">F16_gnc</span><span class="p">(</span>
+            <span class="n">throttle</span><span class="p">,</span>
+            <span class="n">longStk</span><span class="p">,</span>
+            <span class="n">latStk</span><span class="p">,</span>
+            <span class="n">pedal</span><span class="p">,</span>
+            <span class="n">sasOn</span><span class="p">,</span>
+            <span class="n">apOn</span><span class="p">,</span>
+            <span class="n">circlePoleSW</span><span class="p">,</span>
+            <span class="n">latitude</span><span class="p">,</span>
+            <span class="n">longitude</span><span class="p">,</span>
+            <span class="n">keasCmd</span><span class="p">,</span>
+            <span class="n">altCmd</span><span class="p">,</span>
+            <span class="n">alt</span> <span class="o">*</span> <span class="n">ft_per_m</span><span class="p">,</span>
+            <span class="n">Vequiv</span> <span class="o">*</span> <span class="n">knots_per_mps</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="p">,</span>
+            <span class="n">beta</span><span class="p">,</span>
+            <span class="n">phi</span><span class="p">,</span>
+            <span class="n">theta</span><span class="p">,</span>
+            <span class="n">psi</span><span class="p">,</span>
+            <span class="n">pb</span><span class="p">,</span>
+            <span class="n">qb</span><span class="p">,</span>
+            <span class="n">rb</span><span class="p">,</span>
+            <span class="n">throttleTrim</span><span class="p">,</span>
+            <span class="n">longStkTrim</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">control_eart</span>
+
+    <span class="k">return</span> <span class="n">gnc_function</span>
+
+
+<span class="n">int_opts</span><span class="p">[</span><span class="s2">&quot;nsteps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100_000</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">opt_args</span><span class="p">,</span> <span class="n">opt_ctrl</span> <span class="o">=</span> <span class="n">run_trimmer</span><span class="p">(</span>
+        <span class="n">spec_ic_args</span><span class="p">,</span> <span class="n">throttle_ic</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">longStk_ic</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">allow_roll</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="n">trimmed_flight_condition</span> <span class="o">=</span> <a href="../api.html#simupy_flight.Planet.ic_from_planetodetic" title="simupy_flight.Planet.ic_from_planetodetic" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-method"><span class="n">earth</span><span class="o">.</span><span class="n">ic_from_planetodetic</span></a><span class="p">(</span><span class="o">**</span><span class="n">opt_args</span><span class="p">)</span>
+
+    <span class="n">trimmed_KEAS</span> <span class="o">=</span> <span class="p">(</span>
+        <a href="../api.html#simupy_flight.Planet.output_equation_function" title="simupy_flight.Planet.output_equation_function" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-method"><span class="n">earth</span><span class="o">.</span><span class="n">output_equation_function</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">trimmed_flight_condition</span><span class="p">)[</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">V_T_idx</span><span class="p">]</span>
+        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <a href="../api.html#simupy_flight.Planet.output_equation_function" title="simupy_flight.Planet.output_equation_function" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-method"><span class="n">earth</span><span class="o">.</span><span class="n">output_equation_function</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">trimmed_flight_condition</span><span class="p">)[</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">rho_idx</span><span class="p">]</span>
+            <span class="o">/</span> <span class="n">rho_0</span>
+        <span class="p">)</span>
+        <span class="o">*</span> <span class="n">knots_per_mps</span>
+    <span class="p">)</span>
+
+    <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">initial_condition</span> <span class="o">=</span> <span class="n">trimmed_flight_condition</span>
+
+    <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">gnc_block</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.SystemFromCallable" title="simupy.systems.SystemFromCallable" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-function"><span class="n">systems</span><span class="o">.</span><span class="n">SystemFromCallable</span></a><span class="p">(</span>
+        <span class="n">get_gnc_function</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">opt_ctrl</span><span class="p">,</span>
+            <span class="n">keasCmd</span><span class="o">=</span><span class="n">trimmed_KEAS</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">dim_feedback</span><span class="p">,</span>
+        <span class="mi">4</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BD</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class"><span class="n">BlockDiagram</span></a><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="p">,</span> <span class="n">F16_vehicle</span><span class="p">,</span> <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">gnc_block</span></a><span class="p">)</span>
+    <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="p">,</span> <span class="n">F16_vehicle</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">dim_output</span><span class="p">))</span>
+    <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><span class="n">F16_vehicle</span><span class="p">,</span> <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">F16_vehicle</span><span class="o">.</span><span class="n">dim_output</span><span class="p">))</span>
+    <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span>
+        <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">gnc_block</span></a><span class="p">,</span>
+        <span class="n">F16_vehicle</span><span class="p">,</span>
+        <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">dim_output</span><span class="p">,</span> <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">dim_output</span> <span class="o">+</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="p">)</span>
+    <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="p">,</span> <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">gnc_block</span></a><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">earth_output_for_gnc_select</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">benchmark</span><span class="p">()</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
+        <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.simulate" title="simupy.block_diagram.BlockDiagram.simulate" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">simulate</span></a><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="n">integrator_options</span><span class="o">=</span><span class="n">int_opts</span><span class="p">)</span>
+
+    <span class="n">plot_nesc_comparisons</span><span class="p">(</span><a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a><span class="p">,</span> <span class="s2">&quot;15&quot;</span><span class="p">)</span>
+    <span class="n">plot_F16_controls</span><span class="p">(</span><a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a><span class="p">,</span> <span class="s2">&quot;15&quot;</span><span class="p">,</span> <span class="n">y_idx_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">xy_for_north_pole_ground_track</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">long</span><span class="p">):</span>
+        <span class="n">xx</span> <span class="o">=</span> <span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">lat</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">long</span><span class="p">)</span>
+        <span class="n">yy</span> <span class="o">=</span> <span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">lat</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">long</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+
+    <span class="n">sim_lat</span> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a><span class="o">.</span><span class="n">y</span><span class="p">[:,</span> <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">phi_D_idx</span><span class="p">]</span>
+    <span class="n">sim_long</span> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a><span class="o">.</span><span class="n">y</span><span class="p">[:,</span> <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">lamda_D_idx</span><span class="p">]</span>
+
+    <span class="c1"># refence_lats = np.array([90.0, 90-0.02, 90-0.04, 90-0.06])*np.pi/180</span>
+    <span class="n">refence_lats</span> <span class="o">=</span> <span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+    <span class="n">reference_longs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+    <span class="n">ref_steps</span> <span class="o">=</span> <span class="mi">100</span>
+
+    <span class="n">ref_lag_long_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">refence_lats</span><span class="p">)):</span>
+        <span class="n">ref_lag_long_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">refence_lats</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ref_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">ref_steps</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">reference_longs</span><span class="p">)):</span>
+        <span class="n">ref_lag_long_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">((</span><span class="mi">90</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span> <span class="n">reference_longs</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+        <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">lat</span><span class="p">,</span> <span class="n">long</span> <span class="ow">in</span> <span class="n">ref_lag_long_list</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">xy_for_north_pole_ground_track</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">long</span><span class="p">),</span> <span class="s2">&quot;k--&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+
+    <span class="n">baseline_pds</span><span class="p">,</span> <span class="n">baseline_pd_labels</span> <span class="o">=</span> <span class="n">get_baselines</span><span class="p">(</span><span class="s2">&quot;15&quot;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="o">*</span><span class="n">xy_for_north_pole_ground_track</span><span class="p">(</span><span class="n">sim_lat</span><span class="p">,</span> <span class="n">sim_long</span><span class="p">),</span>
+        <span class="s2">&quot;k-&quot;</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;SimuPy&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="o">*</span><span class="n">xy_for_north_pole_ground_track</span><span class="p">(</span><span class="n">sim_lat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sim_long</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="s2">&quot;o&quot;</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">markerfacecolor</span><span class="o">=</span><span class="s2">&quot;None&quot;</span><span class="p">,</span>
+        <span class="n">markeredgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="o">*</span><span class="n">xy_for_north_pole_ground_track</span><span class="p">(</span><span class="n">sim_lat</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sim_long</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="s2">&quot;x&quot;</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">markerfacecolor</span><span class="o">=</span><span class="s2">&quot;None&quot;</span><span class="p">,</span>
+        <span class="n">markeredgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">baseline_idx</span><span class="p">,</span> <span class="n">baseline_pd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">baseline_pds</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">xy_for_north_pole_ground_track</span><span class="p">(</span>
+                <span class="o">*</span><span class="p">(</span><span class="n">baseline_pd</span><span class="p">[[</span><span class="s2">&quot;latitude_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;longitude_deg&quot;</span><span class="p">]]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">T</span>
+            <span class="p">),</span>
+            <span class="n">nesc_colors</span><span class="p">[</span><span class="n">baseline_pd_labels</span><span class="p">[</span><span class="n">baseline_idx</span><span class="p">]],</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;NESC </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">baseline_pd_labels</span><span class="p">[</span><span class="n">baseline_idx</span><span class="p">]),</span>
+        <span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">xy_for_north_pole_ground_track</span><span class="p">(</span>
+                <span class="o">*</span><span class="p">(</span>
+                    <span class="n">baseline_pd</span><span class="p">[[</span><span class="s2">&quot;latitude_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;longitude_deg&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">T</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;o&quot;</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">markerfacecolor</span><span class="o">=</span><span class="s2">&quot;None&quot;</span><span class="p">,</span>
+            <span class="n">markeredgecolor</span><span class="o">=</span><span class="n">nesc_colors</span><span class="p">[</span><span class="n">baseline_pd_labels</span><span class="p">[</span><span class="n">baseline_idx</span><span class="p">]],</span>
+        <span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">xy_for_north_pole_ground_track</span><span class="p">(</span>
+                <span class="o">*</span><span class="p">(</span>
+                    <span class="n">baseline_pd</span><span class="p">[[</span><span class="s2">&quot;latitude_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;longitude_deg&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                    <span class="o">/</span> <span class="mi">180</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">T</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;x&quot;</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">markerfacecolor</span><span class="o">=</span><span class="s2">&quot;None&quot;</span><span class="p">,</span>
+            <span class="n">markeredgecolor</span><span class="o">=</span><span class="n">nesc_colors</span><span class="p">[</span><span class="n">baseline_pd_labels</span><span class="p">[</span><span class="n">baseline_idx</span><span class="p">]],</span>
+        <span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">nesc_options</span><span class="p">[</span><span class="s2">&quot;interactive_mode&quot;</span><span class="p">]:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nesc_options</span><span class="p">[</span><span class="s2">&quot;save_relative_path&quot;</span><span class="p">],</span> <span class="s2">&quot;15_groundtrack.pdf&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><img src="../_images/sphx_glr_nesc_case15_001.png" srcset="../_images/sphx_glr_nesc_case15_001.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case15_002.png" srcset="../_images/sphx_glr_nesc_case15_002.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case15_003.png" srcset="../_images/sphx_glr_nesc_case15_003.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case15_004.png" srcset="../_images/sphx_glr_nesc_case15_004.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case15_005.png" srcset="../_images/sphx_glr_nesc_case15_005.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case15_006.png" srcset="../_images/sphx_glr_nesc_case15_006.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case15_007.png" srcset="../_images/sphx_glr_nesc_case15_007.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case15_008.png" srcset="../_images/sphx_glr_nesc_case15_008.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case15_009.png" srcset="../_images/sphx_glr_nesc_case15_009.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case15_010.png" srcset="../_images/sphx_glr_nesc_case15_010.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case15_011.png" srcset="../_images/sphx_glr_nesc_case15_011.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case15_012.png" srcset="../_images/sphx_glr_nesc_case15_012.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
+</ul>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Optimization terminated successfully.
+         Current function value: 5.307430
+         Iterations: 260
+         Function evaluations: 539
+pitch: 2.6742e+00  roll: 0.0000e+00  longStk: 13.0082  throttle: 13.8357
+accelerations:
+ [[-5.30742973e+00 -3.13605581e-08 -5.16943720e-08]
+ [-6.38762633e-07  8.60861093e-08  5.56269331e-09]]
+time to simulate: 1155.274 s
+missing eiPosition_ft_X for SIM 02
+missing eiPosition_ft_Y for SIM 02
+missing eiPosition_ft_Z for SIM 02
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 19 minutes  28.360 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-nesc-test-cases-nesc-case15-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/7f73cb0d98c3fa6b180db509efa75a3e/nesc_case15.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">nesc_case15.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/ad24608c149a9b1a009be79c50fa40fc/nesc_case15.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">nesc_case15.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nesc_case13p4.html" class="btn btn-neutral float-left" title="Case 13.4: Lateral offset manuever of a subsonic aircraft" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nesc_case16.html" class="btn btn-neutral float-right" title="Case 16: Circular F-15 flight around Equator/dateline intersection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Benjamin W. L. Margolis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

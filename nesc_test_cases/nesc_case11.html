@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case 11: Subsonic F-16 trimmed flight across earth &mdash; SimuPy Flight  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Case 13.1: Altitude change of a subsonic aircraft" href="nesc_case13p1.html" />
+    <link rel="prev" title="Case 10: Sphere launched ballistically northward along Prime Meridian" href="nesc_case10.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> SimuPy Flight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">NESC Test Cases</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="nesc_case01.html">Case 1: Dropped sphere with no drag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case02.html">Case 2: Tumbling brick with no damping or drag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case03.html">Case 3: Tumbling brick with dynamic damping, no drag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case04.html">Case 4: Dropped sphere over non-rotating, spherical Earth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case05.html">Case 5: Dropped sphere over rotating, spherical Earth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case06.html">Case 6: Dropped sphere over rotating, ellipsoidal Earth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case07.html">Case 7: Sphere dropped through a steady wind field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case08.html">Case 8: Sphere dropped through a varying wind field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case09.html">Case 9: Sphere launched ballistically eastward along Equator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case10.html">Case 10: Sphere launched ballistically northward along Prime Meridian</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Case 11: Subsonic F-16 trimmed flight across earth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case13p1.html">Case 13.1: Altitude change of a subsonic aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case13p2.html">Case 13.2: Velocity change of a subsonic aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case13p3.html">Case 13.3: Course change of a subsonic aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case13p4.html">Case 13.4: Lateral offset manuever of a subsonic aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case15.html">Case 15: Circular F-15 flight around North Pole</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case16.html">Case 16: Circular F-15 flight around Equator/dateline intersection</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">SimuPy Flight API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SimuPy Flight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">NESC Test Cases</a> &raquo;</li>
+      <li>Case 11: Subsonic F-16 trimmed flight across earth</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/nesc_test_cases/nesc_case11.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-nesc-test-cases-nesc-case11-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="case-11-subsonic-f-16-trimmed-flight-across-earth">
+<span id="sphx-glr-nesc-test-cases-nesc-case11-py"></span><h1>Case 11: Subsonic F-16 trimmed flight across earth<a class="headerlink" href="#case-11-subsonic-f-16-trimmed-flight-across-earth" title="Permalink to this headline"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 84%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Verifies</p></td>
+<td><p>Atmosphere, air-data calculations</p></td>
+</tr>
+<tr class="row-even"><td><p>Gravitation</p></td>
+<td><p>J2</p></td>
+</tr>
+<tr class="row-odd"><td><p>Geodesy</p></td>
+<td><p>WGS-84 rotating</p></td>
+</tr>
+<tr class="row-even"><td><p>Atmosphere</p></td>
+<td><p>US 1976 STD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Winds</p></td>
+<td><p>still air</p></td>
+</tr>
+<tr class="row-even"><td><p>Vehicle</p></td>
+<td><p>F-16 (unaugmented)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Notes</p></td>
+<td><p>Initial position is 10,000 ft above KFFA airport on a 45 degree true
+course. 335.15 KTAS. Stability augmentation off. Test of trim solution.</p></td>
+</tr>
+</tbody>
+</table>
+<p>In this example, we first find the trim conditions for the F16 in sub-sonic flight, then
+perform a steady level sight. To find trim, we use scipy’s optimize module to minimize a
+trim residual.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">simupy.block_diagram</span> <span class="kn">import</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class"><span class="n">BlockDiagram</span></a>
+<span class="kn">from</span> <span class="nn">simupy</span> <span class="kn">import</span> <span class="n">systems</span>
+<span class="kn">import</span> <span class="nn">simupy_flight</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span>
+
+<span class="kn">from</span> <span class="nn">nesc_testcase_helper</span> <span class="kn">import</span> <span class="n">plot_nesc_comparisons</span><span class="p">,</span> <span class="n">int_opts</span><span class="p">,</span> <span class="n">benchmark</span>
+<span class="kn">from</span> <span class="nn">nesc_testcase_helper</span> <span class="kn">import</span> <span class="n">ft_per_m</span><span class="p">,</span> <span class="n">kg_per_slug</span>
+</pre></div>
+</div>
+<p>The F16_model.F16 class composes the aerodynamic, propulsion, and inertia  models
+into a simupy_flight Vehicle</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">F16_model</span>
+<span class="kn">from</span> <span class="nn">F16_control</span> <span class="kn">import</span> <span class="n">F16_control</span>
+
+<span class="n">F16_vehicle</span> <span class="o">=</span> <a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class"><span class="n">F16_model</span><span class="o">.</span><span class="n">F16</span></a><span class="p">()</span>
+</pre></div>
+</div>
+<p>Create a dictionary of keyword arguments for the initial condition</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spec_ic_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">phi_D</span><span class="o">=</span><span class="mf">36.01916667</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>  <span class="c1"># latitude</span>
+    <span class="n">lamda_D</span><span class="o">=-</span><span class="mf">75.67444444</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>  <span class="c1"># longitude</span>
+    <span class="n">h</span><span class="o">=</span><span class="mi">10_013</span> <span class="o">/</span> <span class="n">ft_per_m</span><span class="p">,</span>
+    <span class="n">V_N</span><span class="o">=</span><span class="mf">400.0</span> <span class="o">/</span> <span class="n">ft_per_m</span><span class="p">,</span>
+    <span class="n">V_E</span><span class="o">=</span><span class="mf">400.0</span> <span class="o">/</span> <span class="n">ft_per_m</span><span class="p">,</span>
+    <span class="n">V_D</span><span class="o">=</span><span class="mf">0.0</span> <span class="o">/</span> <span class="n">ft_per_m</span><span class="p">,</span>
+    <span class="n">psi</span><span class="o">=</span><span class="mf">45.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>
+    <span class="n">theta</span><span class="o">=</span><span class="mf">2.653814</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>
+    <span class="n">phi</span><span class="o">=</span><span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>
+    <span class="n">p_B</span><span class="o">=</span><span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>
+    <span class="n">q_B</span><span class="o">=</span><span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>
+    <span class="n">r_B</span><span class="o">=</span><span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">knots_per_mps</span> <span class="o">=</span> <span class="mf">1.94384</span>
+</pre></div>
+</div>
+<p>Configure the earth model</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a> <span class="o">=</span> <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class"><span class="n">simupy_flight</span><span class="o">.</span><span class="n">Planet</span></a><span class="p">(</span>
+    <span class="n">gravity</span><span class="o">=</span><a href="../api.html#simupy_flight.earth_J2_gravity" title="simupy_flight.earth_J2_gravity" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-function"><span class="n">simupy_flight</span><span class="o">.</span><span class="n">earth_J2_gravity</span></a><span class="p">,</span>
+    <span class="n">winds</span><span class="o">=</span><a href="../api.html#simupy_flight.get_constant_winds" title="simupy_flight.get_constant_winds" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-function"><span class="n">simupy_flight</span><span class="o">.</span><span class="n">get_constant_winds</span></a><span class="p">(),</span>
+    <span class="n">atmosphere</span><span class="o">=</span><a href="../api.html#simupy_flight.atmosphere_1976" title="simupy_flight.atmosphere_1976" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-function"><span class="n">simupy_flight</span><span class="o">.</span><span class="n">atmosphere_1976</span></a><span class="p">,</span>
+    <span class="n">planetodetics</span><span class="o">=</span><a href="../api.html#simupy_flight.Planetodetic" title="simupy_flight.Planetodetic" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class"><span class="n">simupy_flight</span><span class="o">.</span><span class="n">Planetodetic</span></a><span class="p">(</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">simupy_flight</span><span class="o">.</span><span class="n">earth_equitorial_radius</span><span class="p">,</span>
+        <span class="n">omega_p</span><span class="o">=</span><span class="n">simupy_flight</span><span class="o">.</span><span class="n">earth_rotation_rate</span><span class="p">,</span>
+        <span class="n">f</span><span class="o">=</span><span class="n">simupy_flight</span><span class="o">.</span><span class="n">earth_f</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Air density at the surface is used for the equivalent air-speed calculation</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rho_0</span> <span class="o">=</span> <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">atmosphere</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Select the feedback channels used for the controller</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">controller_feedback_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="p">[</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">h_D_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">V_T_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">alpha_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">beta_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">psi_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">theta_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">phi_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">p_B_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">q_B_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">r_B_idx</span><span class="p">,</span>
+        <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">rho_idx</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">dim_feedback</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">controller_feedback_indices</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is a function generator for the controller (auto-pilot). The generated function
+uses the DaveML implementation of the controller, which has several configuration
+options set by the generator.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">F16ControllerBlock</span><span class="p">:</span>
+    <span class="n">num_events</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">dim_state</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">dim_output</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">dim_input</span> <span class="o">=</span> <span class="mi">15</span>
+
+    <span class="n">initial_condition</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">throttleTrim</span><span class="p">,</span> <span class="n">longStkTrim</span><span class="p">,</span> <span class="n">sasOn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">apOn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">event_t</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">throttleTrim</span> <span class="o">=</span> <span class="n">throttleTrim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">longStkTrim</span> <span class="o">=</span> <span class="n">longStkTrim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sasOn</span> <span class="o">=</span> <span class="n">sasOn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apOn</span> <span class="o">=</span> <span class="n">apOn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_t</span> <span class="o">=</span> <span class="n">event_t</span>
+
+    <span class="k">def</span> <span class="nf">update_equation_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">event_channels</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">prepare_to_integrate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">event_equation_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">t</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_t</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">output_equation_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="n">throttle</span><span class="p">,</span> <span class="n">longStk</span><span class="p">,</span> <span class="n">latStk</span><span class="p">,</span> <span class="n">pedal</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>  <span class="c1"># pilot command</span>
+
+        <span class="p">(</span>
+            <span class="c1"># feedback</span>
+            <span class="n">alt</span><span class="p">,</span>
+            <span class="n">V_T</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="p">,</span>
+            <span class="n">beta</span><span class="p">,</span>
+            <span class="n">psi</span><span class="p">,</span>
+            <span class="n">theta</span><span class="p">,</span>
+            <span class="n">phi</span><span class="p">,</span>
+            <span class="n">pb</span><span class="p">,</span>
+            <span class="n">qb</span><span class="p">,</span>
+            <span class="n">rb</span><span class="p">,</span>
+            <span class="c1"># rho to calculate equivalent airspeed</span>
+            <span class="n">rho</span><span class="p">,</span>
+            <span class="c1"># commands</span>
+            <span class="n">keasCmd</span><span class="p">,</span>
+            <span class="n">altCmd</span><span class="p">,</span>
+            <span class="n">latOffset</span><span class="p">,</span>
+            <span class="n">baseChiCmd</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">u</span>
+
+        <span class="n">Vequiv</span> <span class="o">=</span> <span class="n">V_T</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rho</span> <span class="o">/</span> <span class="n">rho_0</span><span class="p">)</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">psi</span><span class="p">])</span>
+        <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">psi</span> <span class="o">=</span> <span class="n">angles</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="n">control_eart</span> <span class="o">=</span> <span class="n">F16_control</span><span class="p">(</span>
+            <span class="n">throttle</span><span class="p">,</span>
+            <span class="n">longStk</span><span class="p">,</span>
+            <span class="n">latStk</span><span class="p">,</span>
+            <span class="n">pedal</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sasOn</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apOn</span><span class="p">,</span>
+            <span class="n">keasCmd</span><span class="p">,</span>
+            <span class="n">altCmd</span><span class="p">,</span>
+            <span class="n">latOffset</span><span class="p">,</span>
+            <span class="n">baseChiCmd</span><span class="p">,</span>
+            <span class="n">alt</span> <span class="o">*</span> <span class="n">ft_per_m</span><span class="p">,</span>
+            <span class="n">Vequiv</span> <span class="o">*</span> <span class="n">knots_per_mps</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="p">,</span>
+            <span class="n">beta</span><span class="p">,</span>
+            <span class="n">phi</span><span class="p">,</span>
+            <span class="n">theta</span><span class="p">,</span>
+            <span class="n">psi</span><span class="p">,</span>
+            <span class="n">pb</span><span class="p">,</span>
+            <span class="n">qb</span><span class="p">,</span>
+            <span class="n">rb</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">throttleTrim</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">longStkTrim</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">control_eart</span>
+</pre></div>
+</div>
+<p>This function computes the trim residual using the
+<code class="docutils literal notranslate"><span class="pre">local_translational_trim_residual</span></code> helper function, which calculates the
+accelerations experienced by the vehicle for a given flight condition, longitudinal
+stick position, and throttle value.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">eval_trim</span><span class="p">(</span><span class="n">flight_condition</span><span class="p">,</span> <span class="n">longStk</span><span class="p">,</span> <span class="n">throttle</span><span class="p">):</span>
+    <span class="n">kin_out</span> <span class="o">=</span> <a href="../api.html#simupy_flight.Planet.output_equation_function" title="simupy_flight.Planet.output_equation_function" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-method"><span class="n">earth</span><span class="o">.</span><span class="n">output_equation_function</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">flight_condition</span><span class="p">)</span>
+    <span class="n">controller_func</span> <span class="o">=</span> <span class="n">F16ControllerBlock</span><span class="p">(</span>
+        <span class="n">throttleTrim</span><span class="o">=</span><span class="n">throttle</span><span class="p">,</span> <span class="n">longStkTrim</span><span class="o">=</span><span class="n">longStk</span>
+    <span class="p">)</span>
+    <span class="n">aero_plus_prop_acceleration</span> <span class="o">=</span> <span class="n">simupy_flight</span><span class="o">.</span><span class="n">dynamics</span><span class="o">.</span><span class="n">dynamics_output_function</span><span class="p">(</span>
+        <span class="n">F16_vehicle</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">kin_out</span><span class="p">,</span> <span class="o">*</span><span class="n">controller_func</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dim_feedback</span> <span class="o">+</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="p">)</span>
+
+    <span class="n">gen_accel</span> <span class="o">=</span> <span class="n">aero_plus_prop_acceleration</span>
+
+    <span class="n">gen_accel</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <a href="../api.html#simupy_flight.Planet.local_translational_trim_residual" title="simupy_flight.Planet.local_translational_trim_residual" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-method"><span class="n">earth</span><span class="o">.</span><span class="n">local_translational_trim_residual</span></a><span class="p">(</span>
+        <span class="o">*</span><span class="n">flight_condition</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span> <span class="o">*</span><span class="n">aero_plus_prop_acceleration</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">gen_accel</span>
+</pre></div>
+</div>
+<p>This function uses optimize.minimize() to minimize the trim redisual. It uses the
+throttle, longitudinal stick position, pitch angle, and optionally the roll
+angle, as free variables to achieve trim. The euler angles are passed through the
+flight condition variable.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run_trimmer</span><span class="p">(</span><span class="n">flight_ic_args</span><span class="p">,</span> <span class="n">throttle_ic</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">longStk_ic</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">allow_roll</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">len_vars</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">+</span> <span class="n">allow_roll</span>
+
+    <span class="n">psi</span><span class="p">,</span> <span class="n">theta_ic</span><span class="p">,</span> <span class="n">phi_ic</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">flight_ic_args</span><span class="p">[</span><span class="s2">&quot;psi&quot;</span><span class="p">],</span>
+        <span class="n">flight_ic_args</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">],</span>
+        <span class="n">flight_ic_args</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="n">initial_guess</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">len_vars</span><span class="p">)</span>
+    <span class="n">initial_guess</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta_ic</span>
+    <span class="n">initial_guess</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">throttle_ic</span>
+    <span class="n">initial_guess</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">longStk_ic</span>
+
+    <span class="n">extra_index</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="k">if</span> <span class="n">allow_roll</span><span class="p">:</span>
+        <span class="n">initial_guess</span><span class="p">[</span><span class="n">extra_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi_ic</span>
+        <span class="n">extra_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">parse_x</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">theta</span><span class="p">,</span> <span class="n">throttle</span><span class="p">,</span> <span class="n">longStk</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">extra_index</span> <span class="o">=</span> <span class="mi">3</span>
+
+        <span class="k">if</span> <span class="n">allow_roll</span><span class="p">:</span>
+            <span class="n">phi</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">extra_index</span><span class="p">]</span>
+            <span class="n">extra_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">phi</span> <span class="o">=</span> <span class="n">phi_ic</span>
+
+        <span class="k">return</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">longStk</span><span class="p">,</span> <span class="n">throttle</span>
+
+    <span class="n">weighting_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+
+    <span class="n">aileron</span><span class="p">,</span> <span class="n">rudder</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
+
+    <span class="k">def</span> <span class="nf">trim_opt_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">eval_args</span> <span class="o">=</span> <span class="n">flight_ic_args</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">longStk</span><span class="p">,</span> <span class="n">throttle</span> <span class="o">=</span> <span class="n">parse_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">eval_args</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta</span>
+        <span class="n">eval_args</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi</span>
+        <span class="n">flight_condition</span> <span class="o">=</span> <a href="../api.html#simupy_flight.Planet.ic_from_planetodetic" title="simupy_flight.Planet.ic_from_planetodetic" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-method"><span class="n">earth</span><span class="o">.</span><span class="n">ic_from_planetodetic</span></a><span class="p">(</span><span class="o">**</span><span class="n">eval_args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span>
+            <span class="n">weighting_matrix</span> <span class="o">@</span> <span class="n">eval_trim</span><span class="p">(</span><span class="n">flight_condition</span><span class="p">,</span> <span class="n">longStk</span><span class="p">,</span> <span class="n">throttle</span><span class="p">),</span> <span class="nb">ord</span><span class="o">=</span><span class="mi">2</span>
+        <span class="p">)</span>
+
+    <span class="n">opt_res</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span>
+        <span class="n">trim_opt_func</span><span class="p">,</span>
+        <span class="n">initial_guess</span><span class="p">,</span>
+        <span class="n">tol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span>
+        <span class="n">options</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;disp&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;adaptive&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;fatol&quot;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">,</span>
+            <span class="s2">&quot;maxiter&quot;</span><span class="p">:</span> <span class="mi">20_000</span><span class="p">,</span>
+            <span class="s2">&quot;xatol&quot;</span><span class="p">:</span> <span class="mf">1e-12</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;Nelder-Mead&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">opt_theta</span><span class="p">,</span> <span class="n">opt_phi</span><span class="p">,</span> <span class="n">opt_longStk</span><span class="p">,</span> <span class="n">opt_throttle</span> <span class="o">=</span> <span class="n">opt_result</span> <span class="o">=</span> <span class="n">parse_x</span><span class="p">(</span><span class="n">opt_res</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">opt_args</span> <span class="o">=</span> <span class="n">flight_ic_args</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">opt_args</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opt_theta</span>
+    <span class="n">opt_args</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opt_phi</span>
+    <span class="n">opt_flight_condition</span> <span class="o">=</span> <a href="../api.html#simupy_flight.Planet.ic_from_planetodetic" title="simupy_flight.Planet.ic_from_planetodetic" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-method"><span class="n">earth</span><span class="o">.</span><span class="n">ic_from_planetodetic</span></a><span class="p">(</span><span class="o">**</span><span class="n">opt_args</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;pitch: </span><span class="si">%.4e</span><span class="s2">  roll: </span><span class="si">%.4e</span><span class="s2">  longStk: </span><span class="si">%.4f</span><span class="s2">  throttle: </span><span class="si">%.4f</span><span class="s2">&quot;</span>
+        <span class="o">%</span> <span class="p">(</span>
+            <span class="n">opt_theta</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+            <span class="n">opt_phi</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+            <span class="n">opt_longStk</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
+            <span class="n">opt_throttle</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;accelerations:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">eval_trim</span><span class="p">(</span><span class="n">opt_flight_condition</span><span class="p">,</span> <span class="n">opt_longStk</span><span class="p">,</span> <span class="n">opt_throttle</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">opt_args</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">opt_throttle</span><span class="p">,</span> <span class="n">opt_longStk</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Run the trimmer to determine the initial condition for the simulation</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">opt_args</span><span class="p">,</span> <span class="n">opt_ctrl</span> <span class="o">=</span> <span class="n">run_trimmer</span><span class="p">(</span>
+    <span class="n">spec_ic_args</span><span class="p">,</span> <span class="n">throttle_ic</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">longStk_ic</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">allow_roll</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="n">trimmed_flight_condition</span> <span class="o">=</span> <a href="../api.html#simupy_flight.Planet.ic_from_planetodetic" title="simupy_flight.Planet.ic_from_planetodetic" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-method"><span class="n">earth</span><span class="o">.</span><span class="n">ic_from_planetodetic</span></a><span class="p">(</span><span class="o">**</span><span class="n">opt_args</span><span class="p">)</span>
+
+<span class="n">trimmed_KEAS</span> <span class="o">=</span> <span class="p">(</span>
+    <a href="../api.html#simupy_flight.Planet.output_equation_function" title="simupy_flight.Planet.output_equation_function" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-method"><span class="n">earth</span><span class="o">.</span><span class="n">output_equation_function</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">trimmed_flight_condition</span><span class="p">)[</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">V_T_idx</span><span class="p">]</span>
+    <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+        <a href="../api.html#simupy_flight.Planet.output_equation_function" title="simupy_flight.Planet.output_equation_function" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-method"><span class="n">earth</span><span class="o">.</span><span class="n">output_equation_function</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">trimmed_flight_condition</span><span class="p">)[</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">rho_idx</span><span class="p">]</span>
+        <span class="o">/</span> <span class="n">rho_0</span>
+    <span class="p">)</span>
+    <span class="o">*</span> <span class="n">knots_per_mps</span>
+<span class="p">)</span>
+
+<a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">initial_condition</span> <span class="o">=</span> <span class="n">trimmed_flight_condition</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Optimization terminated successfully.
+         Current function value: 0.006500
+         Iterations: 291
+         Function evaluations: 554
+pitch: 2.6351e+00  roll: 0.0000e+00  longStk: 12.9236  throttle: 13.7561
+accelerations:
+ [[-4.59609832e-03  4.59610301e-03  2.09229079e-09]
+ [-2.98437663e-09 -1.70643291e-09  2.12618714e-09]]
+</pre></div>
+</div>
+<p>Configure the controller using the trim settings. This requires additional blocks to
+generate command signals at the trimmed value</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">controller_block</span> <span class="o">=</span> <span class="n">F16ControllerBlock</span><span class="p">(</span><span class="o">*</span><span class="n">opt_ctrl</span><span class="p">)</span>
+
+<span class="n">keasCmdOutput</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">trimmed_KEAS</span><span class="p">])</span>
+<a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">keasCmdBlock</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.SystemFromCallable" title="simupy.systems.SystemFromCallable" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-function"><span class="n">systems</span><span class="o">.</span><span class="n">SystemFromCallable</span></a><span class="p">(</span><span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">keasCmdOutput</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">altCmdOutput</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">spec_ic_args</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">ft_per_m</span><span class="p">])</span>
+<a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">altCmdBlock</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.SystemFromCallable" title="simupy.systems.SystemFromCallable" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-function"><span class="n">systems</span><span class="o">.</span><span class="n">SystemFromCallable</span></a><span class="p">(</span><span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">altCmdOutput</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">baseChiCmdOutput</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">spec_ic_args</span><span class="p">[</span><span class="s2">&quot;psi&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">])</span>
+<a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">baseChiCmdBlock</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.SystemFromCallable" title="simupy.systems.SystemFromCallable" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-function"><span class="n">systems</span><span class="o">.</span><span class="n">SystemFromCallable</span></a><span class="p">(</span><span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">baseChiCmdOutput</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This block  computes the rate of lateral offset error, which is integrated and used
+by the auto-pilot to compute the heading to drive the offset to zero.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">latOffsetStateEquation</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+    <span class="n">chi_cmd</span><span class="p">,</span> <span class="n">V_N</span><span class="p">,</span> <span class="n">V_E</span> <span class="o">=</span> <span class="n">u</span>
+    <span class="n">V_ground_magnitude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">V_N</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">V_E</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">V_ground_heading</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">V_E</span><span class="p">,</span> <span class="n">V_N</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">V_ground_magnitude</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">V_ground_heading</span> <span class="o">-</span> <span class="n">chi_cmd</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">latOffsetOutputEquation</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">ft_per_m</span>
+
+
+<a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">latOffsetBlock</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class"><span class="n">systems</span><span class="o">.</span><span class="n">DynamicalSystem</span></a><span class="p">(</span>
+    <span class="n">state_equation_function</span><span class="o">=</span><span class="n">latOffsetStateEquation</span><span class="p">,</span>
+    <span class="n">output_equation_function</span><span class="o">=</span><span class="n">latOffsetOutputEquation</span><span class="p">,</span>
+    <span class="n">dim_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">dim_input</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">dim_output</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Build a block diagram of the planet kinematics block, the F16 vehicle block, the base
+controller block, and the various command generating blocks and connect them
+appropriately.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BD</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class"><span class="n">BlockDiagram</span></a><span class="p">(</span>
+    <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="p">,</span>
+    <span class="n">F16_vehicle</span><span class="p">,</span>
+    <span class="n">controller_block</span><span class="p">,</span>
+    <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">keasCmdBlock</span></a><span class="p">,</span>
+    <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">altCmdBlock</span></a><span class="p">,</span>
+    <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">latOffsetBlock</span></a><span class="p">,</span>
+    <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">baseChiCmdBlock</span></a><span class="p">,</span>
+<span class="p">)</span>
+<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="p">,</span> <span class="n">F16_vehicle</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">dim_output</span><span class="p">))</span>
+<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><span class="n">F16_vehicle</span><span class="p">,</span> <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">F16_vehicle</span><span class="o">.</span><span class="n">dim_output</span><span class="p">))</span>
+<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span>
+    <span class="n">controller_block</span><span class="p">,</span>
+    <span class="n">F16_vehicle</span><span class="p">,</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">dim_output</span><span class="p">,</span> <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="o">.</span><span class="n">dim_output</span> <span class="o">+</span> <span class="mi">4</span><span class="p">),</span>
+<span class="p">)</span>
+<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span>
+    <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">earth</span></a><span class="p">,</span>
+    <span class="n">controller_block</span><span class="p">,</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="n">controller_feedback_indices</span><span class="p">,</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dim_feedback</span><span class="p">),</span>
+<span class="p">)</span>
+
+<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">keasCmdBlock</span></a><span class="p">,</span> <span class="n">controller_block</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">dim_feedback</span> <span class="o">+</span> <span class="mi">0</span><span class="p">])</span>
+<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">altCmdBlock</span></a><span class="p">,</span> <span class="n">controller_block</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">dim_feedback</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">latOffsetBlock</span></a><span class="p">,</span> <span class="n">controller_block</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">dim_feedback</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])</span>
+<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">baseChiCmdBlock</span></a><span class="p">,</span> <span class="n">controller_block</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">dim_feedback</span> <span class="o">+</span> <span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Simulate and assess the results</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">int_opts</span><span class="p">[</span><span class="s2">&quot;nsteps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5_000</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="k">with</span> <span class="n">benchmark</span><span class="p">()</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
+        <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.simulate" title="simupy.block_diagram.BlockDiagram.simulate" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">simulate</span></a><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="n">integrator_options</span><span class="o">=</span><span class="n">int_opts</span><span class="p">)</span>
+
+    <span class="n">plot_nesc_comparisons</span><span class="p">(</span><a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a><span class="p">,</span> <span class="s2">&quot;11&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><img src="../_images/sphx_glr_nesc_case11_001.png" srcset="../_images/sphx_glr_nesc_case11_001.png" alt="nesc case11" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case11_002.png" srcset="../_images/sphx_glr_nesc_case11_002.png" alt="nesc case11" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case11_003.png" srcset="../_images/sphx_glr_nesc_case11_003.png" alt="nesc case11" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case11_004.png" srcset="../_images/sphx_glr_nesc_case11_004.png" alt="nesc case11" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case11_005.png" srcset="../_images/sphx_glr_nesc_case11_005.png" alt="nesc case11" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case11_006.png" srcset="../_images/sphx_glr_nesc_case11_006.png" alt="nesc case11" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case11_007.png" srcset="../_images/sphx_glr_nesc_case11_007.png" alt="nesc case11" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case11_008.png" srcset="../_images/sphx_glr_nesc_case11_008.png" alt="nesc case11" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case11_009.png" srcset="../_images/sphx_glr_nesc_case11_009.png" alt="nesc case11" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case11_010.png" srcset="../_images/sphx_glr_nesc_case11_010.png" alt="nesc case11" class = "sphx-glr-multi-img"/></li>
+</ul>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>time to simulate: 125.077 s
+missing eiPosition_ft_X for SIM 02
+missing eiPosition_ft_Y for SIM 02
+missing eiPosition_ft_Z for SIM 02
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 2 minutes  17.391 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-nesc-test-cases-nesc-case11-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/6289edd16d502589d7049e971d281876/nesc_case11.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">nesc_case11.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/3ac9f606dbf4d8ae47eb9c8b9025d3a8/nesc_case11.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">nesc_case11.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nesc_case10.html" class="btn btn-neutral float-left" title="Case 10: Sphere launched ballistically northward along Prime Meridian" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nesc_case13p1.html" class="btn btn-neutral float-right" title="Case 13.1: Altitude change of a subsonic aircraft" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Benjamin W. L. Margolis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

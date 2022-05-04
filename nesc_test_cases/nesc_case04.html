@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case 4: Dropped sphere over non-rotating, spherical Earth &mdash; SimuPy Flight  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Case 5: Dropped sphere over rotating, spherical Earth" href="nesc_case05.html" />
+    <link rel="prev" title="Case 3: Tumbling brick with dynamic damping, no drag" href="nesc_case03.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> SimuPy Flight
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">NESC Test Cases</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="nesc_case01.html">Case 1: Dropped sphere with no drag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case02.html">Case 2: Tumbling brick with no damping or drag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case03.html">Case 3: Tumbling brick with dynamic damping, no drag</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Case 4: Dropped sphere over non-rotating, spherical Earth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case05.html">Case 5: Dropped sphere over rotating, spherical Earth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case06.html">Case 6: Dropped sphere over rotating, ellipsoidal Earth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case07.html">Case 7: Sphere dropped through a steady wind field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case08.html">Case 8: Sphere dropped through a varying wind field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case09.html">Case 9: Sphere launched ballistically eastward along Equator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case10.html">Case 10: Sphere launched ballistically northward along Prime Meridian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case11.html">Case 11: Subsonic F-16 trimmed flight across earth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case13p1.html">Case 13.1: Altitude change of a subsonic aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case13p2.html">Case 13.2: Velocity change of a subsonic aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case13p3.html">Case 13.3: Course change of a subsonic aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case13p4.html">Case 13.4: Lateral offset manuever of a subsonic aircraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case15.html">Case 15: Circular F-15 flight around North Pole</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nesc_case16.html">Case 16: Circular F-15 flight around Equator/dateline intersection</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">SimuPy Flight API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SimuPy Flight</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">NESC Test Cases</a> &raquo;</li>
+      <li>Case 4: Dropped sphere over non-rotating, spherical Earth</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/nesc_test_cases/nesc_case04.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-nesc-test-cases-nesc-case04-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
+</div>
+<section class="sphx-glr-example-title" id="case-4-dropped-sphere-over-non-rotating-spherical-earth">
+<span id="sphx-glr-nesc-test-cases-nesc-case04-py"></span><h1>Case 4: Dropped sphere over non-rotating, spherical Earth<a class="headerlink" href="#case-4-dropped-sphere-over-non-rotating-spherical-earth" title="Permalink to this headline"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 70%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Verifies</p></td>
+<td><p>Gravitation, integration</p></td>
+</tr>
+<tr class="row-even"><td><p>Gravitation</p></td>
+<td><p><span class="math notranslate nohighlight">\(1/R^2\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>Geodesy</p></td>
+<td><p>Round fixed</p></td>
+</tr>
+<tr class="row-even"><td><p>Atmosphere</p></td>
+<td><p>US 1976 STD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Winds</p></td>
+<td><p>still air</p></td>
+</tr>
+<tr class="row-even"><td><p>Vehicle</p></td>
+<td><p>Sphere with constant <span class="math notranslate nohighlight">\(C_D\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">simupy.block_diagram</span> <span class="kn">import</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class"><span class="n">BlockDiagram</span></a>
+<span class="kn">import</span> <span class="nn">simupy_flight</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">nesc_testcase_helper</span> <span class="kn">import</span> <span class="n">plot_nesc_comparisons</span><span class="p">,</span> <span class="n">int_opts</span><span class="p">,</span> <span class="n">benchmark</span>
+<span class="kn">from</span> <span class="nn">nesc_testcase_helper</span> <span class="kn">import</span> <span class="n">ft_per_m</span><span class="p">,</span> <span class="n">kg_per_slug</span>
+
+<a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a> <span class="o">=</span> <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class"><span class="n">simupy_flight</span><span class="o">.</span><span class="n">Planet</span></a><span class="p">(</span>
+    <span class="n">gravity</span><span class="o">=</span><a href="../api.html#simupy_flight.get_spherical_gravity" title="simupy_flight.get_spherical_gravity" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-function"><span class="n">simupy_flight</span><span class="o">.</span><span class="n">get_spherical_gravity</span></a><span class="p">(</span>
+        <span class="n">simupy_flight</span><span class="o">.</span><span class="n">earth_spherical_gravity_constant</span>
+    <span class="p">),</span>
+    <span class="n">winds</span><span class="o">=</span><a href="../api.html#simupy_flight.get_constant_winds" title="simupy_flight.get_constant_winds" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-function"><span class="n">simupy_flight</span><span class="o">.</span><span class="n">get_constant_winds</span></a><span class="p">(),</span>
+    <span class="n">atmosphere</span><span class="o">=</span><a href="../api.html#simupy_flight.atmosphere_1976" title="simupy_flight.atmosphere_1976" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-function"><span class="n">simupy_flight</span><span class="o">.</span><span class="n">atmosphere_1976</span></a><span class="p">,</span>
+    <span class="n">planetodetics</span><span class="o">=</span><a href="../api.html#simupy_flight.Planetodetic" title="simupy_flight.Planetodetic" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class"><span class="n">simupy_flight</span><span class="o">.</span><span class="n">Planetodetic</span></a><span class="p">(</span>
+        <span class="n">a</span><span class="o">=</span><span class="mf">20902255.199</span> <span class="o">/</span> <span class="n">ft_per_m</span><span class="p">,</span> <span class="n">omega_p</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="mf">0.0</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">Ixx</span> <span class="o">=</span> <span class="mf">3.6</span> <span class="o">*</span> <span class="n">kg_per_slug</span> <span class="o">/</span> <span class="p">(</span><span class="n">ft_per_m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># slug-ft2</span>
+<span class="n">Iyy</span> <span class="o">=</span> <span class="mf">3.6</span> <span class="o">*</span> <span class="n">kg_per_slug</span> <span class="o">/</span> <span class="p">(</span><span class="n">ft_per_m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># slug-ft2</span>
+<span class="n">Izz</span> <span class="o">=</span> <span class="mf">3.6</span> <span class="o">*</span> <span class="n">kg_per_slug</span> <span class="o">/</span> <span class="p">(</span><span class="n">ft_per_m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># slug-ft2</span>
+<span class="n">Ixy</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">kg_per_slug</span> <span class="o">/</span> <span class="p">(</span><span class="n">ft_per_m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># slug-ft2</span>
+<span class="n">Iyz</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">kg_per_slug</span> <span class="o">/</span> <span class="p">(</span><span class="n">ft_per_m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># slug-ft2</span>
+<span class="n">Izx</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">kg_per_slug</span> <span class="o">/</span> <span class="p">(</span><span class="n">ft_per_m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># slug-ft2</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">kg_per_slug</span>  <span class="c1"># slug</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">z</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<span class="n">S_A</span> <span class="o">=</span> <span class="mf">0.1963495</span> <span class="o">/</span> <span class="p">(</span><span class="n">ft_per_m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">b_l</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">c_l</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">a_l</span> <span class="o">=</span> <span class="n">b_l</span>
+<a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a> <span class="o">=</span> <a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class"><span class="n">simupy_flight</span><span class="o">.</span><span class="n">Vehicle</span></a><span class="p">(</span>
+    <span class="n">base_aero_coeffs</span><span class="o">=</span><a href="../api.html#simupy_flight.get_constant_aero" title="simupy_flight.get_constant_aero" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-function"><span class="n">simupy_flight</span><span class="o">.</span><span class="n">get_constant_aero</span></a><span class="p">(</span><span class="n">CD_b</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span>
+    <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span>
+    <span class="n">I_xx</span><span class="o">=</span><span class="n">Ixx</span><span class="p">,</span>
+    <span class="n">I_yy</span><span class="o">=</span><span class="n">Iyy</span><span class="p">,</span>
+    <span class="n">I_zz</span><span class="o">=</span><span class="n">Izz</span><span class="p">,</span>
+    <span class="n">I_xy</span><span class="o">=</span><span class="n">Ixy</span><span class="p">,</span>
+    <span class="n">I_yz</span><span class="o">=</span><span class="n">Iyz</span><span class="p">,</span>
+    <span class="n">I_xz</span><span class="o">=</span><span class="n">Izx</span><span class="p">,</span>
+    <span class="n">x_com</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+    <span class="n">y_com</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+    <span class="n">z_com</span><span class="o">=</span><span class="n">z</span><span class="p">,</span>
+    <span class="n">x_mrc</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+    <span class="n">y_mrc</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+    <span class="n">z_mrc</span><span class="o">=</span><span class="n">z</span><span class="p">,</span>
+    <span class="n">S_A</span><span class="o">=</span><span class="n">S_A</span><span class="p">,</span>
+    <span class="n">a_l</span><span class="o">=</span><span class="n">a_l</span><span class="p">,</span>
+    <span class="n">b_l</span><span class="o">=</span><span class="n">b_l</span><span class="p">,</span>
+    <span class="n">c_l</span><span class="o">=</span><span class="n">c_l</span><span class="p">,</span>
+    <span class="n">d_l</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+<span class="p">)</span>
+
+<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BD</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class"><span class="n">BlockDiagram</span></a><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="p">,</span> <a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a><span class="p">)</span>
+<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="p">,</span> <a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="o">.</span><span class="n">dim_output</span><span class="p">))</span>
+<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a><span class="p">,</span> <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a><span class="o">.</span><span class="n">dim_output</span><span class="p">))</span>
+
+<span class="n">lat_ic</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+<span class="n">long_ic</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+<span class="n">h_ic</span> <span class="o">=</span> <span class="mi">30_000</span> <span class="o">/</span> <span class="n">ft_per_m</span>
+<span class="n">V_N_ic</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">V_E_ic</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">V_D_ic</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">psi_ic</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+<span class="n">theta_ic</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+<span class="n">phi_ic</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+<span class="n">omega_X_ic</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+<span class="n">omega_Y_ic</span> <span class="o">=</span> <span class="mf">20.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+<span class="n">omega_Z_ic</span> <span class="o">=</span> <span class="mf">30.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
+
+<a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="o">.</span><span class="n">initial_condition</span> <span class="o">=</span> <a href="../api.html#simupy_flight.Planet.ic_from_planetodetic" title="simupy_flight.Planet.ic_from_planetodetic" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-method"><span class="n">planet</span><span class="o">.</span><span class="n">ic_from_planetodetic</span></a><span class="p">(</span>
+    <span class="n">long_ic</span><span class="p">,</span> <span class="n">lat_ic</span><span class="p">,</span> <span class="n">h_ic</span><span class="p">,</span> <span class="n">V_N_ic</span><span class="p">,</span> <span class="n">V_E_ic</span><span class="p">,</span> <span class="n">V_D_ic</span><span class="p">,</span> <span class="n">psi_ic</span><span class="p">,</span> <span class="n">theta_ic</span><span class="p">,</span> <span class="n">phi_ic</span>
+<span class="p">)</span>
+<a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="o">.</span><span class="n">initial_condition</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="n">omega_X_ic</span><span class="p">,</span> <span class="n">omega_Y_ic</span><span class="p">,</span> <span class="n">omega_Z_ic</span>
+
+<span class="k">with</span> <span class="n">benchmark</span><span class="p">()</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
+    <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.simulate" title="simupy.block_diagram.BlockDiagram.simulate" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">simulate</span></a><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">integrator_options</span><span class="o">=</span><span class="n">int_opts</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/krlyons/src/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: invalid value encountered in double_scalars
+  x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
+/home/krlyons/src/simupy-flight/simupy_flight/dynamics.py:22: RuntimeWarning: divide by zero encountered in double_scalars
+  x15 = numpy.select([numpy.greater(V_T, 0.0)], [(1/2)/V_T], default=0.0)
+time to simulate: 4.145 s
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plot_nesc_comparisons</span><span class="p">(</span><a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a><span class="p">,</span> <span class="s2">&quot;04&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="sphx-glr-horizontal">
+<li><img src="../_images/sphx_glr_nesc_case04_001.png" srcset="../_images/sphx_glr_nesc_case04_001.png" alt="nesc case04" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case04_002.png" srcset="../_images/sphx_glr_nesc_case04_002.png" alt="nesc case04" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case04_003.png" srcset="../_images/sphx_glr_nesc_case04_003.png" alt="nesc case04" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case04_004.png" srcset="../_images/sphx_glr_nesc_case04_004.png" alt="nesc case04" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case04_005.png" srcset="../_images/sphx_glr_nesc_case04_005.png" alt="nesc case04" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case04_006.png" srcset="../_images/sphx_glr_nesc_case04_006.png" alt="nesc case04" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case04_007.png" srcset="../_images/sphx_glr_nesc_case04_007.png" alt="nesc case04" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case04_008.png" srcset="../_images/sphx_glr_nesc_case04_008.png" alt="nesc case04" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case04_009.png" srcset="../_images/sphx_glr_nesc_case04_009.png" alt="nesc case04" class = "sphx-glr-multi-img"/></li>
+<li><img src="../_images/sphx_glr_nesc_case04_010.png" srcset="../_images/sphx_glr_nesc_case04_010.png" alt="nesc case04" class = "sphx-glr-multi-img"/></li>
+</ul>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>missing eiPosition_ft_X for SIM 02
+missing eiPosition_ft_Y for SIM 02
+missing eiPosition_ft_Z for SIM 02
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  13.987 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-nesc-test-cases-nesc-case04-py">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/993f0f51242d535936a8ff73b9f1b457/nesc_case04.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">nesc_case04.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/15dcd0d466732541297505485fe1b44d/nesc_case04.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">nesc_case04.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nesc_case03.html" class="btn btn-neutral float-left" title="Case 3: Tumbling brick with dynamic damping, no drag" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nesc_case05.html" class="btn btn-neutral float-right" title="Case 5: Dropped sphere over rotating, spherical Earth" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Benjamin W. L. Margolis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
