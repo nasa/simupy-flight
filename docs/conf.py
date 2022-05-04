@@ -49,9 +49,9 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 sphinx_gallery_conf = {
-    "examples_dirs": os.path.join(os.path.dirname(__file__), "..", "nesc_test_cases"),
+    "examples_dirs": "../nesc_test_cases",
     "gallery_dirs": "nesc_test_cases",
-    "filename_pattern": r"nesc_case\d+.*\.py",
+    "filename_pattern": r"nesc_case_.*\.py",
     "ignore_pattern": r"(F16_)|(helper)|(process)|(run)",
     "within_subsection_order": FileNameSortKey,
     "reset_argv": lambda gallery_conf, script_vars: ["--no-test"],
