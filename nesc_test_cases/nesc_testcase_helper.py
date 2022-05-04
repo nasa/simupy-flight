@@ -71,6 +71,11 @@ if not hasattr(sys, "ps1"):
         action="store_true",
         help="Write simulation results to regression data path",
     )
+    parser.add_argument(
+        "--no-test",
+        action="store_true",
+        help="skip regression testing",
+    )
 
     args = parser.parse_args()
 
@@ -92,6 +97,8 @@ if not hasattr(sys, "ps1"):
 
         if not os.path.exists(regression_data_path):
             os.mkdir(regression_data_path)
+    else:
+        nesc_options["regression_test"] = not args.no_test
 
 
 def deg_diff(sim, baseline):
@@ -316,7 +323,8 @@ def regression_test(res, case):
 
 
 def plot_nesc_comparisons(simupy_res, case, plot_name=""):
-    regression_test(simupy_res, case)
+    if nesc_options["regression_test"]:
+        regression_test(simupy_res, case)
 
     if plot_name == "":
         plot_name = case

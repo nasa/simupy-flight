@@ -105,6 +105,8 @@ with benchmark() as b:
 plot_nesc_comparisons(res, "16")
 plot_F16_controls(res, "16", y_idx_offset=0)
 
+# %%
+
 plt.subplots(constrained_layout=True)
 plt.axis("equal")
 

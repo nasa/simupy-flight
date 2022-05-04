@@ -148,6 +148,8 @@ def get_gnc_function(
 
 int_opts["nsteps"] = 100_000
 
+# %%
+
 if __name__ == "__main__":
 
     opt_args, opt_ctrl = run_trimmer(

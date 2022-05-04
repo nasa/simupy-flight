@@ -277,15 +277,18 @@ class Planet(object):
 
     `gravity` model:
         translational acceleration due to gravity as a function of planet-fixed position
-        in rectangular coordinates.
+        in rectangular coordinates. See :func:`earth_J2_gravity` for example.
     `winds` model:
         wind in local NED frame as a function of time and planetodetic position.
         Positive wind indicates wind in specified direction so wind "from west" is a
-        positive W_E component.
+        positive W_E component. See :func:`get_constant_winds` for generating a simple
+        wind model.
     `atmosphere` model:
         density, speed of sound, and viscosity outputs of the atmosphere model as a
         function of time (i.e. for stochasticity) and position in planet-fixed frame
-        expressed in geodetic coordinates (longitude, latitude, altitude)
+        expressed in geodetic coordinates (longitude, latitude, altitude). See
+        :func:`get_constant_atmosphere` for generating a simple atmosphere model and
+        :func:`atmosphere_1976` for the US Standard 1976 Atmosphere.
     `planetodetic` model:
         must provide rotation rate in rad/s as ``omega_p`` and functions ``pd2pcf`` and
         ``pcf2pd`` to convert between planetodetic rectangular coordinates and
@@ -639,7 +642,7 @@ class Vehicle(object):
         system). To translate an aerodynamic database that provides forces expressed in
         body-fixed coordinates, the transpose of the ``dynamics.body_to_wind_dcm(alpha,
         beta)`` direction cosine matrix can be used to transform into the wind
-        coordinate system.
+        coordinate system. See :func:`get_constant_aero`.
     ``x_mrc, y_mrc, z_mrc``:
         Moment reference center position, defined relative to the same arbitrary
         reference as the center of mass. Moment coefficients are assumed to be about

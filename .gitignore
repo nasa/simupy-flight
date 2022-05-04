@@ -1,0 +1,11 @@
+__pycache__/
+*.egg-info/
+plots/
+.venv*/
+tags
+_build/
+build/
+.ipynb_checkpoints/
+
+docs/nesc_test_cases/
+case_*_fail.npz
