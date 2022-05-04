@@ -27,6 +27,7 @@ jobs:
       run: |
         cd docs
         make clean
+        pwd
         ls -lAh .
         ls -lAh ../nesc_test_cases
         make html
