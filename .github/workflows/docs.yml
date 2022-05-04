@@ -27,6 +27,7 @@ jobs:
       run: |
         cd docs
         make clean
+        ls -lAh ../nesc_test_cases
         make html
 
     # - name: Deploy to gh pages
