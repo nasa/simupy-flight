@@ -10,6 +10,10 @@ NESC Test Cases
 These are implementations of the NESC test cases using the SimuPy Flight Vehicle
 Toolkit.
 
+Additional information about the cases can be found at the NASA Engineering and
+Safety Center's `"Six degree-of-freedom (6-DOF) Flight Simulation Test Cases."
+<https://nescacademy.nasa.gov/flightsim/>`_
+
 
 
 .. raw:: html
@@ -329,12 +333,12 @@ Toolkit.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 15: Circular F-15 flight around North Pole">
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 15: Circular F-16 flight around North Pole">
 
 .. only:: html
 
  .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case15_thumb.png
-     :alt: Case 15: Circular F-15 flight around North Pole
+     :alt: Case 15: Circular F-16 flight around North Pole
 
      :ref:`sphx_glr_nesc_test_cases_nesc_case15.py`
 
@@ -350,12 +354,12 @@ Toolkit.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 16: Circular F-15 flight around Equator/dateline intersection">
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 16: Circular F-16 flight around Equator/dateline intersection">
 
 .. only:: html
 
  .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case16_thumb.png
-     :alt: Case 16: Circular F-15 flight around Equator/dateline intersection
+     :alt: Case 16: Circular F-16 flight around Equator/dateline intersection
 
      :ref:`sphx_glr_nesc_test_cases_nesc_case16.py`
 

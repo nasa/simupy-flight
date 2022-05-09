@@ -1,6 +1,6 @@
 """
 =================================================================================
-Case 16: Circular F-15 flight around Equator/dateline intersection
+Case 16: Circular F-16 flight around Equator/dateline intersection
 =================================================================================
 
 ==============  ===============
