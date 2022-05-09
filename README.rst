@@ -1,6 +1,8 @@
 SimuPy Flight Vehicle Toolkit
 =============================
 
+`Documentation <https://nasa.github.io/simupy-flight/>`_
+
 Vehicle flight simulation is an important part of the innovation of aerospace vehicle technology. The NASA Engineering Safety Center (NESC) has identified and addressed the need to verify flight vehicle simulations through their work on the `"Six degree-of-freedom (6-DOF) Flight Simulation Test Cases." <https://nescacademy.nasa.gov/flightsim/>`_ The author was prompted to develop tools that would allow for the rapid implementation of simulations for novel vehicle concepts including hypersonic re-entry vehicles and urban air mobility vehicles.
 
 This software library leverages open source scientific computing tools to implement an efficient simulation framework for flight vehicles in Python. Equations of motion are composed in blocks using the SimuPy library, an open source Python alternative to Simulink, solves the resulting differential equations using SciPy’s wrappers for standard Fortran implementations. Dynamics equations of the inertial state variables for the position, orientation, and their corresponding rates for integration are developed using the SymPy symbolic library and implemented using code generation. Kinematics equations are implemented through symbolic definition and code generation as well as leveraging other open source software that implements useful functions, such as the solutions to the inverse geodesy problem.
@@ -9,7 +11,7 @@ Library Design
 --------------
 
 .. |SimuPyAPI| replace:: SimuPy's ``DynamicalSystem`` interface
-.. _SimuPyAPI: https://simupy.readthedocs.io/en/latest/api/api.html>
+.. _SimuPyAPI: https://simupy.readthedocs.io/en/latest/api/api.html
 
 The SimuPy Flight Vehicle Toolkit API is designed to prioritize explicit and modular models, to facilitate adherence to best practices from the scientific Python community, and to follow SimuPy design principles. The library provides a ``Planet`` and ``Vehicle`` that implement |SimuPyAPI|_. This API separation was designed to reflect the modeling distinction between the two bodies being simulated. This separation could have been reflected in other ways; indeed within the ``Planet`` and ``Vehicle`` classes there is a namespace separation between model components. However, it is often convenient to break SimuPy models into distinct systems when intermediate signals may be used for multiple purposes. In particular, the separation allows easy access to the vehicle's sensed acceleration which is an important measurement for flight vehicles, particularly entry vehicles. Due to the disciplined modeling approach set out by SimuPy where the output of systems with state are not dependent on the input, a vehicle whose input changed acceleration could not be modeled without separating the ``Vehicle``. In the future, convenience functions will provided for common ``BlockDiagram`` manipulations like connecting guidance, navigation, or control models to reduce the learning curve for new users.
 
@@ -44,16 +46,18 @@ To install, clone the repository and install with pip
    $ cd simupy-flight/
    $ pip install .
 
-Extra dependencies for running test cases (see below) may be installed with:
+NESC Test Cases
+---------------
+
+A number of the `NESC Atmospheric test cases <https://nescacademy.nasa.gov/flightsim>`_ have been implemented to verify the implementation and derivation of the equations of motion. These are located in the ``nesc_test_cases`` directory. The implementations and their outputs can also be viewed in `the example gallery <https://nasa.github.io/simupy-flight/nesc_test_cases/index.html>`_ in the documentation. Additional information about each test case can be found in `the appendices of the NESC report <https://ntrs.nasa.gov/citations/20150001263>`_.
+
+Running the examples requires a few extra dependencies. They can be be installed with:
 
 .. code:: bash
 
     $ pip install .[test]
 
-NESC Test Cases
----------------
-
-A number of the `NESC Atmospheric test cases <https://nescacademy.nasa.gov/flightsim>`_ have been implemented to verify the implementation and derivation of the equations of motion. These are located in the ``nesc_test_cases`` directory. To run, simply execute any of the ``nesc_case##.py`` files or the ``run_nesc_cases.py`` script, which will iterate through test cases that have been implemented. These scripts load the NESC reference results from the ``NESC_data/`` directory and plot them along with the results from the SimuPy Flight implementation. The reference results are included in the SimuPy Flight repository, but they can be obtained directly from the NESC `here <https://nescacademy.nasa.gov/src/flightsim/Datasets/Atmospheric_checkcases.zip>`_.
+To run an example, simply execute any of the ``nesc_case##.py`` files or the ``run_nesc_cases.py`` script, which will iterate through test cases that have been implemented. These scripts load the NESC reference results from the ``NESC_data/`` directory and plot them along with the results from the SimuPy Flight implementation. The reference results are included in the SimuPy Flight repository, but they can be obtained directly from the NESC `here <https://nescacademy.nasa.gov/src/flightsim/Datasets/Atmospheric_checkcases.zip>`_.
 
 The SimuPy Flight results from running all NESC test cases are also included in the repository. By default, running any or all of the tests cases will perform a regression test against this data and report the result(s).
 
@@ -63,7 +67,7 @@ To re-generate the regression data, pass the ``--write-regression-data`` flag::
 
 Use ``-h`` or ``--help`` to see additional options that can be passed to the test case scripts.
 
-Every case is annotated with at least a basic description adapted from the NESC reports. Cases 1-3 have moderate annotations to highlight basic API usage and modeling approaches. Case 11, which demonstrates the trimming and straight and level flight of an F-16 model, is thoroughly annotated to illustrate how this simulation framework can be used for a sophisticated simulation. The F-16 vehicle model itself is also thoroughly annotated because it highlights how the ``Vehicle`` API can be adapted to alternate modeling approaches like the one used for the F-16 model implementation provided by the NESC.
+Every case is annotated with at least a basic description adapted from the NESC reports. Cases 1-3 have moderate annotations to highlight basic API usage and modeling approaches. `Case 11 <https://nasa.github.io/simupy-flight/nesc_test_cases/nesc_case11.html#sphx-glr-nesc-test-cases-nesc-case11-py>`_, which demonstrates the trimming and straight and level flight of an F-16 model, is thoroughly annotated to illustrate how this simulation framework can be used for a sophisticated simulation. The F-16 vehicle model itself is also thoroughly annotated because it highlights how the ``Vehicle`` API can be adapted to alternate modeling approaches like the one used for the F-16 model implementation provided by the NESC.
 
 DaveML Parsing
 --------------
