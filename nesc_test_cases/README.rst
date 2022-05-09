@@ -6,4 +6,4 @@ Toolkit.
 
 Additional information about the cases can be found at the NASA Engineering and
 Safety Center's `"Six degree-of-freedom (6-DOF) Flight Simulation Test Cases."
-<https://nescacademy.nasa.gov/flightsim/>`_.
+<https://nescacademy.nasa.gov/flightsim/>`_
