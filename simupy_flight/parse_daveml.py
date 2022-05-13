@@ -1,6 +1,5 @@
 import os
 import re
-import libsbml
 from lxml import etree
 import sympy as sp, numpy as np, ndsplines
 import warnings
