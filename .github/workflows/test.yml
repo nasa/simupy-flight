@@ -34,8 +34,8 @@ jobs:
         python nesc_test_cases/run_nesc_cases.py
 
     - name: Upload artifact
-      if: ${{ failure() }}
+      if: failure()
       uses: actions/upload-artifact@v3
       with:
-        name: test_failures
+        name: test_failures_${{ matrix.os }}_${{ matrix.python-version }}
         path: ./regression_data/*_fail.npz
