@@ -32,3 +32,10 @@ jobs:
     - name: Run tests
       run: |
         python nesc_test_cases/run_nesc_cases.py
+
+    - name: Upload artifact
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: test_failures
+        path: ./regression_data/*_fail.npz
