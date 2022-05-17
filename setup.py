@@ -30,7 +30,7 @@ setup(
     ],
     extras_require={
         "test": ["pandas", "ndsplines", "matplotlib"],
-        "derivation": ["sympy==1.4", "jupyter-lab"],
+        "derivation": ["sympy==1.4", "jupyterlab"],
         "docs": ["sphinx", "sphinx-gallery", "sphinx-rtd-theme"],
     },
     classifiers=[
