@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from simupy.block_diagram import DEFAULT_INTEGRATOR_OPTIONS, SimulationResult
-from simupy.utils import isclose
+from simupy.utils import isclose, trajectory_linear_combination, trajectory_norm
 from scipy import interpolate
 from simupy_flight import Planet, Vehicle
 import glob
@@ -286,40 +286,17 @@ def regression_test(res, case):
         return
 
     test_res = SimulationResult.from_file(fp)
-    cols = slice(None)
-    if case in ["13p1", "13p2"]:
-        atol = np.r_[
-            [1e-5] * Planet.dim_output,
-            [5e-3] * Vehicle.dim_output,
-        ]
-        p = 2
-        cols = slice(Planet.dim_output + Vehicle.dim_output)
-    elif case in ["13p3", "13p4"]:
-        atol = np.r_[
-            [5e-5] * Planet.dim_output,
-            [0.25] * Vehicle.dim_output,
-        ]
-        p = 2
-        cols = slice(Planet.dim_output + Vehicle.dim_output)
-    elif case in ["15", "16"]:
-        # skip automatic testing for cases 15 and 16
-        return
-    else:
-        atol = 1e-8
-        p = np.inf
 
-    matches = isclose(test_res, res, cols=cols, p=p, atol=atol, mode="pep485")
-    passed = np.all(matches)
-    result = "passed" if passed else "failed"
+    traj_diff = trajectory_linear_combination(test_res, res, coeff1=1, coeff2=-1,
+                                              )
+    p_norm_inf= trajectory_norm(traj_diff, np.inf)
+    p_norm_2 = trajectory_norm(traj_diff, 2)
+
+    passed = False
+    result = "failed"
     print(f"Regression test {result.upper()}")
-
-    if not passed:
-        for i, match in enumerate(matches):
-            if not match:
-                print(f"col {i:02d} failed")
-        print("Writing output data for comparison")
-        fp = os.path.join(regression_data_path, f"case_{case}_fail.npz")
-        res.to_file(fp)
+    fp = os.path.join(regression_data_path, f"case_{case}_fail.npz")
+    np.savez_compressed(fp, dict(p_norm_inf=p_norm_inf, p_norm_2=p_norm_2))
 
 
 def plot_nesc_comparisons(simupy_res, case, plot_name=""):
