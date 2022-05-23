@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from simupy.block_diagram import DEFAULT_INTEGRATOR_OPTIONS, SimulationResult
-from simupy.utils import isclose, trajectory_linear_combination, trajectory_norm
+from simupy.utils import (isclose, trajectory_linear_combination, trajectory_norm,
+trajectory_interpolant)
 from scipy import interpolate
 from simupy_flight import Planet, Vehicle
 import glob
@@ -287,16 +288,37 @@ def regression_test(res, case):
 
     test_res = SimulationResult.from_file(fp)
 
-    traj_diff = trajectory_linear_combination(test_res, res, coeff1=1, coeff2=-1,
-                                              )
-    p_norm_inf= trajectory_norm(traj_diff, np.inf)
-    p_norm_2 = trajectory_norm(traj_diff, 2)
+    traj_diff = trajectory_linear_combination(test_res, res, coeff1=1, coeff2=-1,)
+
+
+    traj_ref = trajectory_interpolant(test_res)
+    ref_norm_inf = trajectory_norm(traj_ref, np.inf)
+    ref_norm_2 = trajectory_norm(traj_ref, 2)
+
+    traj_res =  trajectory_interpolant(res)
+    new_norm_inf = trajectory_norm(traj_res, np.inf)
+    new_norm_2 = trajectory_norm(traj_res, 2)
+
+    diff_norm_inf= trajectory_norm(traj_diff, np.inf)
+    diff_norm_2 = trajectory_norm(traj_diff, 2)
 
     passed = False
     result = "failed"
     print(f"Regression test {result.upper()}")
-    fp = os.path.join(regression_data_path, f"case_{case}_fail.npz")
-    np.savez_compressed(fp, dict(p_norm_inf=p_norm_inf, p_norm_2=p_norm_2))
+    fp = os.path.join(regression_data_path, f"case_{case}_norms_fail.npz")
+    np.savez_compressed(fp,
+                        diff_norm_inf=diff_norm_inf, diff_norm_2=diff_norm_2,
+                        ref_norm_inf=ref_norm_inf, ref_norm_2=ref_norm_2,
+                        new_norm_inf=new_norm_inf, new_norm_2=diff_norm_2,
+                        diff_t = traj_diff.t,
+                        diff_c = traj_diff.c,
+                        diff_k = traj_diff.k,
+
+                        )
+    fp = os.path.join(regression_data_path, f"case_{case}_res_fail.npz")
+    res.to_file(fp)
+
+
 
 
 def plot_nesc_comparisons(simupy_res, case, plot_name=""):
