@@ -309,7 +309,7 @@ def regression_test(res, case):
     np.savez_compressed(fp,
                         diff_norm_inf=diff_norm_inf, diff_norm_2=diff_norm_2,
                         ref_norm_inf=ref_norm_inf, ref_norm_2=ref_norm_2,
-                        new_norm_inf=new_norm_inf, new_norm_2=diff_norm_2,
+                        new_norm_inf=new_norm_inf, new_norm_2=new_norm_2,
                         diff_t = traj_diff.t,
                         diff_c = traj_diff.c,
                         diff_k = traj_diff.k,
