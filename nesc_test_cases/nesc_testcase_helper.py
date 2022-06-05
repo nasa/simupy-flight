@@ -286,29 +286,25 @@ def regression_test(res, case):
         return
 
     test_res = SimulationResult.from_file(fp)
-    cols = slice(None)
-    if case in ["13p1", "13p2"]:
-        atol = np.r_[
-            [1e-5] * Planet.dim_output,
-            [5e-3] * Vehicle.dim_output,
-        ]
+    cols = slice(7) # translational position and quaternion state
+    if case == "11":
+        atol = 1.E-8
+        rtol = 1.E-9
+        p = np.inf
+    elif case in ["13p1", "13p2", "13p3", "13p4"]:
+        atol = 2.5E-7
+        rtol = 1.E-9
         p = 2
-        cols = slice(Planet.dim_output + Vehicle.dim_output)
-    elif case in ["13p3", "13p4"]:
-        atol = np.r_[
-            [5e-5] * Planet.dim_output,
-            [0.25] * Vehicle.dim_output,
-        ]
-        p = 2
-        cols = slice(Planet.dim_output + Vehicle.dim_output)
     elif case in ["15", "16"]:
-        # skip automatic testing for cases 15 and 16
-        return
+        atol = 1.E-7
+        rtol = 1.E-7
+        p = 2
     else:
-        atol = 1e-8
+        atol = 1.E-12
+        rtol = 1.E-9
         p = np.inf
 
-    matches = isclose(test_res, res, cols=cols, p=p, atol=atol, mode="pep485")
+    matches = isclose(test_res, res, cols=cols, p=p, atol=atol, rtol=rtol, mode="pep485")
     passed = np.all(matches)
     result = "passed" if passed else "failed"
     print(f"Regression test {result.upper()}")
