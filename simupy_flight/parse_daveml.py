@@ -28,11 +28,14 @@ def run_checks():
         if not numpy.allclose( {funcname}(*check_input), check_output):
             raise ValueError("Check for {funcname} failed!")
     print("All checks for {funcname} passed.")
+
+if __name__ == "__main__":
+    run_checks()
 """
 
 
 class ProcessDaveML:
-    def __init__(self, filename):
+    def __init__(self, filename, outdir="."):
         self.input_vars = []
         self.extra_assignments = {}
         self.output_vars = []
@@ -131,7 +134,8 @@ class ProcessDaveML:
             run_check_code = run_check_code_template.format(funcname=funcname)
             code = code + check_data_code + run_check_code
 
-        with open(funcname + ".py", "w") as codefile:
+        out_fp = os.path.join(outdir, f"{funcname}.py")
+        with open(out_fp, "w") as codefile:
             codefile.write(code)
 
     def xml_to_sympy_expr(self, xml_node):
@@ -438,7 +442,7 @@ class ProcessDaveML:
                                         for num in delimeter_regex.split(
                                             data_table.xpath("string()").strip()
                                         )
-                                        if num is not ""
+                                        if num != ""
                                     ]
                                 ).reshape(
                                     [knots_array.size for knots_array in knots_arrays]

@@ -340,3 +340,6 @@ def run_checks():
         if not numpy.allclose( F16_aero(*check_input), check_output):
             raise ValueError("Check for F16_aero failed!")
     print("All checks for F16_aero passed.")
+
+if __name__ == "__main__":
+    run_checks()
