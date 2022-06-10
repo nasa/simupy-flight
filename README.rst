@@ -59,6 +59,12 @@ Running the examples requires a few extra dependencies. They can be be installed
 
 To run an example, simply execute any of the ``nesc_case##.py`` files or the ``run_nesc_cases.py`` script, which will iterate through test cases that have been implemented. These scripts load the NESC reference results from the ``NESC_data/`` directory and plot them along with the results from the SimuPy Flight implementation. The reference results are included in the SimuPy Flight repository, but they can be obtained directly from the NESC `here <https://nescacademy.nasa.gov/src/flightsim/Datasets/Atmospheric_checkcases.zip>`_.
 
+.. note::
+
+    The generated code performs a divide by zero if the velocity is zero,
+    generating ``RuntimeWarning``\s. However, this condition is checked and
+    handled correctly.
+
 The SimuPy Flight results from running all NESC test cases are also included in the repository. By default, running any or all of the tests cases will perform a regression test against this data and report the result(s).
 
 To re-generate the regression data, pass the ``--write-regression-data`` flag::
