@@ -57,7 +57,7 @@ sphinx_gallery_conf = {
     "reset_argv": lambda gallery_conf, script_vars: ["--no-test"],
     "reference_url": {
         "simupy_flight": None,
-        "simupy": "https://simupy.readthedocs.io/en/latest/",
+        # "simupy": "https://simupy.readthedocs.io/en/latest/",
     },
 }
 
