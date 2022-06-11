@@ -59,6 +59,12 @@ Running the examples requires a few extra dependencies. They can be be installed
 
 To run an example, simply execute any of the ``nesc_case##.py`` files or the ``run_nesc_cases.py`` script, which will iterate through test cases that have been implemented. These scripts load the NESC reference results from the ``NESC_data/`` directory and plot them along with the results from the SimuPy Flight implementation. The reference results are included in the SimuPy Flight repository, but they can be obtained directly from the NESC `here <https://nescacademy.nasa.gov/src/flightsim/Datasets/Atmospheric_checkcases.zip>`_.
 
+.. note::
+
+    The generated code performs a divide by zero if the velocity is zero,
+    generating ``RuntimeWarning``\s. However, this condition is checked and
+    handled correctly.
+
 The SimuPy Flight results from running all NESC test cases are also included in the repository. By default, running any or all of the tests cases will perform a regression test against this data and report the result(s).
 
 To re-generate the regression data, pass the ``--write-regression-data`` flag::
@@ -73,6 +79,11 @@ DaveML Parsing
 --------------
 
 The American Institute of Aeronautics and Astronautics (AIAA) has developed a XML exchange format for aircraft simulation flight dynamics models called the `Dynamic Aerospace Vehicle Exchange Markup Language (DAVE-ML) <https://daveml.org/>`_. The ``parse_daveml`` submodule implements a parser that can be used to generate python code from valid DaveML. To use it, call the ``ProcessDaveML`` with a filename to the DaveML file. A python file will be created in the working directory with the same base-name as the DaveML file (replacing the extension, if any, with ``.py``). This feature was used to generate the vehicle models for the NESC test cases using the ``nesc_test_cases/process_NESC_DaveML.py`` script.
+
+The DaveML specification includes elements for check-case data sets to assist in verification and debugging. The parser adds a function to each generated file, called ``run_checks``, which is executed when the file is run as a script. The NESC-provided F16 models include such data sets so they can be checked by running the generated files themselves. For example, to check the F16 aerodynamics model::
+
+    $ python nesc_test_cases/F16_aero.py
+    All checks for F16_aero passed.
 
 Contributing
 ------------

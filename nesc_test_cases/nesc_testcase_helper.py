@@ -165,10 +165,7 @@ def plot_cols(
             try:  # try to  collect the columnr esult
                 baseline_y = baseline_pd[baseline_col]
             except KeyError:
-                print(
-                    "missing %s for SIM %s"
-                    % (baseline_col, baseline_pd_labels[baseline_idx])
-                )
+                pass
             else:  # if available, plot and add to ensemble average
                 plot_baseline_sel = baseline_pd.index <= tf
                 baseline_t = baseline_pd.index[plot_baseline_sel]

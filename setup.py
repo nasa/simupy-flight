@@ -24,7 +24,7 @@ setup(
     install_requires=[
         "numpy>=1.11.3",
         "scipy>=0.18.1",
-        "simupy>=1.1.1",
+        "simupy>=1.1.2",
         "pyerfa",
         "fluids",
     ],
@@ -32,6 +32,7 @@ setup(
         "test": ["pandas", "ndsplines", "matplotlib"],
         "derivation": ["sympy==1.4", "jupyterlab"],
         "docs": ["sphinx", "sphinx-gallery", "sphinx-rtd-theme"],
+        "daveml": ["daveml", "lxml", "ndsplines", "sympy==1.4"],
     },
     classifiers=[
         "Programming Language :: Python :: 3",

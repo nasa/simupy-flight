@@ -84,3 +84,6 @@ def run_checks():
         if not numpy.allclose( F16_prop(*check_input), check_output):
             raise ValueError("Check for F16_prop failed!")
     print("All checks for F16_prop passed.")
+
+if __name__ == "__main__":
+    run_checks()
