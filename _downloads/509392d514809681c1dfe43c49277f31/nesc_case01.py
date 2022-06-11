@@ -67,9 +67,17 @@ planet.initial_condition = planet.ic_from_planetodetic(
 planet.initial_condition[-3:] = omega_X_ic, omega_Y_ic, omega_Z_ic
 
 # %%
-# Simulate and assess the results
+# Simulate the dropped sphere
+#
+# .. note::
+#
+#    The generated code performs a divide by zero if the velocity is zero, generating
+#    ``RuntimeWarning``\s. However, this condition is checked and handled correctly
 
 with benchmark() as b:
     res = BD.simulate(30, integrator_options=int_opts)
+
+# %%
+# Plot the results of the simulation
 
 plot_nesc_comparisons(res, "01")

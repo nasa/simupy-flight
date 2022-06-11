@@ -135,17 +135,48 @@ coordinate system needed for the initial condition
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 70-71
+.. GENERATED FROM PYTHON SOURCE LINES 70-76
 
-Simulate and assess the results
+Simulate the dropped sphere
 
-.. GENERATED FROM PYTHON SOURCE LINES 71-76
+.. note::
+
+   The generated code performs a divide by zero if the velocity is zero, generating
+   ``RuntimeWarning``\s. However, this condition is checked and handled correctly
+
+.. GENERATED FROM PYTHON SOURCE LINES 76-80
 
 .. code-block:: default
 
 
     with benchmark() as b:
         res = BD.simulate(30, integrator_options=int_opts)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: invalid value encountered in double_scalars
+      x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
+    time to simulate: 2.423 s
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 81-82
+
+Plot the results of the simulation
+
+.. GENERATED FROM PYTHON SOURCE LINES 82-84
+
+.. code-block:: default
+
 
     plot_nesc_comparisons(res, "01")
 
@@ -225,38 +256,13 @@ Simulate and assess the results
          :class: sphx-glr-multi-img
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: invalid value encountered in double_scalars
-      x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
-    time to simulate: 1.403 s
-    missing eulerAngle_deg_Yaw for SIM 03
-    missing eulerAngle_deg_Pitch for SIM 03
-    missing eulerAngle_deg_Roll for SIM 03
-    missing bodyAngularRateWrtEi_deg_s_Roll for SIM 03
-    missing bodyAngularRateWrtEi_deg_s_Pitch for SIM 03
-    missing bodyAngularRateWrtEi_deg_s_Yaw for SIM 03
-    missing eiPosition_ft_X for SIM 01
-    missing eiPosition_ft_X for SIM 02
-    missing eiPosition_ft_X for SIM 03
-    missing eiPosition_ft_Y for SIM 01
-    missing eiPosition_ft_Y for SIM 02
-    missing eiPosition_ft_Y for SIM 03
-    missing eiPosition_ft_Z for SIM 01
-    missing eiPosition_ft_Z for SIM 02
-    missing eiPosition_ft_Z for SIM 03
-
 
 
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  7.282 seconds)
+   **Total running time of the script:** ( 0 minutes  10.867 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case01.py:

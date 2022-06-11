@@ -81,7 +81,7 @@ signals.
 
  .. code-block:: none
 
-    time to simulate: 47.221 s
+    time to simulate: 77.355 s
 
 
 
@@ -177,23 +177,13 @@ signals.
          :class: sphx-glr-multi-img
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    missing eiPosition_ft_X for SIM 02
-    missing eiPosition_ft_Y for SIM 02
-    missing eiPosition_ft_Z for SIM 02
-
 
 
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  52.899 seconds)
+   **Total running time of the script:** ( 1 minutes  25.485 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case13p3.py:

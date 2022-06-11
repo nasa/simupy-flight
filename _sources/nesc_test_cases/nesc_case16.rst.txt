@@ -219,16 +219,13 @@ Notes           Initially straight & level and engage auto-pilot
 
     Optimization terminated successfully.
              Current function value: 0.000000
-             Iterations: 279
-             Function evaluations: 518
+             Iterations: 281
+             Function evaluations: 522
     pitch: 2.6659e+00  roll: 0.0000e+00  longStk: 12.9899  throttle: 13.8207
     accelerations:
-     [[-1.16304744e-11  9.40508088e-13 -1.68081724e-11]
-     [ 1.84840687e-11  2.49043324e-12  1.45023664e-09]]
-    time to simulate: 410.502 s
-    missing eiPosition_ft_X for SIM 02
-    missing eiPosition_ft_Y for SIM 02
-    missing eiPosition_ft_Z for SIM 02
+     [[-7.73686670e-12  3.10714995e-12 -3.36115109e-12]
+     [ 1.83141906e-11 -1.04603109e-12  1.45029217e-09]]
+    time to simulate: 627.972 s
 
 
 
@@ -311,7 +308,7 @@ Notes           Initially straight & level and engage auto-pilot
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 6 minutes  57.072 seconds)
+   **Total running time of the script:** ( 10 minutes  37.359 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case16.py:

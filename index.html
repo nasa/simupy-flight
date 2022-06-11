@@ -113,6 +113,12 @@ $ pip install .
 </pre></div>
 </div>
 <p>To run an example, simply execute any of the <code class="docutils literal notranslate"><span class="pre">nesc_case##.py</span></code> files or the <code class="docutils literal notranslate"><span class="pre">run_nesc_cases.py</span></code> script, which will iterate through test cases that have been implemented. These scripts load the NESC reference results from the <code class="docutils literal notranslate"><span class="pre">NESC_data/</span></code> directory and plot them along with the results from the SimuPy Flight implementation. The reference results are included in the SimuPy Flight repository, but they can be obtained directly from the NESC <a class="reference external" href="https://nescacademy.nasa.gov/src/flightsim/Datasets/Atmospheric_checkcases.zip">here</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The generated code performs a divide by zero if the velocity is zero,
+generating <code class="docutils literal notranslate"><span class="pre">RuntimeWarning</span></code>s. However, this condition is checked and
+handled correctly.</p>
+</div>
 <p>The SimuPy Flight results from running all NESC test cases are also included in the repository. By default, running any or all of the tests cases will perform a regression test against this data and report the result(s).</p>
 <p>To re-generate the regression data, pass the <code class="docutils literal notranslate"><span class="pre">--write-regression-data</span></code> flag:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python nesc_test_cases/run_nesc_cases.py --write-regression-data
@@ -124,6 +130,11 @@ $ pip install .
 <section id="daveml-parsing">
 <h2>DaveML Parsing<a class="headerlink" href="#daveml-parsing" title="Permalink to this heading"></a></h2>
 <p>The American Institute of Aeronautics and Astronautics (AIAA) has developed a XML exchange format for aircraft simulation flight dynamics models called the <a class="reference external" href="https://daveml.org/">Dynamic Aerospace Vehicle Exchange Markup Language (DAVE-ML)</a>. The <code class="docutils literal notranslate"><span class="pre">parse_daveml</span></code> submodule implements a parser that can be used to generate python code from valid DaveML. To use it, call the <code class="docutils literal notranslate"><span class="pre">ProcessDaveML</span></code> with a filename to the DaveML file. A python file will be created in the working directory with the same base-name as the DaveML file (replacing the extension, if any, with <code class="docutils literal notranslate"><span class="pre">.py</span></code>). This feature was used to generate the vehicle models for the NESC test cases using the <code class="docutils literal notranslate"><span class="pre">nesc_test_cases/process_NESC_DaveML.py</span></code> script.</p>
+<p>The DaveML specification includes elements for check-case data sets to assist in verification and debugging. The parser adds a function to each generated file, called <code class="docutils literal notranslate"><span class="pre">run_checks</span></code>, which is executed when the file is run as a script. The NESC-provided F16 models include such data sets so they can be checked by running the generated files themselves. For example, to check the F16 aerodynamics model:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python nesc_test_cases/F16_aero.py
+All checks for F16_aero passed.
+</pre></div>
+</div>
 </section>
 <section id="contributing">
 <h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading"></a></h2>

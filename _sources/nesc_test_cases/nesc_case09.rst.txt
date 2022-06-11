@@ -131,7 +131,7 @@ Notes           Initial velocity is :math:`\sqrt{2000}` ft/s aligned 45 degrees 
 
  .. code-block:: none
 
-    time to simulate: 2.369 s
+    time to simulate: 3.663 s
 
 
 
@@ -219,35 +219,13 @@ Notes           Initial velocity is :math:`\sqrt{2000}` ft/s aligned 45 degrees 
          :class: sphx-glr-multi-img
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    missing eulerAngle_deg_Yaw for SIM 03
-    missing eulerAngle_deg_Pitch for SIM 03
-    missing eulerAngle_deg_Roll for SIM 03
-    missing bodyAngularRateWrtEi_deg_s_Roll for SIM 03
-    missing bodyAngularRateWrtEi_deg_s_Pitch for SIM 03
-    missing bodyAngularRateWrtEi_deg_s_Yaw for SIM 03
-    missing eiPosition_ft_X for SIM 01
-    missing eiPosition_ft_X for SIM 02
-    missing eiPosition_ft_X for SIM 03
-    missing eiPosition_ft_Y for SIM 01
-    missing eiPosition_ft_Y for SIM 02
-    missing eiPosition_ft_Y for SIM 03
-    missing eiPosition_ft_Z for SIM 01
-    missing eiPosition_ft_Z for SIM 02
-    missing eiPosition_ft_Z for SIM 03
-
 
 
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  7.645 seconds)
+   **Total running time of the script:** ( 0 minutes  11.360 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case09.py:
