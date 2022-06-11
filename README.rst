@@ -80,6 +80,11 @@ DaveML Parsing
 
 The American Institute of Aeronautics and Astronautics (AIAA) has developed a XML exchange format for aircraft simulation flight dynamics models called the `Dynamic Aerospace Vehicle Exchange Markup Language (DAVE-ML) <https://daveml.org/>`_. The ``parse_daveml`` submodule implements a parser that can be used to generate python code from valid DaveML. To use it, call the ``ProcessDaveML`` with a filename to the DaveML file. A python file will be created in the working directory with the same base-name as the DaveML file (replacing the extension, if any, with ``.py``). This feature was used to generate the vehicle models for the NESC test cases using the ``nesc_test_cases/process_NESC_DaveML.py`` script.
 
+The DaveML specification includes elements for check-case data sets to assist in verification and debugging. The parser adds a function to each generated file, called ``run_checks``, which is executed when the file is run as a script. The NESC-provided F16 models include such data sets so they can be checked by running the generated files themselves. For example, to check the F16 aerodynamics model::
+
+    $ python nesc_test_cases/F16_aero.py
+    All checks for F16_aero passed.
+
 Contributing
 ------------
 
