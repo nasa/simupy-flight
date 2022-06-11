@@ -418,13 +418,13 @@ Notes           Initially straight & level and engage auto-pilot
 
     Optimization terminated successfully.
              Current function value: 5.307430
-             Iterations: 260
-             Function evaluations: 539
-    pitch: 2.6742e+00  roll: 0.0000e+00  longStk: 13.0082  throttle: 13.8357
+             Iterations: 263
+             Function evaluations: 545
+    pitch: 2.6742e+00  roll: 0.0000e+00  longStk: 13.0083  throttle: 13.8357
     accelerations:
-     [[-5.30742973e+00 -3.13605581e-08 -5.16943720e-08]
-     [-6.38762633e-07  8.60861093e-08  5.56269331e-09]]
-    time to simulate: 1121.910 s
+     [[-5.30742973e+00 -3.36137054e-07 -5.05938035e-07]
+     [-6.38762619e-07  1.03070072e-07  5.56269071e-09]]
+    time to simulate: 749.386 s
 
 
 
@@ -432,7 +432,7 @@ Notes           Initially straight & level and engage auto-pilot
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 18 minutes  52.011 seconds)
+   **Total running time of the script:** ( 12 minutes  36.782 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case15.py:

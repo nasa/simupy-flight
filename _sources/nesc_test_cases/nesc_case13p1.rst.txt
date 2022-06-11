@@ -83,13 +83,13 @@ signals.
 
     Optimization terminated successfully.
              Current function value: 0.006500
-             Iterations: 291
-             Function evaluations: 554
+             Iterations: 299
+             Function evaluations: 562
     pitch: 2.6351e+00  roll: 0.0000e+00  longStk: 12.9236  throttle: 13.7561
     accelerations:
-     [[-4.59609832e-03  4.59610301e-03  2.09229079e-09]
-     [-2.98437663e-09 -1.70643291e-09  2.12618714e-09]]
-    time to simulate: 47.104 s
+     [[-4.59610112e-03  4.59610020e-03  1.01317177e-10]
+     [-2.98437663e-09  4.11189587e-09  2.12618714e-09]]
+    time to simulate: 30.430 s
 
 
 
@@ -191,7 +191,7 @@ signals.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  56.183 seconds)
+   **Total running time of the script:** ( 0 minutes  36.787 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case13p1.py:
