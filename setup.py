@@ -32,7 +32,7 @@ setup(
         "test": ["pandas", "ndsplines", "matplotlib"],
         "derivation": ["sympy==1.4", "jupyterlab"],
         "docs": ["sphinx", "sphinx-gallery", "sphinx-rtd-theme"],
-        "daveml": ["daveml", "lxml", "ndsplines", "sympy==1.4"],
+        "daveml": ["lxml", "ndsplines", "sympy==1.4"],
     },
     classifiers=[
         "Programming Language :: Python :: 3",
