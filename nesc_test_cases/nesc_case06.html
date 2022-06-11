@@ -19,6 +19,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -99,7 +100,7 @@
 to download the full example code</p>
 </div>
 <section class="sphx-glr-example-title" id="case-6-dropped-sphere-over-rotating-ellipsoidal-earth">
-<span id="sphx-glr-nesc-test-cases-nesc-case06-py"></span><h1>Case 6: Dropped sphere over rotating, ellipsoidal Earth<a class="headerlink" href="#case-6-dropped-sphere-over-rotating-ellipsoidal-earth" title="Permalink to this headline"></a></h1>
+<span id="sphx-glr-nesc-test-cases-nesc-case06-py"></span><h1>Case 6: Dropped sphere over rotating, ellipsoidal Earth<a class="headerlink" href="#case-6-dropped-sphere-over-rotating-ellipsoidal-earth" title="Permalink to this heading"></a></h1>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 30%" />
@@ -126,7 +127,7 @@ to download the full example code</p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">simupy.block_diagram</span> <span class="kn">import</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class"><span class="n">BlockDiagram</span></a>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">simupy.block_diagram</span> <span class="kn">import</span> <span class="n">BlockDiagram</span>
 <span class="kn">import</span> <span class="nn">simupy_flight</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -182,9 +183,9 @@ to download the full example code</p>
     <span class="n">d_l</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
 <span class="p">)</span>
 
-<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BD</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram" title="simupy.block_diagram.BlockDiagram" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class"><span class="n">BlockDiagram</span></a><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="p">,</span> <a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a><span class="p">)</span>
-<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="p">,</span> <a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="o">.</span><span class="n">dim_output</span><span class="p">))</span>
-<a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.connect" title="simupy.block_diagram.BlockDiagram.connect" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">connect</span></a><span class="p">(</span><a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a><span class="p">,</span> <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a><span class="o">.</span><span class="n">dim_output</span><span class="p">))</span>
+<span class="n">BD</span> <span class="o">=</span> <span class="n">BlockDiagram</span><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="p">,</span> <a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a><span class="p">)</span>
+<span class="n">BD</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="p">,</span> <a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="o">.</span><span class="n">dim_output</span><span class="p">))</span>
+<span class="n">BD</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a><span class="p">,</span> <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><a href="../api.html#simupy_flight.Vehicle" title="simupy_flight.Vehicle" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">vehicle</span></a><span class="o">.</span><span class="n">dim_output</span><span class="p">))</span>
 
 <span class="n">lat_ic</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
 <span class="n">long_ic</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span>
@@ -205,7 +206,7 @@ to download the full example code</p>
 <a href="../api.html#simupy_flight.Planet" title="simupy_flight.Planet" class="sphx-glr-backref-module-simupy_flight sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">planet</span></a><span class="o">.</span><span class="n">initial_condition</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="n">omega_X_ic</span><span class="p">,</span> <span class="n">omega_Y_ic</span><span class="p">,</span> <span class="n">omega_Z_ic</span>
 
 <span class="k">with</span> <span class="n">benchmark</span><span class="p">()</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
-    <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.simulate" title="simupy.block_diagram.BlockDiagram.simulate" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">simulate</span></a><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">integrator_options</span><span class="o">=</span><span class="n">int_opts</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">BD</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">integrator_options</span><span class="o">=</span><span class="n">int_opts</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
@@ -213,10 +214,10 @@ to download the full example code</p>
   x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
 /home/runner/work/simupy-flight/simupy-flight/simupy_flight/dynamics.py:22: RuntimeWarning: divide by zero encountered in double_scalars
   x15 = numpy.select([numpy.greater(V_T, 0.0)], [(1/2)/V_T], default=0.0)
-time to simulate: 2.305 s
+time to simulate: 2.382 s
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plot_nesc_comparisons</span><span class="p">(</span><a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plot_nesc_comparisons</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="s2">&quot;06&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="sphx-glr-horizontal">
@@ -249,7 +250,7 @@ missing eiPosition_ft_Z for SIM 02
 missing eiPosition_ft_Z for SIM 03
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  7.444 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  7.702 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-nesc-test-cases-nesc-case06-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/2314f0244dcca817eb9f00bcfd57850a/nesc_case06.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">nesc_case06.py</span></code></a></p>

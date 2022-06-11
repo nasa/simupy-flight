@@ -19,6 +19,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -98,7 +99,7 @@
 to download the full example code</p>
 </div>
 <section class="sphx-glr-example-title" id="case-13-2-velocity-change-of-a-subsonic-aircraft">
-<span id="sphx-glr-nesc-test-cases-nesc-case13p2-py"></span><h1>Case 13.2: Velocity change of a subsonic aircraft<a class="headerlink" href="#case-13-2-velocity-change-of-a-subsonic-aircraft" title="Permalink to this headline"></a></h1>
+<span id="sphx-glr-nesc-test-cases-nesc-case13p2-py"></span><h1>Case 13.2: Velocity change of a subsonic aircraft<a class="headerlink" href="#case-13-2-velocity-change-of-a-subsonic-aircraft" title="Permalink to this heading"></a></h1>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 19%" />
@@ -144,25 +145,25 @@ signals.</p>
     <span class="n">trimmed_KEAS</span><span class="p">,</span>
 <span class="p">)</span>
 
-<a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">keasCmdBlock</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.SystemFromCallable" title="simupy.systems.SystemFromCallable" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-function"><span class="n">systems</span><span class="o">.</span><span class="n">SystemFromCallable</span></a><span class="p">(</span>
+<span class="n">keasCmdBlock</span> <span class="o">=</span> <span class="n">systems</span><span class="o">.</span><span class="n">SystemFromCallable</span><span class="p">(</span>
     <span class="n">interpolate</span><span class="o">.</span><span class="n">make_interp_spline</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="n">trimmed_KEAS</span><span class="p">,</span> <span class="n">trimmed_KEAS</span> <span class="o">-</span> <span class="mf">5.0</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
     <span class="mi">0</span><span class="p">,</span>
     <span class="mi">1</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">BD</span><span class="o">.</span><span class="n">systems</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/systems.html#simupy.systems.DynamicalSystem" title="simupy.systems.DynamicalSystem" class="sphx-glr-backref-module-simupy-systems sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">keasCmdBlock</span></a>
+<span class="n">BD</span><span class="o">.</span><span class="n">systems</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">keasCmdBlock</span>
 <span class="n">BD</span><span class="o">.</span><span class="n">systems</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">F16ControllerBlock</span><span class="p">(</span><span class="o">*</span><span class="n">opt_ctrl</span><span class="p">,</span> <span class="n">sasOn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">apOn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">event_t</span><span class="o">=</span><span class="mf">5.</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">benchmark</span><span class="p">()</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
-    <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a> <span class="o">=</span> <a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.BlockDiagram.simulate" title="simupy.block_diagram.BlockDiagram.simulate" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-method"><span class="n">BD</span><span class="o">.</span><span class="n">simulate</span></a><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">integrator_options</span><span class="o">=</span><span class="n">int_opts</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">BD</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">integrator_options</span><span class="o">=</span><span class="n">int_opts</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>time to simulate: 27.960 s
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>time to simulate: 27.425 s
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plot_nesc_comparisons</span><span class="p">(</span><a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a><span class="p">,</span> <span class="s2">&quot;13p2&quot;</span><span class="p">)</span>
-<span class="n">plot_F16_controls</span><span class="p">(</span><a href="https://simupy.readthedocs.io/en/latest/api/block_diagram.html#simupy.block_diagram.SimulationResult" title="simupy.block_diagram.SimulationResult" class="sphx-glr-backref-module-simupy-block_diagram sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">res</span></a><span class="p">,</span> <span class="s2">&quot;13p2&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plot_nesc_comparisons</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="s2">&quot;13p2&quot;</span><span class="p">)</span>
+<span class="n">plot_F16_controls</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="s2">&quot;13p2&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="sphx-glr-horizontal">
@@ -184,7 +185,7 @@ missing eiPosition_ft_Y for SIM 02
 missing eiPosition_ft_Z for SIM 02
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  33.058 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  32.248 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-nesc-test-cases-nesc-case13p2-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/c3ef9b67a08beaaddcc0426988688778/nesc_case13p2.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">nesc_case13p2.py</span></code></a></p>
