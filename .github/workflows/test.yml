@@ -27,6 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        python -m pip install -v "ndsplines @ git+https://github.com/kb-press/ndsplines@master"
         python -m pip install .[test]
 
     - name: Run tests
