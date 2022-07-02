@@ -81,7 +81,7 @@ signals.
 
  .. code-block:: none
 
-    time to simulate: 48.062 s
+    time to simulate: 41.268 s
 
 
 
@@ -183,7 +183,7 @@ signals.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  53.785 seconds)
+   **Total running time of the script:** ( 0 minutes  46.385 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case13p3.py:
