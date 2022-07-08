@@ -164,7 +164,7 @@ Simulate the dropped sphere
 
     /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: invalid value encountered in double_scalars
       x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
-    time to simulate: 1.386 s
+    time to simulate: 1.321 s
 
 
 
@@ -262,7 +262,7 @@ Plot the results of the simulation
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  7.239 seconds)
+   **Total running time of the script:** ( 0 minutes  7.081 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case01.py:

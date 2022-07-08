@@ -220,7 +220,7 @@ The inertial forces due to rotation needed to be modeled with a vehicle
       x15 = numpy.select([numpy.greater(V_T, 0.0)], [(1/2)/V_T], default=0.0)
     /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: divide by zero encountered in double_scalars
       x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
-    time to simulate: 2.026 s
+    time to simulate: 1.955 s
 
 
 
@@ -228,7 +228,7 @@ The inertial forces due to rotation needed to be modeled with a vehicle
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  7.176 seconds)
+   **Total running time of the script:** ( 0 minutes  6.830 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case02.py:

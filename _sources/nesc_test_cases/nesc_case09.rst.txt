@@ -131,7 +131,7 @@ Notes           Initial velocity is :math:`\sqrt{2000}` ft/s aligned 45 degrees 
 
  .. code-block:: none
 
-    time to simulate: 2.131 s
+    time to simulate: 2.034 s
 
 
 
@@ -225,7 +225,7 @@ Notes           Initial velocity is :math:`\sqrt{2000}` ft/s aligned 45 degrees 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  7.331 seconds)
+   **Total running time of the script:** ( 0 minutes  7.016 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case09.py:

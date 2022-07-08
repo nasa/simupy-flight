@@ -690,7 +690,7 @@ Simulate and assess the results
 
  .. code-block:: none
 
-    time to simulate: 69.169 s
+    time to simulate: 63.108 s
 
 
 
@@ -698,7 +698,7 @@ Simulate and assess the results
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  15.100 seconds)
+   **Total running time of the script:** ( 1 minutes  8.739 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case11.py:
