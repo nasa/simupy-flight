@@ -141,7 +141,7 @@ Vehicle         Sphere with constant :math:`C_D`
 
  .. code-block:: none
 
-    time to simulate: 2.037 s
+    time to simulate: 2.409 s
 
 
 
@@ -235,7 +235,7 @@ Vehicle         Sphere with constant :math:`C_D`
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  6.901 seconds)
+   **Total running time of the script:** ( 0 minutes  8.408 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case08.py:

@@ -424,7 +424,7 @@ Notes           Initially straight & level and engage auto-pilot
     accelerations:
      [[-5.30742973e+00 -3.36137054e-07 -5.05938035e-07]
      [-6.38762619e-07  1.03070072e-07  5.56269071e-09]]
-    time to simulate: 650.332 s
+    time to simulate: 798.207 s
 
 
 
@@ -432,7 +432,7 @@ Notes           Initially straight & level and engage auto-pilot
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 10 minutes  56.946 seconds)
+   **Total running time of the script:** ( 13 minutes  26.367 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case15.py:
