@@ -61,6 +61,9 @@ sphinx_gallery_conf = {
     },
 }
 
+# ignore warning about unpicklable object in sphinx_gallery_conf
+suppress_warnings = ["config.cache"]
+
 
 # -- Options for HTML output -------------------------------------------------
 

@@ -22,7 +22,7 @@ setup(
     license="NASA Open Source Agreement Version 1.3",
     python_requires=">=3",
     install_requires=[
-        "numpy>=1.11.3",
+        "numpy>=1.11.3,<2",
         "scipy>=0.18.1",
         "simupy>=1.1.2",
         "pyerfa",
