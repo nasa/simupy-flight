@@ -10,8 +10,8 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_nesc_test_cases_nesc_case08.py>`
-        to download the full example code
+        :ref:`Go to the end <sphx_glr_download_nesc_test_cases_nesc_case08.py>`
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -33,7 +33,7 @@ Vehicle         Sphere with constant :math:`C_D`
 
 .. GENERATED FROM PYTHON SOURCE LINES 15-111
 
-.. code-block:: default
+.. code-block:: Python
 
 
     from simupy.block_diagram import BlockDiagram
@@ -137,18 +137,16 @@ Vehicle         Sphere with constant :math:`C_D`
 
 .. rst-class:: sphx-glr-script-out
 
- Out:
-
  .. code-block:: none
 
-    time to simulate: 2.039 s
+    time to simulate: 1.704 s
 
 
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 112-114
 
-.. code-block:: default
+.. code-block:: Python
 
 
     plot_nesc_comparisons(res, "08")
@@ -235,28 +233,26 @@ Vehicle         Sphere with constant :math:`C_D`
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  7.011 seconds)
+   **Total running time of the script:** (0 minutes 6.252 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case08.py:
 
+.. only:: html
 
-.. only :: html
+  .. container:: sphx-glr-footer sphx-glr-footer-example
 
- .. container:: sphx-glr-footer
-    :class: sphx-glr-footer-example
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
 
+      :download:`Download Jupyter notebook: nesc_case08.ipynb <nesc_case08.ipynb>`
 
+    .. container:: sphx-glr-download sphx-glr-download-python
 
-  .. container:: sphx-glr-download sphx-glr-download-python
+      :download:`Download Python source code: nesc_case08.py <nesc_case08.py>`
 
-     :download:`Download Python source code: nesc_case08.py <nesc_case08.py>`
+    .. container:: sphx-glr-download sphx-glr-download-zip
 
-
-
-  .. container:: sphx-glr-download sphx-glr-download-jupyter
-
-     :download:`Download Jupyter notebook: nesc_case08.ipynb <nesc_case08.ipynb>`
+      :download:`Download zipped: nesc_case08.zip <nesc_case08.zip>`
 
 
 .. only:: html

@@ -10,8 +10,8 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_nesc_test_cases_nesc_case04.py>`
-        to download the full example code
+        :ref:`Go to the end <sphx_glr_download_nesc_test_cases_nesc_case04.py>`
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -33,7 +33,7 @@ Vehicle         Sphere with constant :math:`C_D`
 
 .. GENERATED FROM PYTHON SOURCE LINES 15-97
 
-.. code-block:: default
+.. code-block:: Python
 
 
     from simupy.block_diagram import BlockDiagram
@@ -123,22 +123,20 @@ Vehicle         Sphere with constant :math:`C_D`
 
 .. rst-class:: sphx-glr-script-out
 
- Out:
-
  .. code-block:: none
 
-    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: invalid value encountered in double_scalars
+    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: invalid value encountered in scalar divide
       x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
-    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/dynamics.py:22: RuntimeWarning: divide by zero encountered in double_scalars
+    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/dynamics.py:22: RuntimeWarning: divide by zero encountered in scalar divide
       x15 = numpy.select([numpy.greater(V_T, 0.0)], [(1/2)/V_T], default=0.0)
-    time to simulate: 2.008 s
+    time to simulate: 1.667 s
 
 
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 98-100
 
-.. code-block:: default
+.. code-block:: Python
 
 
     plot_nesc_comparisons(res, "04")
@@ -225,28 +223,26 @@ Vehicle         Sphere with constant :math:`C_D`
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  6.692 seconds)
+   **Total running time of the script:** (0 minutes 6.457 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case04.py:
 
+.. only:: html
 
-.. only :: html
+  .. container:: sphx-glr-footer sphx-glr-footer-example
 
- .. container:: sphx-glr-footer
-    :class: sphx-glr-footer-example
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
 
+      :download:`Download Jupyter notebook: nesc_case04.ipynb <nesc_case04.ipynb>`
 
+    .. container:: sphx-glr-download sphx-glr-download-python
 
-  .. container:: sphx-glr-download sphx-glr-download-python
+      :download:`Download Python source code: nesc_case04.py <nesc_case04.py>`
 
-     :download:`Download Python source code: nesc_case04.py <nesc_case04.py>`
+    .. container:: sphx-glr-download sphx-glr-download-zip
 
-
-
-  .. container:: sphx-glr-download sphx-glr-download-jupyter
-
-     :download:`Download Jupyter notebook: nesc_case04.ipynb <nesc_case04.ipynb>`
+      :download:`Download zipped: nesc_case04.zip <nesc_case04.zip>`
 
 
 .. only:: html

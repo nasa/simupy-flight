@@ -10,8 +10,8 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_nesc_test_cases_nesc_case16.py>`
-        to download the full example code
+        :ref:`Go to the end <sphx_glr_download_nesc_test_cases_nesc_case16.py>`
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -34,7 +34,7 @@ Notes           Initially straight & level and engage auto-pilot
 
 .. GENERATED FROM PYTHON SOURCE LINES 17-108
 
-.. code-block:: default
+.. code-block:: Python
 
 
     from simupy import systems
@@ -213,26 +213,24 @@ Notes           Initially straight & level and engage auto-pilot
 
 .. rst-class:: sphx-glr-script-out
 
- Out:
-
  .. code-block:: none
 
     Optimization terminated successfully.
              Current function value: 0.000000
-             Iterations: 279
-             Function evaluations: 518
+             Iterations: 281
+             Function evaluations: 522
     pitch: 2.6659e+00  roll: 0.0000e+00  longStk: 12.9899  throttle: 13.8207
     accelerations:
-     [[-1.16304744e-11  9.40508088e-13 -1.68081724e-11]
-     [ 1.84840687e-11  2.49043324e-12  1.45023664e-09]]
-    time to simulate: 362.100 s
+     [[-7.73686670e-12  3.10714995e-12 -3.36115109e-12]
+     [ 1.83141906e-11 -1.04603109e-12  1.45029217e-09]]
+    time to simulate: 281.716 s
 
 
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 109-168
 
-.. code-block:: default
+.. code-block:: Python
 
 
     plt.subplots(constrained_layout=True)
@@ -308,28 +306,26 @@ Notes           Initially straight & level and engage auto-pilot
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 6 minutes  8.370 seconds)
+   **Total running time of the script:** (4 minutes 47.611 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case16.py:
 
+.. only:: html
 
-.. only :: html
+  .. container:: sphx-glr-footer sphx-glr-footer-example
 
- .. container:: sphx-glr-footer
-    :class: sphx-glr-footer-example
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
 
+      :download:`Download Jupyter notebook: nesc_case16.ipynb <nesc_case16.ipynb>`
 
+    .. container:: sphx-glr-download sphx-glr-download-python
 
-  .. container:: sphx-glr-download sphx-glr-download-python
+      :download:`Download Python source code: nesc_case16.py <nesc_case16.py>`
 
-     :download:`Download Python source code: nesc_case16.py <nesc_case16.py>`
+    .. container:: sphx-glr-download sphx-glr-download-zip
 
-
-
-  .. container:: sphx-glr-download sphx-glr-download-jupyter
-
-     :download:`Download Jupyter notebook: nesc_case16.ipynb <nesc_case16.ipynb>`
+      :download:`Download zipped: nesc_case16.zip <nesc_case16.zip>`
 
 
 .. only:: html

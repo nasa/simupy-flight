@@ -1,26 +1,26 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Case 2: Tumbling brick with no damping or drag &mdash; SimuPy Flight  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=15629a3e" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -33,11 +33,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> SimuPy Flight
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SimuPy Flight
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -81,9 +85,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">NESC Test Cases</a> &raquo;</li>
-      <li>Case 2: Tumbling brick with no damping or drag</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">NESC Test Cases</a></li>
+      <li class="breadcrumb-item active">Case 2: Tumbling brick with no damping or drag</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/nesc_test_cases/nesc_case02.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -95,16 +99,12 @@
              
   <div class="sphx-glr-download-link-note admonition note">
 <p class="admonition-title">Note</p>
-<p>Click <a class="reference internal" href="#sphx-glr-download-nesc-test-cases-nesc-case02-py"><span class="std std-ref">here</span></a>
-to download the full example code</p>
+<p><a class="reference internal" href="#sphx-glr-download-nesc-test-cases-nesc-case02-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
 </div>
 <section class="sphx-glr-example-title" id="case-2-tumbling-brick-with-no-damping-or-drag">
-<span id="sphx-glr-nesc-test-cases-nesc-case02-py"></span><h1>Case 2: Tumbling brick with no damping or drag<a class="headerlink" href="#case-2-tumbling-brick-with-no-damping-or-drag" title="Permalink to this heading"></a></h1>
+<span id="sphx-glr-nesc-test-cases-nesc-case02-py"></span><h1>Case 2: Tumbling brick with no damping or drag<a class="headerlink" href="#case-2-tumbling-brick-with-no-damping-or-drag" title="Link to this heading"></a></h1>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 75%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p>Verifies</p></td>
 <td><p>Rotational EOMs</p></td>
@@ -129,7 +129,7 @@ to download the full example code</p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">simupy.block_diagram</span> <span class="kn">import</span> <span class="n">BlockDiagram</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">simupy.block_diagram</span> <span class="kn">import</span> <span class="n">BlockDiagram</span>
 <span class="kn">import</span> <span class="nn">simupy_flight</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -149,7 +149,7 @@ to download the full example code</p>
 </pre></div>
 </div>
 <p>The inertial forces due to rotation needed to be modeled with a vehicle</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Ixx</span> <span class="o">=</span> <span class="mf">0.001894220</span> <span class="o">*</span> <span class="n">kg_per_slug</span> <span class="o">/</span> <span class="p">(</span><span class="n">ft_per_m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># slug-ft2</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">Ixx</span> <span class="o">=</span> <span class="mf">0.001894220</span> <span class="o">*</span> <span class="n">kg_per_slug</span> <span class="o">/</span> <span class="p">(</span><span class="n">ft_per_m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># slug-ft2</span>
 <span class="n">Iyy</span> <span class="o">=</span> <span class="mf">0.006211019</span> <span class="o">*</span> <span class="n">kg_per_slug</span> <span class="o">/</span> <span class="p">(</span><span class="n">ft_per_m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># slug-ft2</span>
 <span class="n">Izz</span> <span class="o">=</span> <span class="mf">0.007194665</span> <span class="o">*</span> <span class="n">kg_per_slug</span> <span class="o">/</span> <span class="p">(</span><span class="n">ft_per_m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># slug-ft2</span>
 <span class="n">Ixy</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">kg_per_slug</span> <span class="o">/</span> <span class="p">(</span><span class="n">ft_per_m</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># slug-ft2</span>
@@ -224,23 +224,25 @@ to download the full example code</p>
 <li><img src="../_images/sphx_glr_nesc_case02_009.png" srcset="../_images/sphx_glr_nesc_case02_009.png" alt="nesc case02" class = "sphx-glr-multi-img"/></li>
 <li><img src="../_images/sphx_glr_nesc_case02_010.png" srcset="../_images/sphx_glr_nesc_case02_010.png" alt="nesc case02" class = "sphx-glr-multi-img"/></li>
 </ul>
-<p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: invalid value encountered in double_scalars
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: invalid value encountered in scalar divide
   x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
-/home/runner/work/simupy-flight/simupy-flight/simupy_flight/dynamics.py:22: RuntimeWarning: divide by zero encountered in double_scalars
+/home/runner/work/simupy-flight/simupy-flight/simupy_flight/dynamics.py:22: RuntimeWarning: divide by zero encountered in scalar divide
   x15 = numpy.select([numpy.greater(V_T, 0.0)], [(1/2)/V_T], default=0.0)
-/home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: divide by zero encountered in double_scalars
+/home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: divide by zero encountered in scalar divide
   x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
-time to simulate: 1.955 s
+time to simulate: 1.626 s
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  6.830 seconds)</p>
-<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-nesc-test-cases-nesc-case02-py">
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 6.294 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-nesc-test-cases-nesc-case02-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/c2eeead6ea475bc21a88e47d9e693157/nesc_case02.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">nesc_case02.ipynb</span></code></a></p>
+</div>
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/cce2cf07d94352eaf32072665ba4cf69/nesc_case02.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">nesc_case02.py</span></code></a></p>
 </div>
-<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
-<p><a class="reference download internal" download="" href="../_downloads/c2eeead6ea475bc21a88e47d9e693157/nesc_case02.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">nesc_case02.ipynb</span></code></a></p>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/9effc14fb2bcbb180f496dd0d7ae3542/nesc_case02.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">nesc_case02.zip</span></code></a></p>
 </div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>

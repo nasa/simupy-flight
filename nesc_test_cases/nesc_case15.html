@@ -1,26 +1,26 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Case 15: Circular F-16 flight around North Pole &mdash; SimuPy Flight  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sg_gallery-binder.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sg_gallery-dataframe.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/sg_gallery-rendered-html.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=15629a3e" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -33,11 +33,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> SimuPy Flight
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SimuPy Flight
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -81,9 +85,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">NESC Test Cases</a> &raquo;</li>
-      <li>Case 15: Circular F-16 flight around North Pole</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">NESC Test Cases</a></li>
+      <li class="breadcrumb-item active">Case 15: Circular F-16 flight around North Pole</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/nesc_test_cases/nesc_case15.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -95,16 +99,12 @@
              
   <div class="sphx-glr-download-link-note admonition note">
 <p class="admonition-title">Note</p>
-<p>Click <a class="reference internal" href="#sphx-glr-download-nesc-test-cases-nesc-case15-py"><span class="std std-ref">here</span></a>
-to download the full example code</p>
+<p><a class="reference internal" href="#sphx-glr-download-nesc-test-cases-nesc-case15-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
 </div>
 <section class="sphx-glr-example-title" id="case-15-circular-f-16-flight-around-north-pole">
-<span id="sphx-glr-nesc-test-cases-nesc-case15-py"></span><h1>Case 15: Circular F-16 flight around North Pole<a class="headerlink" href="#case-15-circular-f-16-flight-around-north-pole" title="Permalink to this heading"></a></h1>
+<span id="sphx-glr-nesc-test-cases-nesc-case15-py"></span><h1>Case 15: Circular F-16 flight around North Pole<a class="headerlink" href="#case-15-circular-f-16-flight-around-north-pole" title="Link to this heading"></a></h1>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 23%" />
-<col style="width: 77%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p>Verifies</p></td>
 <td><p>Propagation, geodetic transforms</p></td>
@@ -129,7 +129,7 @@ to download the full example code</p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">simupy</span> <span class="kn">import</span> <span class="n">systems</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">simupy</span> <span class="kn">import</span> <span class="n">systems</span>
 <span class="kn">from</span> <span class="nn">simupy.block_diagram</span> <span class="kn">import</span> <span class="n">BlockDiagram</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -263,7 +263,7 @@ to download the full example code</p>
 <span class="n">int_opts</span><span class="p">[</span><span class="s2">&quot;nsteps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100_000</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
     <span class="n">opt_args</span><span class="p">,</span> <span class="n">opt_ctrl</span> <span class="o">=</span> <span class="n">run_trimmer</span><span class="p">(</span>
         <span class="n">spec_ic_args</span><span class="p">,</span> <span class="n">throttle_ic</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">longStk_ic</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">allow_roll</span><span class="o">=</span><span class="kc">False</span>
@@ -416,25 +416,27 @@ to download the full example code</p>
 <li><img src="../_images/sphx_glr_nesc_case15_011.png" srcset="../_images/sphx_glr_nesc_case15_011.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
 <li><img src="../_images/sphx_glr_nesc_case15_012.png" srcset="../_images/sphx_glr_nesc_case15_012.png" alt="nesc case15" class = "sphx-glr-multi-img"/></li>
 </ul>
-<p class="sphx-glr-script-out">Out:</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Optimization terminated successfully.
          Current function value: 5.307430
-         Iterations: 263
-         Function evaluations: 545
-pitch: 2.6742e+00  roll: 0.0000e+00  longStk: 13.0083  throttle: 13.8357
+         Iterations: 260
+         Function evaluations: 539
+pitch: 2.6742e+00  roll: 0.0000e+00  longStk: 13.0082  throttle: 13.8357
 accelerations:
- [[-5.30742973e+00 -3.36137054e-07 -5.05938035e-07]
- [-6.38762619e-07  1.03070072e-07  5.56269071e-09]]
-time to simulate: 647.205 s
+ [[-5.30742973e+00 -3.13605581e-08 -5.16943720e-08]
+ [-6.38762633e-07  8.60861093e-08  5.56269331e-09]]
+time to simulate: 499.532 s
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 10 minutes  54.124 seconds)</p>
-<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-nesc-test-cases-nesc-case15-py">
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (8 minutes 26.644 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-nesc-test-cases-nesc-case15-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/ad24608c149a9b1a009be79c50fa40fc/nesc_case15.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">nesc_case15.ipynb</span></code></a></p>
+</div>
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/7f73cb0d98c3fa6b180db509efa75a3e/nesc_case15.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">nesc_case15.py</span></code></a></p>
 </div>
-<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
-<p><a class="reference download internal" download="" href="../_downloads/ad24608c149a9b1a009be79c50fa40fc/nesc_case15.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">nesc_case15.ipynb</span></code></a></p>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/50f30f5cd67d313930d08d79da6d4a92/nesc_case15.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">nesc_case15.zip</span></code></a></p>
 </div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>

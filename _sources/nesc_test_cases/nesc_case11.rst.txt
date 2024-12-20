@@ -10,8 +10,8 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_nesc_test_cases_nesc_case11.py>`
-        to download the full example code
+        :ref:`Go to the end <sphx_glr_download_nesc_test_cases_nesc_case11.py>`
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -39,7 +39,7 @@ trim residual.
 
 .. GENERATED FROM PYTHON SOURCE LINES 21-31
 
-.. code-block:: default
+.. code-block:: Python
 
 
     from simupy.block_diagram import BlockDiagram
@@ -65,7 +65,7 @@ into a simupy_flight Vehicle
 
 .. GENERATED FROM PYTHON SOURCE LINES 34-40
 
-.. code-block:: default
+.. code-block:: Python
 
 
     import F16_model
@@ -86,7 +86,7 @@ Create a dictionary of keyword arguments for the initial condition
 
 .. GENERATED FROM PYTHON SOURCE LINES 42-60
 
-.. code-block:: default
+.. code-block:: Python
 
 
     spec_ic_args = dict(
@@ -119,7 +119,7 @@ Configure the earth model
 
 .. GENERATED FROM PYTHON SOURCE LINES 62-74
 
-.. code-block:: default
+.. code-block:: Python
 
 
     earth = simupy_flight.Planet(
@@ -146,7 +146,7 @@ Air density at the surface is used for the equivalent air-speed calculation
 
 .. GENERATED FROM PYTHON SOURCE LINES 76-79
 
-.. code-block:: default
+.. code-block:: Python
 
 
     rho_0 = earth.atmosphere(0, 0, 0, 0)[0]
@@ -164,7 +164,7 @@ Select the feedback channels used for the controller
 
 .. GENERATED FROM PYTHON SOURCE LINES 81-100
 
-.. code-block:: default
+.. code-block:: Python
 
 
     controller_feedback_indices = np.array(
@@ -200,7 +200,7 @@ options set by the generator.
 
 .. GENERATED FROM PYTHON SOURCE LINES 104-188
 
-.. code-block:: default
+.. code-block:: Python
 
 
 
@@ -302,7 +302,7 @@ stick position, and throttle value.
 
 .. GENERATED FROM PYTHON SOURCE LINES 193-213
 
-.. code-block:: default
+.. code-block:: Python
 
 
 
@@ -340,7 +340,7 @@ flight condition variable.
 
 .. GENERATED FROM PYTHON SOURCE LINES 218-301
 
-.. code-block:: default
+.. code-block:: Python
 
 
 
@@ -438,7 +438,7 @@ Run the trimmer to determine the initial condition for the simulation
 
 .. GENERATED FROM PYTHON SOURCE LINES 303-321
 
-.. code-block:: default
+.. code-block:: Python
 
 
     opt_args, opt_ctrl = run_trimmer(
@@ -464,18 +464,16 @@ Run the trimmer to determine the initial condition for the simulation
 
 .. rst-class:: sphx-glr-script-out
 
- Out:
-
  .. code-block:: none
 
     Optimization terminated successfully.
              Current function value: 0.006500
-             Iterations: 299
-             Function evaluations: 562
+             Iterations: 291
+             Function evaluations: 554
     pitch: 2.6351e+00  roll: 0.0000e+00  longStk: 12.9236  throttle: 13.7561
     accelerations:
-     [[-4.59610112e-03  4.59610020e-03  1.01317177e-10]
-     [-2.98437663e-09  4.11189587e-09  2.12618714e-09]]
+     [[-4.59609832e-03  4.59610301e-03  2.09229079e-09]
+     [-2.98437663e-09 -1.70643291e-09  2.12618714e-09]]
 
 
 
@@ -487,7 +485,7 @@ generate command signals at the trimmed value
 
 .. GENERATED FROM PYTHON SOURCE LINES 324-336
 
-.. code-block:: default
+.. code-block:: Python
 
 
     controller_block = F16ControllerBlock(*opt_ctrl)
@@ -515,7 +513,7 @@ by the auto-pilot to compute the heading to drive the offset to zero.
 
 .. GENERATED FROM PYTHON SOURCE LINES 339-360
 
-.. code-block:: default
+.. code-block:: Python
 
 
 
@@ -553,7 +551,7 @@ appropriately.
 
 .. GENERATED FROM PYTHON SOURCE LINES 364-393
 
-.. code-block:: default
+.. code-block:: Python
 
 
     BD = BlockDiagram(
@@ -597,7 +595,7 @@ Simulate and assess the results
 
 .. GENERATED FROM PYTHON SOURCE LINES 395-403
 
-.. code-block:: default
+.. code-block:: Python
 
 
     int_opts["nsteps"] = 5_000
@@ -686,11 +684,9 @@ Simulate and assess the results
 
 .. rst-class:: sphx-glr-script-out
 
- Out:
-
  .. code-block:: none
 
-    time to simulate: 63.108 s
+    time to simulate: 49.374 s
 
 
 
@@ -698,28 +694,26 @@ Simulate and assess the results
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 1 minutes  8.739 seconds)
+   **Total running time of the script:** (0 minutes 54.860 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case11.py:
 
+.. only:: html
 
-.. only :: html
+  .. container:: sphx-glr-footer sphx-glr-footer-example
 
- .. container:: sphx-glr-footer
-    :class: sphx-glr-footer-example
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
 
+      :download:`Download Jupyter notebook: nesc_case11.ipynb <nesc_case11.ipynb>`
 
+    .. container:: sphx-glr-download sphx-glr-download-python
 
-  .. container:: sphx-glr-download sphx-glr-download-python
+      :download:`Download Python source code: nesc_case11.py <nesc_case11.py>`
 
-     :download:`Download Python source code: nesc_case11.py <nesc_case11.py>`
+    .. container:: sphx-glr-download sphx-glr-download-zip
 
-
-
-  .. container:: sphx-glr-download sphx-glr-download-jupyter
-
-     :download:`Download Jupyter notebook: nesc_case11.ipynb <nesc_case11.ipynb>`
+      :download:`Download zipped: nesc_case11.zip <nesc_case11.zip>`
 
 
 .. only:: html

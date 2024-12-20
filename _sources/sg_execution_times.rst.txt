@@ -1,0 +1,85 @@
+
+:orphan:
+
+.. _sphx_glr_sg_execution_times:
+
+
+Computation times
+=================
+**17:52.605** total execution time for 17 files **from all galleries**:
+
+.. container::
+
+  .. raw:: html
+
+    <style scoped>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script type="text/javascript" class="init">
+    $(document).ready( function () {
+        $('table.sg-datatable').DataTable({order: [[1, 'desc']]});
+    } );
+    </script>
+
+  .. list-table::
+   :header-rows: 1
+   :class: table table-striped sg-datatable
+
+   * - Example
+     - Time
+     - Mem (MB)
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case15.py` (``../nesc_test_cases/nesc_case15.py``)
+     - 08:26.644
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case16.py` (``../nesc_test_cases/nesc_case16.py``)
+     - 04:47.611
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case13p4.py` (``../nesc_test_cases/nesc_case13p4.py``)
+     - 01:11.238
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case11.py` (``../nesc_test_cases/nesc_case11.py``)
+     - 00:54.860
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case13p3.py` (``../nesc_test_cases/nesc_case13p3.py``)
+     - 00:37.936
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case13p1.py` (``../nesc_test_cases/nesc_case13p1.py``)
+     - 00:26.229
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case13p2.py` (``../nesc_test_cases/nesc_case13p2.py``)
+     - 00:25.493
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case07.py` (``../nesc_test_cases/nesc_case07.py``)
+     - 00:06.486
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case04.py` (``../nesc_test_cases/nesc_case04.py``)
+     - 00:06.457
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case01.py` (``../nesc_test_cases/nesc_case01.py``)
+     - 00:06.343
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case02.py` (``../nesc_test_cases/nesc_case02.py``)
+     - 00:06.294
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case06.py` (``../nesc_test_cases/nesc_case06.py``)
+     - 00:06.258
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case08.py` (``../nesc_test_cases/nesc_case08.py``)
+     - 00:06.252
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case09.py` (``../nesc_test_cases/nesc_case09.py``)
+     - 00:06.248
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case03.py` (``../nesc_test_cases/nesc_case03.py``)
+     - 00:06.103
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case05.py` (``../nesc_test_cases/nesc_case05.py``)
+     - 00:06.079
+     - 0.0
+   * - :ref:`sphx_glr_nesc_test_cases_nesc_case10.py` (``../nesc_test_cases/nesc_case10.py``)
+     - 00:06.076
+     - 0.0

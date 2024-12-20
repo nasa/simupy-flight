@@ -10,8 +10,8 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_nesc_test_cases_nesc_case03.py>`
-        to download the full example code
+        :ref:`Go to the end <sphx_glr_download_nesc_test_cases_nesc_case03.py>`
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -34,7 +34,7 @@ Notes           Drag coefficient set to zero
 
 .. GENERATED FROM PYTHON SOURCE LINES 16-47
 
-.. code-block:: default
+.. code-block:: Python
 
 
     from simupy.block_diagram import BlockDiagram
@@ -80,7 +80,7 @@ Configure the constant dynamic damping
 
 .. GENERATED FROM PYTHON SOURCE LINES 49-103
 
-.. code-block:: default
+.. code-block:: Python
 
 
     S_A = 0.22222 / (ft_per_m**2)
@@ -215,17 +215,15 @@ Configure the constant dynamic damping
 
 .. rst-class:: sphx-glr-script-out
 
- Out:
-
  .. code-block:: none
 
-    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: invalid value encountered in double_scalars
+    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: invalid value encountered in scalar divide
       x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
-    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/dynamics.py:22: RuntimeWarning: divide by zero encountered in double_scalars
+    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/dynamics.py:22: RuntimeWarning: divide by zero encountered in scalar divide
       x15 = numpy.select([numpy.greater(V_T, 0.0)], [(1/2)/V_T], default=0.0)
-    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: divide by zero encountered in double_scalars
+    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: divide by zero encountered in scalar divide
       x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
-    time to simulate: 2.027 s
+    time to simulate: 1.686 s
 
 
 
@@ -233,28 +231,26 @@ Configure the constant dynamic damping
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  6.799 seconds)
+   **Total running time of the script:** (0 minutes 6.103 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case03.py:
 
+.. only:: html
 
-.. only :: html
+  .. container:: sphx-glr-footer sphx-glr-footer-example
 
- .. container:: sphx-glr-footer
-    :class: sphx-glr-footer-example
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
 
+      :download:`Download Jupyter notebook: nesc_case03.ipynb <nesc_case03.ipynb>`
 
+    .. container:: sphx-glr-download sphx-glr-download-python
 
-  .. container:: sphx-glr-download sphx-glr-download-python
+      :download:`Download Python source code: nesc_case03.py <nesc_case03.py>`
 
-     :download:`Download Python source code: nesc_case03.py <nesc_case03.py>`
+    .. container:: sphx-glr-download sphx-glr-download-zip
 
-
-
-  .. container:: sphx-glr-download sphx-glr-download-jupyter
-
-     :download:`Download Jupyter notebook: nesc_case03.ipynb <nesc_case03.ipynb>`
+      :download:`Download zipped: nesc_case03.zip <nesc_case03.zip>`
 
 
 .. only:: html

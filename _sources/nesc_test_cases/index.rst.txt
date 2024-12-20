@@ -1,9 +1,5 @@
 :orphan:
 
-
-
-.. _sphx_glr_nesc_test_cases:
-
 NESC Test Cases
 ===============
 
@@ -18,14 +14,300 @@ Safety Center's `"Six degree-of-freedom (6-DOF) Flight Simulation Test Cases."
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbnails">
+
+.. thumbnail-parent-div-open
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="Case 1: Dropped sphere with no drag">
 
 .. only:: html
 
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case01_thumb.png
-     :alt: Case 1: Dropped sphere with no drag
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case01_thumb.png
+    :alt:
 
-     :ref:`sphx_glr_nesc_test_cases_nesc_case01.py`
+  :ref:`sphx_glr_nesc_test_cases_nesc_case01.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 1: Dropped sphere with no drag</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 2: Tumbling brick with no damping or drag">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case02_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case02.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 2: Tumbling brick with no damping or drag</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 3: Tumbling brick with dynamic damping, no drag">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case03_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case03.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 3: Tumbling brick with dynamic damping, no drag</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 4: Dropped sphere over non-rotating, spherical Earth">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case04_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case04.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 4: Dropped sphere over non-rotating, spherical Earth</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 5: Dropped sphere over rotating, spherical Earth">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case05_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case05.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 5: Dropped sphere over rotating, spherical Earth</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 6: Dropped sphere over rotating, ellipsoidal Earth">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case06_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case06.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 6: Dropped sphere over rotating, ellipsoidal Earth</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 7: Sphere dropped through a steady wind field">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case07_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case07.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 7: Sphere dropped through a steady wind field</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 8: Sphere dropped through a varying wind field">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case08_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case08.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 8: Sphere dropped through a varying wind field</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 9: Sphere launched ballistically eastward along Equator">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case09_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case09.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 9: Sphere launched ballistically eastward along Equator</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 10: Sphere launched ballistically northward along Prime Meridian">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case10_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case10.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 10: Sphere launched ballistically northward along Prime Meridian</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 11: Subsonic F-16 trimmed flight across earth">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case11_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case11.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 11: Subsonic F-16 trimmed flight across earth</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 13.1: Altitude change of a subsonic aircraft">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case13p1_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case13p1.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 13.1: Altitude change of a subsonic aircraft</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 13.2: Velocity change of a subsonic aircraft">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case13p2_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case13p2.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 13.2: Velocity change of a subsonic aircraft</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 13.3: Course change of a subsonic aircraft">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case13p3_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case13p3.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 13.3: Course change of a subsonic aircraft</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 13.4: Lateral offset manuever of a subsonic aircraft">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case13p4_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case13p4.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 13.4: Lateral offset manuever of a subsonic aircraft</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 15: Circular F-16 flight around North Pole">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case15_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case15.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 15: Circular F-16 flight around North Pole</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Case 16: Circular F-16 flight around Equator/dateline intersection">
+
+.. only:: html
+
+  .. image:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case16_thumb.png
+    :alt:
+
+  :ref:`sphx_glr_nesc_test_cases_nesc_case16.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Case 16: Circular F-16 flight around Equator/dateline intersection</div>
+    </div>
+
+
+.. thumbnail-parent-div-close
 
 .. raw:: html
 
@@ -36,363 +318,35 @@ Safety Center's `"Six degree-of-freedom (6-DOF) Flight Simulation Test Cases."
    :hidden:
 
    /nesc_test_cases/nesc_case01
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 2: Tumbling brick with no damping or drag">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case02_thumb.png
-     :alt: Case 2: Tumbling brick with no damping or drag
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case02.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case02
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 3: Tumbling brick with dynamic damping, no drag">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case03_thumb.png
-     :alt: Case 3: Tumbling brick with dynamic damping, no drag
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case03.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case03
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 4: Dropped sphere over non-rotating, spherical Earth">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case04_thumb.png
-     :alt: Case 4: Dropped sphere over non-rotating, spherical Earth
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case04.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case04
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 5: Dropped sphere over rotating, spherical Earth">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case05_thumb.png
-     :alt: Case 5: Dropped sphere over rotating, spherical Earth
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case05.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case05
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 6: Dropped sphere over rotating, ellipsoidal Earth">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case06_thumb.png
-     :alt: Case 6: Dropped sphere over rotating, ellipsoidal Earth
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case06.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case06
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 7: Sphere dropped through a steady wind field">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case07_thumb.png
-     :alt: Case 7: Sphere dropped through a steady wind field
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case07.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case07
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 8: Sphere dropped through a varying wind field">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case08_thumb.png
-     :alt: Case 8: Sphere dropped through a varying wind field
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case08.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case08
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 9: Sphere launched ballistically eastward along Equator">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case09_thumb.png
-     :alt: Case 9: Sphere launched ballistically eastward along Equator
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case09.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case09
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 10: Sphere launched ballistically northward along Prime Meridian">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case10_thumb.png
-     :alt: Case 10: Sphere launched ballistically northward along Prime Meridian
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case10.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case10
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 11: Subsonic F-16 trimmed flight across earth">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case11_thumb.png
-     :alt: Case 11: Subsonic F-16 trimmed flight across earth
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case11.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case11
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 13.1: Altitude change of a subsonic aircraft">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case13p1_thumb.png
-     :alt: Case 13.1: Altitude change of a subsonic aircraft
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case13p1.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case13p1
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 13.2: Velocity change of a subsonic aircraft">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case13p2_thumb.png
-     :alt: Case 13.2: Velocity change of a subsonic aircraft
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case13p2.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case13p2
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 13.3: Course change of a subsonic aircraft">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case13p3_thumb.png
-     :alt: Case 13.3: Course change of a subsonic aircraft
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case13p3.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case13p3
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 13.4: Lateral offset manuever of a subsonic aircraft">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case13p4_thumb.png
-     :alt: Case 13.4: Lateral offset manuever of a subsonic aircraft
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case13p4.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case13p4
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 15: Circular F-16 flight around North Pole">
-
-.. only:: html
-
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case15_thumb.png
-     :alt: Case 15: Circular F-16 flight around North Pole
-
-     :ref:`sphx_glr_nesc_test_cases_nesc_case15.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
    /nesc_test_cases/nesc_case15
+   /nesc_test_cases/nesc_case16
 
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Case 16: Circular F-16 flight around Equator/dateline intersection">
 
 .. only:: html
 
- .. figure:: /nesc_test_cases/images/thumb/sphx_glr_nesc_case16_thumb.png
-     :alt: Case 16: Circular F-16 flight around Equator/dateline intersection
+  .. container:: sphx-glr-footer sphx-glr-footer-gallery
 
-     :ref:`sphx_glr_nesc_test_cases_nesc_case16.py`
+    .. container:: sphx-glr-download sphx-glr-download-python
 
-.. raw:: html
+      :download:`Download all examples in Python source code: nesc_test_cases_python.zip </nesc_test_cases/nesc_test_cases_python.zip>`
 
-    </div>
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
 
-
-.. toctree::
-   :hidden:
-
-   /nesc_test_cases/nesc_case16
-.. raw:: html
-
-    <div class="sphx-glr-clear"></div>
-
-
-
-.. only :: html
-
- .. container:: sphx-glr-footer
-    :class: sphx-glr-footer-gallery
-
-
-  .. container:: sphx-glr-download sphx-glr-download-python
-
-    :download:`Download all examples in Python source code: nesc_test_cases_python.zip </nesc_test_cases/nesc_test_cases_python.zip>`
-
-
-
-  .. container:: sphx-glr-download sphx-glr-download-jupyter
-
-    :download:`Download all examples in Jupyter notebooks: nesc_test_cases_jupyter.zip </nesc_test_cases/nesc_test_cases_jupyter.zip>`
+      :download:`Download all examples in Jupyter notebooks: nesc_test_cases_jupyter.zip </nesc_test_cases/nesc_test_cases_jupyter.zip>`
 
 
 .. only:: html

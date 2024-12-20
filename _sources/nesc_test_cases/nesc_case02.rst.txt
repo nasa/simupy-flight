@@ -10,8 +10,8 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_nesc_test_cases_nesc_case02.py>`
-        to download the full example code
+        :ref:`Go to the end <sphx_glr_download_nesc_test_cases_nesc_case02.py>`
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -34,7 +34,7 @@ Notes           Damping and drag coefficients set to zero
 
 .. GENERATED FROM PYTHON SOURCE LINES 17-36
 
-.. code-block:: default
+.. code-block:: Python
 
 
     from simupy.block_diagram import BlockDiagram
@@ -68,7 +68,7 @@ The inertial forces due to rotation needed to be modeled with a vehicle
 
 .. GENERATED FROM PYTHON SOURCE LINES 38-99
 
-.. code-block:: default
+.. code-block:: Python
 
     Ixx = 0.001894220 * kg_per_slug / (ft_per_m**2)  # slug-ft2
     Iyy = 0.006211019 * kg_per_slug / (ft_per_m**2)  # slug-ft2
@@ -210,17 +210,15 @@ The inertial forces due to rotation needed to be modeled with a vehicle
 
 .. rst-class:: sphx-glr-script-out
 
- Out:
-
  .. code-block:: none
 
-    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: invalid value encountered in double_scalars
+    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: invalid value encountered in scalar divide
       x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
-    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/dynamics.py:22: RuntimeWarning: divide by zero encountered in double_scalars
+    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/dynamics.py:22: RuntimeWarning: divide by zero encountered in scalar divide
       x15 = numpy.select([numpy.greater(V_T, 0.0)], [(1/2)/V_T], default=0.0)
-    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: divide by zero encountered in double_scalars
+    /home/runner/work/simupy-flight/simupy-flight/simupy_flight/kinematics.py:198: RuntimeWarning: divide by zero encountered in scalar divide
       x60 = x6*(2*x26*x54 + x58*(-x13 + x14) + x59*(x33 + x55))/x53
-    time to simulate: 1.955 s
+    time to simulate: 1.626 s
 
 
 
@@ -228,28 +226,26 @@ The inertial forces due to rotation needed to be modeled with a vehicle
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  6.830 seconds)
+   **Total running time of the script:** (0 minutes 6.294 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case02.py:
 
+.. only:: html
 
-.. only :: html
+  .. container:: sphx-glr-footer sphx-glr-footer-example
 
- .. container:: sphx-glr-footer
-    :class: sphx-glr-footer-example
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
 
+      :download:`Download Jupyter notebook: nesc_case02.ipynb <nesc_case02.ipynb>`
 
+    .. container:: sphx-glr-download sphx-glr-download-python
 
-  .. container:: sphx-glr-download sphx-glr-download-python
+      :download:`Download Python source code: nesc_case02.py <nesc_case02.py>`
 
-     :download:`Download Python source code: nesc_case02.py <nesc_case02.py>`
+    .. container:: sphx-glr-download sphx-glr-download-zip
 
-
-
-  .. container:: sphx-glr-download sphx-glr-download-jupyter
-
-     :download:`Download Jupyter notebook: nesc_case02.ipynb <nesc_case02.ipynb>`
+      :download:`Download zipped: nesc_case02.zip <nesc_case02.zip>`
 
 
 .. only:: html

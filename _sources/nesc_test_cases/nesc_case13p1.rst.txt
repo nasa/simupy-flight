@@ -10,8 +10,8 @@
     .. note::
         :class: sphx-glr-download-link-note
 
-        Click :ref:`here <sphx_glr_download_nesc_test_cases_nesc_case13p1.py>`
-        to download the full example code
+        :ref:`Go to the end <sphx_glr_download_nesc_test_cases_nesc_case13p1.py>`
+        to download the full example code.
 
 .. rst-class:: sphx-glr-example-title
 
@@ -38,7 +38,7 @@ signals.
 
 .. GENERATED FROM PYTHON SOURCE LINES 20-51
 
-.. code-block:: default
+.. code-block:: Python
 
 
     from simupy import systems
@@ -77,26 +77,24 @@ signals.
 
 .. rst-class:: sphx-glr-script-out
 
- Out:
-
  .. code-block:: none
 
     Optimization terminated successfully.
              Current function value: 0.006500
-             Iterations: 299
-             Function evaluations: 562
+             Iterations: 291
+             Function evaluations: 554
     pitch: 2.6351e+00  roll: 0.0000e+00  longStk: 12.9236  throttle: 13.7561
     accelerations:
-     [[-4.59610112e-03  4.59610020e-03  1.01317177e-10]
-     [-2.98437663e-09  4.11189587e-09  2.12618714e-09]]
-    time to simulate: 26.182 s
+     [[-4.59609832e-03  4.59610301e-03  2.09229079e-09]
+     [-2.98437663e-09 -1.70643291e-09  2.12618714e-09]]
+    time to simulate: 20.365 s
 
 
 
 
 .. GENERATED FROM PYTHON SOURCE LINES 52-55
 
-.. code-block:: default
+.. code-block:: Python
 
 
     plot_nesc_comparisons(res, "13p1")
@@ -191,28 +189,26 @@ signals.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  32.005 seconds)
+   **Total running time of the script:** (0 minutes 26.229 seconds)
 
 
 .. _sphx_glr_download_nesc_test_cases_nesc_case13p1.py:
 
+.. only:: html
 
-.. only :: html
+  .. container:: sphx-glr-footer sphx-glr-footer-example
 
- .. container:: sphx-glr-footer
-    :class: sphx-glr-footer-example
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
 
+      :download:`Download Jupyter notebook: nesc_case13p1.ipynb <nesc_case13p1.ipynb>`
 
+    .. container:: sphx-glr-download sphx-glr-download-python
 
-  .. container:: sphx-glr-download sphx-glr-download-python
+      :download:`Download Python source code: nesc_case13p1.py <nesc_case13p1.py>`
 
-     :download:`Download Python source code: nesc_case13p1.py <nesc_case13p1.py>`
+    .. container:: sphx-glr-download sphx-glr-download-zip
 
-
-
-  .. container:: sphx-glr-download sphx-glr-download-jupyter
-
-     :download:`Download Jupyter notebook: nesc_case13p1.ipynb <nesc_case13p1.ipynb>`
+      :download:`Download zipped: nesc_case13p1.zip <nesc_case13p1.zip>`
 
 
 .. only:: html
