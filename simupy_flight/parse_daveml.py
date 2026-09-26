@@ -219,7 +219,7 @@ class ProcessDaveML:
         elif isTag(func, "/MathML}lt"):
             if len(processed_args) != 2:
                 raise ValueError("Less than is a binary operation!")
-            out_expr = sp.Le(*processed_args)
+            out_expr = sp.Lt(*processed_args)
         elif isTag(func, "/MathML}gt"):
             if len(processed_args) != 2:
                 raise ValueError("Greater than is a binary operation!")
